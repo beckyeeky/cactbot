@@ -6,28 +6,6 @@
     ko: /^희망의 낙원 에덴: 공명편\(영웅\) \(3\)$/,
   },
   timelineFile: 'e7s.txt',
-  timelineTriggers: [
-    {
-      // TODO: it might be nice to call out spots directly once people have a buff.
-      id: 'E7S Tornado Spots',
-      regex: /Words Of Fervor/,
-      beforeSeconds: 10,
-      infoText: {
-        en: 'Dark NE, Light NW, one pair S',
-        cn: '黑右前 白左前 两人后',
-        de: 'Dunkel NO, Licht NW, ein Paar S',
-        fr: 'Noir NE, Blanc NE, paire Sud',
-        ko: '어둠 북동, 빛 북서, 한쌍은 남으로',
-      },
-      // Some tts users complained that this was way too long.
-      tts: {
-        en: 'Dark Northeast',
-        cn: '黑右前',
-        de: 'Dunkel Nordosten',
-        fr: 'Noir Nore Est',
-      },
-    },
-  ],
   triggers: [
     {
       id: 'E7S Empty Wave',
@@ -97,7 +75,8 @@
         data.betwixtWorldsStack.push(matches.target);
       },
       alertText: function(data, matches) {
-        if (data.betwixtWorldsTethers.indexOf(data.me))
+        data.betwixtWorldsTethers = data.betwixtWorldsTethers || [];
+        if (data.betwixtWorldsTethers.includes(data.me))
           return;
         if (data.me == matches.target) {
           return {
@@ -221,7 +200,8 @@
         return data.phase == 'falseMidnight';
       },
       alertText: function(data, matches) {
-        if (data.falseMidnightSpread.indexOf(data.me))
+        data.falseMidnightSpread = data.falseMidnightSpread || [];
+        if (data.falseMidnightSpread.includes(data.me))
           return;
         if (data.me == matches.target) {
           return {
@@ -394,26 +374,53 @@
       },
     },
     {
-      id: 'E7S Boundless Light',
-      regex: Regexes.startsUsing({ source: 'Unforgiven Idolatry', id: '4C5C' }),
-      regexDe: Regexes.startsUsing({ source: 'Ungeläutert(?:e|er|es|en) Götzenverehrung', id: '4C5C' }),
-      regexFr: Regexes.startsUsing({ source: 'Nuée D\'Idolâtries Impardonnables', id: '4C5C' }),
-      regexJa: Regexes.startsUsing({ source: 'アンフォーギヴン・アイドラトリー', id: '4C5C' }),
-      condition: function(data) {
-        return data.color == 'dark';
+      id: 'E7S Boundless Tracker',
+      regex: Regexes.startsUsing({ source: 'Unforgiven Idolatry', id: '4C5[CD]' }),
+      regexDe: Regexes.startsUsing({ source: 'Ungeläutert(?:e|er|es|en) Götzenverehrung', id: '4C5[CD]' }),
+      regexFr: Regexes.startsUsing({ source: 'Nuée D\'idolâtries Impardonnables', id: '4C5[CD]' }),
+      regexJa: Regexes.startsUsing({ source: 'アンフォーギヴン・アイドラトリー', id: '4C5[CD]' }),
+      run: function(data, matches) {
+        data.boundless = data.boundless || {};
+        let oppositeColor = matches.id == '4C5C' ? 'dark' : 'light';
+        data.boundless[oppositeColor] = matches.target;
       },
-      response: Responses.stackOn(),
     },
     {
-      id: 'E7S Boundless Dark',
-      regex: Regexes.startsUsing({ source: 'Unforgiven Idolatry', id: '4C5D' }),
-      regexDe: Regexes.startsUsing({ source: 'Ungeläutert(?:e|er|es|en) Götzenverehrung', id: '4C5D' }),
-      regexFr: Regexes.startsUsing({ source: 'Nuée D\'idolâtries Impardonnables', id: '4C5D' }),
-      regexJa: Regexes.startsUsing({ source: 'アンフォーギヴン・アイドラトリー', id: '4C5D' }),
-      condition: function(data) {
-        return data.color == 'light';
+      id: 'E7S Boundless Light Dark Stack',
+      regex: Regexes.startsUsing({ source: 'Unforgiven Idolatry', id: '4C5[CD]' }),
+      regexDe: Regexes.startsUsing({ source: 'Ungeläutert(?:e|er|es|en) Götzenverehrung', id: '4C5[CD]' }),
+      regexFr: Regexes.startsUsing({ source: 'Nuée D\'Idolâtries Impardonnables', id: '4C5[CD]' }),
+      regexJa: Regexes.startsUsing({ source: 'アンフォーギヴン・アイドラトリー', id: '4C5[CD]' }),
+      condition: function(data, matches) {
+        if (Object.keys(data.boundless).length != 2)
+          return false;
+        let oppositeColor = matches.id == '4C5C' ? 'dark' : 'light';
+        return data.color == oppositeColor;
       },
-      response: Responses.stackOn(),
+      response: function(data, matches) {
+        // If somebody is taking both, definitely don't stack with them!
+        if (data.boundless.light == data.boundless.dark) {
+          if (matches.target == data.me)
+            return;
+          return {
+            infoText: {
+              en: 'Avoid ' + data.ShortName(matches.target),
+            },
+          };
+        }
+        return Responses.stackOn();
+      },
+    },
+    {
+      id: 'E7S Boundless Cleanup',
+      regex: Regexes.startsUsing({ source: 'Unforgiven Idolatry', id: '4C5[CD]' }),
+      regexDe: Regexes.startsUsing({ source: 'Ungeläutert(?:e|er|es|en) Götzenverehrung', id: '4C5[CD]' }),
+      regexFr: Regexes.startsUsing({ source: 'Nuée D\'Idolâtries Impardonnables', id: '4C5[CD]' }),
+      regexJa: Regexes.startsUsing({ source: 'アンフォーギヴン・アイドラトリー', id: '4C5[CD]' }),
+      delaySeconds: 20,
+      run: function(data, matches) {
+        delete data.boundless;
+      },
     },
     {
       id: 'E7S Words of Night',
@@ -422,12 +429,17 @@
       regexFr: Regexes.startsUsing({ source: 'Nuée D\'idolâtries Impardonnables', id: '(?:4C2C|4C65)', capture: false }),
       regexJa: Regexes.startsUsing({ source: 'アンフォーギヴン・アイドラトリー', id: '(?:4C2C|4C65)', capture: false }),
       alertText: function(data) {
+        data.colorMap = data.colorMap || [];
+        let colorTrans = data.colorMap[data.color] || {};
+        let color = colorTrans[data.lang];
+        if (!color)
+          return;
         return {
-          en: 'Get hit by ' + data.colorMap[data.color][data.lang],
-          de: 'Lass dich treffen von ' + data.colorMap[data.color][data.lang],
-          fr: 'Encaissez le ' + data.colorMap[data.color][data.lang],
-          ko: data.colorMap[data.color][data.lang] + ' 맞기',
-          cn: '撞' + data.colorMap[data.color][data.lang],
+          en: 'Get hit by ' + color,
+          de: 'Lass dich treffen von ' + color,
+          fr: 'Encaissez-le ' + color,
+          ko: color + ' 맞기',
+          cn: '撞' + color,
         };
       },
     },
@@ -441,7 +453,7 @@
       alertText: {
         en: 'Bait Puddles',
         de: 'Flächen ködern',
-        fr: 'Placez les flaques',
+        fr: 'Placez les zones au sol',
         cn: '放圈',
         ko: '장판 버리기',
       },
@@ -457,8 +469,32 @@
         en: 'Get Knocked Into Corner',
         cn: '击退到角落',
         de: 'Lass dich in die Ecke zurückstoßen',
-        fr: 'Faites vous pousser dans les coins',
+        fr: 'Faites-vous pousser dans les coins',
         ko: '구석으로 넉백',
+      },
+    },
+    {
+      id: 'E7S Unjoined Aspect P3',
+      regex: Regexes.ability({ source: 'The Idol Of Darkness', id: '4C7A', capture: false }),
+      regexDe: Regexes.ability({ source: 'Götzenbild Der Dunkelheit', id: '4C7A', capture: false }),
+      regexFr: Regexes.ability({ source: 'Idole Des Ténèbres', id: '4C7A', capture: false }),
+      regexJa: Regexes.ability({ source: 'ダークアイドル', id: '4C7A', capture: false }),
+      // Color buffs go out immediately after the cast
+      delaySeconds: 0.1,
+      infoText: function(data) {
+        if (data.role == 'tank') {
+          return {
+            en: 'Go South',
+          };
+        }
+        if (data.color == 'light') {
+          return {
+            en: 'Go Northwest',
+          };
+        }
+        return {
+          en: 'Go Northeast',
+        };
       },
     },
     {
@@ -468,12 +504,17 @@
       regexFr: Regexes.startsUsing({ source: 'Idole Des Ténèbres', id: '4C7E', capture: false }),
       regexJa: Regexes.startsUsing({ source: 'ダークアイドル', id: '4C7E', capture: false }),
       alertText: function(data) {
+        data.colorMap = data.colorMap || [];
+        let colorTrans = data.colorMap[data.color] || {};
+        let color = colorTrans[data.lang];
+        if (!color)
+          return;
         return {
-          en: 'Stand in ' + data.colorMap[data.color][data.lang],
-          de: 'Stehe in ' + data.colorMap[data.color][data.lang],
-          fr: 'Restez sur ' + data.colorMap[data.color][data.lang],
-          ko: data.colorMap[data.color][data.lang] + '에 서기',
-          cn: '站进' + data.colorMap[data.color][data.lang],
+          en: 'Stand in ' + color,
+          de: 'Stehe in ' + color,
+          fr: 'Restez sur ' + color,
+          ko: color + '에 서기',
+          cn: '站进' + color,
         };
       },
     },
@@ -482,20 +523,20 @@
     {
       'locale': 'de',
       'replaceSync': {
-        'unforgiven idolatry': 'ungeläutert(?:e|er|es|en) Götzenverehrung',
-        'the Idol of Darkness': 'Götzenbild der Dunkelheit',
-        'scuro': 'verdichtet(?:e|er|es|en) Licht',
-        '(?<! )idolatry': 'Idolatrie',
-        'chiaro': 'verdichtet(?:e|er|es|en) Dunkel',
-        'blasphemy': 'Blasphemie',
+        'Unforgiven Idolatry': 'ungeläutert(?:e|er|es|en) Götzenverehrung',
+        'The Idol Of Darkness': 'Götzenbild der Dunkelheit',
+        'Scuro': 'verdichtet(?:e|er|es|en) Licht',
+        '(?<! )Idolatry': 'Idolatrie',
+        'Chiaro': 'verdichtet(?:e|er|es|en) Dunkel',
+        'Blasphemy': 'Blasphemie',
       },
       'replaceText': {
-        'Words of Unity': 'Kommando: Stürmischer Angriff',
-        'Words of Spite': 'Kommando: Anvisieren',
-        'Words of Night': 'Kommando: Nächtlicher Angriff',
-        'Words of Motion': 'Kommando: Wellen',
-        'Words of Fervor': 'Kommando: Wilder Tanz',
-        'Words of Entrapment': 'Kommando: Einkesselung',
+        'Words Of Unity': 'Kommando: Stürmischer Angriff',
+        'Words Of Spite': 'Kommando: Anvisieren',
+        'Words Of Night': 'Kommando: Nächtlicher Angriff',
+        'Words Of Motion': 'Kommando: Wellen',
+        'Words Of Fervor': 'Kommando: Wilder Tanz',
+        'Words Of Entrapment': 'Kommando: Einkesselung',
         'White Smoke': 'Weißes Feuer',
         'Unshadowed Stake': 'Dunkler Nagel',
         'Unjoined Aspect': 'Attributswechsel',
@@ -505,7 +546,7 @@
         'Stygian Sword': 'Schwarzes Schwert',
         'Stygian Stake': 'Schwarzer Nagel',
         'Stygian Spear': 'Schwarzer Speer',
-        'Strength in Numbers': 'Angriffsmanöver',
+        'Strength In Numbers': 'Angriffsmanöver',
         'Silver Sword': 'Weißes Lichtschwert',
         'Silver Stake': 'Heller Nagel',
         'Silver Spear': 'Weißer Lichtspeer',
@@ -532,8 +573,8 @@
         'Boundless Dark': 'Schwarzer Finsterstrom',
         'Black Smoke': 'Schwarzes Feuer',
         'Betwixt Worlds': 'Dimensionsloch',
-        'Away with Thee': 'Zwangsumwandlung',
-        'Advent of Light': 'Lichtsaturation',
+        'Away With Thee': 'Zwangsumwandlung',
+        'Advent Of Light': 'Lichtsaturation',
       },
       '~effectNames': {
         'Waymark': 'Ziel des Ansturms',

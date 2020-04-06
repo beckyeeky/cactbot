@@ -37,6 +37,7 @@
           en: 'Bennu Soon',
           de: 'Bennu Add bald',
           fr: 'Bénou bientôt',
+          cn: '小鸟即将出现',
         };
       },
     },
@@ -54,6 +55,7 @@
             en: 'Revelation on YOU',
             de: 'Offenbarung auf DIR',
             fr: 'Révélation sur VOUS',
+            cn: '天启点名',
           };
         }
       },
@@ -62,7 +64,8 @@
           return {
             en: 'Away from ' + data.ShortName(matches.target),
             de: 'Weg von ' + data.ShortName(matches.target),
-            fr: 'Ecartez-vous de ' + data.ShortName(matches.target),
+            fr: 'Eloignez-vous de ' + data.ShortName(matches.target),
+            cn: '远离' + data.ShortName(matches.target),
           };
         }
       },
@@ -78,7 +81,8 @@
       infoText: {
         en: 'Blackfire Spread',
         de: 'Schwarzfeuer verteilen',
-        fr: 'Flamme noire, dispersion',
+        fr: 'Flamme noire, écartez-vous',
+        cn: '黑火分散',
       },
     },
     {
@@ -91,6 +95,7 @@
         en: 'Whitefire on YOU',
         de: 'Weißfeuer auf DIR',
         fr: 'Flamme blanche sur VOUS',
+        cn: '白火点名',
       },
     },
     {
@@ -102,7 +107,8 @@
       alertText: {
         en: 'Bluefire Away',
         de: 'Blaufeuer wegbringen',
-        fr: 'Flame bleue, écartez-vous',
+        fr: 'Flamme bleue, éloignez-vous',
+        cn: '蓝火远离',
       },
     },
     {
@@ -119,6 +125,7 @@
             en: 'Chain on YOU',
             de: 'Kette auf DIR',
             fr: 'Chaine sur VOUS',
+            cn: '毒点名',
           };
         }
       },
@@ -128,6 +135,7 @@
             en: 'Chain on ' + data.ShortName(matches[1]),
             de: 'Kette auf ' + data.ShortName(matches[1]),
             fr: 'Chaine sur ' + data.ShortName(matches[1]),
+            cn: '毒点名' + data.ShortName(matches[1]),
           };
         }
       },

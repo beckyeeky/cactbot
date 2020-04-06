@@ -33,7 +33,8 @@
           return {
             en: 'Stack Center for Dives',
             de: 'In der Mitte sammeln für Sturzbombe',
-            fr: 'Packé au centre pour les dives',
+            fr: 'Packez-vous au centre pour les plongeons',
+            cn: '中间集合等待俯冲',
           };
         }
       },
@@ -55,7 +56,8 @@
           return {
             en: 'Flatten on YOU',
             de: 'Einebnen auf DIR',
-            fr: 'Applatissement sur VOUS',
+            fr: 'Compression sur VOUS',
+            cn: '死刑',
           };
         }
       },
@@ -66,7 +68,8 @@
           return {
             en: 'Flatten on ' + data.ShortName(matches.target),
             de: 'Einebnen auf ' + data.ShortName(matches.target),
-            fr: 'Applatissement sur ' + data.ShortName(matches.target),
+            fr: 'Compression sur ' + data.ShortName(matches.target),
+            cn: '死刑点' + data.ShortName(matches.target),
           };
         }
       },
@@ -80,7 +83,8 @@
       alertText: {
         en: 'Megaflare Stack',
         de: 'Megaflare Sammeln',
-        fr: 'MégaBrasier package',
+        fr: 'MégaBrasier Packez-vous',
+        cn: '百万核爆集合',
       },
     },
     {
@@ -106,6 +110,7 @@
         en: 'Tempest Tether on YOU',
         de: 'Sturm Verbindung auf DIR',
         fr: 'Liens de tempête sur VOUS',
+        cn: '风圈点名',
       },
     },
     {
@@ -122,6 +127,7 @@
             en: 'Akh Morn on YOU',
             de: 'Akh Morn auf DIR',
             fr: 'Akh Morn sur VOUS',
+            cn: '死亡轮回点名',
           };
         }
       },
@@ -131,6 +137,7 @@
             en: 'Akh Morn on ' + data.ShortName(matches.target),
             de: 'Akh Morn auf ' + data.ShortName(matches.target),
             fr: 'Akh Morn sur ' + data.ShortName(matches.target),
+            cn: '死亡轮回点' + data.ShortName(matches.target),
           };
         }
       },
@@ -182,13 +189,13 @@
         'Earth Shaker': 'Secousse',
         'Flare Breath': 'Souffle brasier',
         'Flare Star': 'Astre flamboyant',
-        'Flatten': 'Aplatissement',
+        'Flatten': 'Compression',
         'Gigaflare': 'GigaBrasier',
         'Gust Add': 'Add Bourrasque',
-        'MF Pepperoni': 'MF Pepperoni',
-        'MF Share': 'MégaBrasier Partage',
-        'MF Spread': 'MégaBrasier Dispersion',
-        'MF Tower': 'MégaBrasier Tour',
+        'MF Pepperoni': 'MB Zones au sol',
+        'MF Share': 'MB Partagez',
+        'MF Spread': 'MB Ecartez',
+        'MF Tower': 'MB Tour',
         'Megaflare': 'MégaBrasier',
         'Pain Add': 'Add Douleur',
         'Rage Of Bahamut': 'Courroux de Bahamut',

@@ -47,6 +47,7 @@
         en: 'Spit on YOU',
         de: 'Spucke auf DIR',
         fr: 'Crachat sur VOUS',
+        cn: '吐痰点名',
       },
     },
     {
@@ -65,6 +66,7 @@
         en: 'Split',
         de: 'Zerteilung',
         fr: 'Séparation',
+        cn: '分裂',
       },
     },
     {
@@ -83,6 +85,8 @@
       infoText: {
         en: 'Hood Swing in 10',
         de: 'Kapuzenschwung in 10',
+        fr: 'Coup de capot dans 10s',
+        cn: '10秒内死刑',
       },
     },
     {
@@ -94,6 +98,7 @@
         en: 'Slime Soon',
         de: 'Schleim bald',
         fr: 'Slime bientôt',
+        cn: '软泥即将出现',
       },
     },
     {
@@ -110,6 +115,7 @@
         en: 'Slime Soon',
         de: 'Schleim bald',
         fr: 'Slime bientôt',
+        cn: '软泥即将出现',
       },
     },
   ],

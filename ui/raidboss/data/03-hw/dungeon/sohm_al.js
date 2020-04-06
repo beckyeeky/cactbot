@@ -15,7 +15,8 @@
     },
     {
       id: 'Sohm Al Myath Spread',
-      regex: Regexes.headMarker({ id: '00AE', capture: false }),
+      regex: Regexes.headMarker({ id: '00AE' }),
+      condition: Conditions.targetIsYou(),
       response: Responses.spread(),
     },
     {
@@ -30,16 +31,19 @@
         en: 'Kill Chyme Add',
         de: 'Brei Add töten',
         fr: 'Tuez l\'add',
+        cn: '击杀圣山之糜',
       },
       tts: {
         en: 'kill chyme',
         de: 'brei töten',
         fr: 'tuez lad',
+        cn: '击杀圣山之糜',
       },
     },
     {
       id: 'Sohm Al Tioman Meteor',
-      regex: Regexes.headMarker({ id: '0007', capture: false }),
+      regex: Regexes.headMarker({ id: '0007' }),
+      condition: Conditions.targetIsYou(),
       response: Responses.meteorOnYou(),
     },
   ],

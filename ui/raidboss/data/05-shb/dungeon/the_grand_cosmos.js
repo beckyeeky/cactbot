@@ -17,6 +17,7 @@
       regexFr: Regexes.startsUsing({ id: '4769', source: 'Ermite Du Palais' }),
       regexJa: Regexes.startsUsing({ id: '4769', source: '宮殿の隠者' }),
       regexCn: Regexes.startsUsing({ id: '4769', source: '宫殿的隐者' }),
+      regexKo: Regexes.startsUsing({ id: '4769', source: '궁전의 은자' }),
       condition: function(data, matches) {
         return matches.target == data.me || data.role == 'healer';
       },
@@ -42,6 +43,7 @@
       regexFr: Regexes.startsUsing({ id: '49A3', source: 'Ermite Du Palais', capture: false }),
       regexJa: Regexes.startsUsing({ id: '49A3', source: '宮殿の隠者', capture: false }),
       regexCn: Regexes.startsUsing({ id: '49A3', source: '宫殿的隐者', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '49A3', source: '궁전의 은자', capture: false }),
       condition: function(data) {
         return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
       },
@@ -54,12 +56,14 @@
       regexFr: Regexes.startsUsing({ id: '476B', source: 'Ermite Du Palais', capture: false }),
       regexJa: Regexes.startsUsing({ id: '476B', source: '宮殿の隠者', capture: false }),
       regexCn: Regexes.startsUsing({ id: '476B', source: '宫殿的隐者', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '476B', source: '궁전의 은자', capture: false }),
       delaySeconds: 8,
       alertText: {
         en: 'Avoid Brooms',
         de: 'Besen ausweichen',
         fr: 'Evitez les balais',
         ko: '빗자루 피하기',
+        cn: '躲扫把',
       },
     },
     {
@@ -69,6 +73,7 @@
       regexFr: Regexes.startsUsing({ id: '471B', source: 'Leannan Sith' }),
       regexJa: Regexes.startsUsing({ id: '471B', source: 'リャナンシー' }),
       regexCn: Regexes.startsUsing({ id: '471B', source: '凉南希' }),
+      regexKo: Regexes.startsUsing({ id: '471B', source: '랴난시' }),
       response: Responses.tankBuster(),
     },
     {
@@ -78,6 +83,7 @@
       regexFr: Regexes.startsUsing({ id: '471C', source: 'Leannan Sith', capture: false }),
       regexJa: Regexes.startsUsing({ id: '471C', source: 'リャナンシー', capture: false }),
       regexCn: Regexes.startsUsing({ id: '471C', source: '凉南希', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '471C', source: '랴난시', capture: false }),
       condition: function(data) {
         return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
       },
@@ -92,6 +98,7 @@
       regexFr: Regexes.ability({ id: '368', source: 'Bague De L\'Amoureux', capture: false }),
       regexJa: Regexes.ability({ id: '368', source: 'ラヴァーズリング', capture: false }),
       regexCn: Regexes.ability({ id: '368', source: '恋人之戒', capture: false }),
+      regexKo: Regexes.ability({ id: '368', source: '연인의 반지', capture: false }),
       suppressSeconds: 60,
       response: Responses.killExtraAdd(),
     },
@@ -102,11 +109,13 @@
       regexFr: Regexes.startsUsing({ id: '471E', source: 'Leannan Sith', capture: false }),
       regexJa: Regexes.startsUsing({ id: '471E', source: 'リャナンシー', capture: false }),
       regexCn: Regexes.startsUsing({ id: '471E', source: '凉南希', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '471E', source: '랴난시', capture: false }),
       infoText: {
         en: 'put seeds on dirt',
         de: 'Samen auf den nicht bewachsenen Boden legen',
         fr: 'Placez les graines sur la terre',
         ko: '씨앗 자라지 못하게 하기',
+        cn: '种子搬离AOE',
       },
     },
     {
@@ -114,7 +123,9 @@
       regex: Regexes.startsUsing({ id: '4931', source: 'Ser Hamonth' }),
       regexDe: Regexes.startsUsing({ id: '4931', source: 'Sir Hamonth' }),
       regexFr: Regexes.startsUsing({ id: '4931', source: 'Sire Hamonth' }),
+      regexJa: Regexes.startsUsing({ id: '4931', source: '幻影騎士ハモンス' }),
       regexCn: Regexes.startsUsing({ id: '4931', source: '幻影骑士哈蒙斯' }),
+      regexKo: Regexes.startsUsing({ id: '4931', source: '환영기사 하몬스' }),
       condition: function(data) {
         return data.CanStun();
       },
@@ -127,6 +138,7 @@
       regexFr: Regexes.startsUsing({ id: '4764', source: 'Lugus' }),
       regexJa: Regexes.startsUsing({ id: '4764', source: 'ルゴス' }),
       regexCn: Regexes.startsUsing({ id: '4764', source: '卢格斯' }),
+      regexKo: Regexes.startsUsing({ id: '4764', source: '루구스' }),
       response: Responses.tankBuster(),
     },
     {
@@ -136,6 +148,7 @@
       regexFr: Regexes.startsUsing({ id: '4765', source: 'Lugus', capture: false }),
       regexJa: Regexes.startsUsing({ id: '4765', source: 'ルゴス', capture: false }),
       regexCn: Regexes.startsUsing({ id: '4765', source: '卢格斯', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '4765', source: '루구스', capture: false }),
       condition: function(data) {
         return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
       },
@@ -161,6 +174,7 @@
         de: 'Den Kreuzen ausweichen',
         fr: 'Evitez les croix',
         ko: '십자 장판 피하기',
+        cn: '躲避交叉',
       },
     },
     {
@@ -183,6 +197,7 @@
         de: 'Einrichtung berühren',
         fr: 'Touchez un élément de décor',
         ko: '가구에 불 옮기기',
+        cn: '传火家具',
       },
     },
     {
@@ -192,6 +207,7 @@
       regexFr: Regexes.startsUsing({ id: '4763', source: 'Lugus', capture: false }),
       regexJa: Regexes.startsUsing({ id: '4763', source: 'ルゴス', capture: false }),
       regexCn: Regexes.startsUsing({ id: '4763', source: '卢格斯', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '4763', source: '루구스', capture: false }),
       response: Responses.goLeft('info'),
     },
     {
@@ -201,6 +217,7 @@
       regexFr: Regexes.startsUsing({ id: '4762', source: 'Lugus', capture: false }),
       regexJa: Regexes.startsUsing({ id: '4762', source: 'ルゴス', capture: false }),
       regexCn: Regexes.startsUsing({ id: '4762', source: '卢格斯', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '4762', source: '루구스', capture: false }),
       response: Responses.goRight('info'),
     },
     {
@@ -219,6 +236,7 @@
             de: 'Verbindung weg von der Einrichtung zeigen',
             fr: 'Placez le liens loin des décors',
             ko: '징: 장판이 가구에 닿지 않게 하기',
+            cn: '连线不要打到家具',
           };
         }
         return {
@@ -226,6 +244,8 @@
           de: 'Verbindung auf DIR',
           fr: 'Lien sur vous',
           ko: '징 대상자',
+          ja: '線ついた',
+          cn: '连线点名',
         };
       },
     },
@@ -263,7 +283,6 @@
         'Otherworldly Heat': 'Sengendes Seelenbrennen',
         'Plummet': 'Ausloten',
         'Scorching Left/Right': 'Linker/Rechter Höllenhieb',
-        'Scorching Right': 'Rechter Höllenhieb',
         'Shadowbolt': 'Schattenramme',
         'Storm Of Color': 'Frühlingssturm',
         'Tribulation': 'Schwermütiges Zaudern',
@@ -300,8 +319,7 @@
         'Ode To Lost Love': 'Rhapsodie de l\'amour fou',
         'Otherworldly Heat': 'Croix de feu',
         'Plummet': 'Piqué',
-        'Scorching Left/Right': 'Scrutement Gauche/Droite', // FIXME
-        'Scorching Right': 'Scrutement Gauche',
+        'Scorching Left/Right': 'Scrutement Gauche/Droite',
         'Shadowbolt': 'Éclair ombreux',
         'Storm Of Color': 'Orage de printemps',
         'Tribulation': 'Tribulation',
@@ -309,7 +327,6 @@
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
         'Enslaved Love': 'エンスレイブド・ラヴ',
         'Leannan Sith': 'リャナンシー',
@@ -336,11 +353,85 @@
         'Ode To Lost Love': '狂愛の歌声',
         'Otherworldly Heat': '鬼炎斬',
         'Plummet': 'プラメット',
-        'Scorching Left/Right': 'Scorching Left/Right', // FIXME
-        'Scorching Right': '右辺炎獄斬',
+        'Scorching Left/Right': '左/右辺炎獄斬',
         'Shadowbolt': 'シャドウボルト',
         'Storm Of Color': '春嵐',
         'Tribulation': 'トリビュレーション',
+      },
+    },
+    {
+      'locale': 'cn',
+      'replaceSync': {
+        'Enslaved Love': '被奴役的爱',
+        'Leannan Sith': '凉南希',
+        'Lugus': '卢格斯',
+        'Seeker of Solitude': '宫殿的隐者',
+        'The Chamber of Celestial Song': '演奏之间',
+        'The Font of Quintessence': '春水涌泉',
+        'The Martial Court': '兵棋之间',
+      },
+      'replaceText': {
+        'Black Flame': '黑炎流',
+        'Captive Bolt': '破碎斩',
+        'Culling Blade': '冲击斩',
+        'Dark Pulse': '黑暗波动',
+        'Dark Shock': '黑暗冲击',
+        'Dark Well': '黑暗爆碎',
+        'Direct Seeding': '直接播种',
+        '(?<! )Far Wind': '(?<! )远风',
+        'Fire\'s Domain': '炎狱杀',
+        'Fire\'s Ire': '炎狱闪',
+        'Gardener\'s Hymn': '育芽之谣',
+        'Immortal Anathema': '不朽的诅咒',
+        'Ireful Wind': '强风',
+        'Mortal Flame': '必灭之炎',
+        'Ode To Fallen Petals': '花雨之歌',
+        'Ode To Far Winds': '晴岚之歌',
+        'Ode To Lost Love': '狂爱之歌',
+        'Otherworldly Heat': '鬼炎斩',
+        'Plummet': '掉落',
+        'Scorching Left/Right': '左/右炎狱斩',
+        'Shadowbolt': '暗影雷',
+        'Storm Of Color': '春风',
+        'Tribulation': '苦难',
+      },
+      '~effectNames': {},
+    },
+    {
+      'locale': 'ko',
+      'replaceSync': {
+        'Enslaved Love': '예속된 사랑',
+        'Leannan Sith': '랴난시',
+        'Lugus': '루구스',
+        'Seeker of Solitude': '궁전의 은자',
+        'The Chamber of Celestial Song': '연주실',
+        'The Font of Quintessence': '봄바람 샘',
+        'The Martial Court': '전술실',
+      },
+      'replaceText': {
+        'Black Flame': '흑염류',
+        'Captive Bolt': '파쇄참',
+        'Culling Blade': '충격참',
+        'Dark Pulse': '검은 파동',
+        'Dark Shock': '검은 충격',
+        'Dark Well': '검은 폭쇄',
+        'Direct Seeding': '곧뿌림',
+        '(?<! )Far Wind': '산바람',
+        'Fire\'s Domain': '염옥살',
+        'Fire\'s Ire': '염옥섬',
+        'Gardener\'s Hymn': '새싹을 위한 노래',
+        'Immortal Anathema': '불멸 혐오',
+        'Ireful Wind': '강풍',
+        'Mortal Flame': '필멸의 불꽃',
+        'Ode To Fallen Petals': '꽃바람의 노래',
+        'Ode To Far Winds': '산바람의 노래',
+        'Ode To Lost Love': '광적인 사랑 노래',
+        'Otherworldly Heat': '귀염참',
+        'Plummet': '낙하',
+        'Scorching Left/Right': '염옥 좌측/우측베기',
+        'Shadowbolt': '그림자 번개',
+        'Storm Of Color': '봄바람',
+        'Tribulation': '환난',
       },
     },
   ],

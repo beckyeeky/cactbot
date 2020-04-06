@@ -22,7 +22,8 @@
       infoText: {
         en: 'Silence Ram\'s Voice',
         de: 'Verstumme Stimme des Widders',
-        fr: 'Silence Voix du bélier',
+        fr: 'Interrompez Voix du bélier',
+        cn: '沉默寒冰咆哮',
       },
     },
     {
@@ -40,7 +41,8 @@
       infoText: {
         en: 'Silence Dragon\'s Voice',
         de: 'Verstumme Stimme des Drachens',
-        fr: 'Silence Voix du dragon',
+        fr: 'Interrompez Voix du dragon',
+        cn: '沉默雷电咆哮',
       },
     },
     {
@@ -59,7 +61,8 @@
       infoText: {
         en: 'Tail Slap in 10',
         de: 'Schweifklapser in 10',
-        fr: 'Gifle caudale dans 10',
+        fr: 'Gifle caudale dans 10s',
+        cn: '10秒内死刑',
       },
     },
     {
@@ -74,6 +77,7 @@
         en: 'Renaud Add',
         de: 'Renaud Add',
         fr: 'Add Renaud',
+        cn: '雷诺出现',
       },
     },
     {
@@ -93,7 +97,8 @@
       alertText: {
         en: 'Voice Soon',
         de: 'Stimme Der Verwünschung bald',
-        fr: 'Voix bientôt',
+        fr: 'Voix maudite bientôt',
+        cn: '诅咒之声即将判定',
       },
     },
     {
@@ -110,7 +115,8 @@
           return {
             en: 'Shriek on YOU',
             de: 'Schrei Der Verwünschung auf DIR',
-            fr: 'Cri sur VOUS',
+            fr: 'Cri maudit sur VOUS',
+            cn: '诅咒之嚎点名',
           };
         }
       },
@@ -119,7 +125,8 @@
           return {
             en: 'Shriek on ' + data.ShortName(matches.target),
             de: 'Schrei Der Verwünschung auf ' + data.ShortName(matches.target),
-            fr: 'Cri sur ' + data.ShortName(matches.target),
+            fr: 'Cri maudit sur ' + data.ShortName(matches.target),
+            cn: '诅咒之嚎点' + data.ShortName(matches.target),
           };
         }
       },
@@ -139,13 +146,15 @@
           return {
             en: 'Shriek Soon',
             de: 'Schrei Der Verwünschung bald',
-            fr: 'Cri bientôt',
+            fr: 'Cri maudit bientôt',
+            cn: '诅咒之嚎即将判定',
           };
         }
         return {
           en: 'Dodge Shriek',
           de: 'Schrei Der Verwünschung ausweichen',
-          fr: 'Esquivez le cri',
+          fr: 'Esquivez le cri maudit',
+          cn: '躲避诅咒之嚎',
         };
       },
     },
@@ -211,6 +220,7 @@
         en: 'Venomous Tail',
         de: 'Venomschweif',
         fr: 'Queue venimeuse',
+        cn: '猛毒之尾',
       },
     },
   ],

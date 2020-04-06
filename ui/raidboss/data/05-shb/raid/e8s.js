@@ -79,6 +79,61 @@
       response: Responses.aoe(),
     },
     {
+      id: 'E8S Biting Frost First Mirror',
+      regex: Regexes.startsUsing({ source: 'Shiva', id: '4D66', capture: false }),
+      regexDe: Regexes.startsUsing({ source: 'Shiva', id: '4D66', capture: false }),
+      regexFr: Regexes.startsUsing({ source: 'Shiva', id: '4D66', capture: false }),
+      regexJa: Regexes.startsUsing({ source: 'シヴァ', id: '4D66', capture: false }),
+      regexCn: Regexes.startsUsing({ source: '希瓦', id: '4D66', capture: false }),
+      regexKo: Regexes.startsUsing({ source: '시바', id: '4D66', capture: false }),
+      condition: function(data) {
+        // Have not seen any frost yet.
+        return !data.firstFrost;
+      },
+      // This cast is 5 seconds, so don't muddy the back/front call.
+      // But also don't wait too long to give directions?
+      delaySeconds: 2,
+      infoText: {
+        // Sorry, there are no mirror colors in the logs (YET),
+        // and so this is the best that can be done.
+        en: 'Go Back, Red Mirror Side',
+        de: 'Nach Hinten gehen, Seite des roten Spiegels',
+        ko: '빨간 거울 방향 구석으로 이동',
+      },
+    },
+    {
+      id: 'E8S Driving Frost First Mirror',
+      regex: Regexes.startsUsing({ source: 'Shiva', id: '4D67', capture: false }),
+      regexDe: Regexes.startsUsing({ source: 'Shiva', id: '4D67', capture: false }),
+      regexFr: Regexes.startsUsing({ source: 'Shiva', id: '4D67', capture: false }),
+      regexJa: Regexes.startsUsing({ source: 'シヴァ', id: '4D67', capture: false }),
+      regexCn: Regexes.startsUsing({ source: '希瓦', id: '4D67', capture: false }),
+      regexKo: Regexes.startsUsing({ source: '시바', id: '4D67', capture: false }),
+      condition: function(data) {
+        return !data.firstFrost;
+      },
+      // See comments on Biting Frost First Mirror above.
+      delaySeconds: 2,
+      infoText: {
+        en: 'Go Front, Green Mirror Side',
+        de: 'Nach Vorne gehen, Seite des grünen Spiegels',
+        ko: '초록 거울 방향 구석으로 이동',
+      },
+    },
+    {
+      id: 'E8S Reflected Frost 1',
+      regex: Regexes.ability({ source: 'Frozen Mirror', id: '4DB[78]', capture: false }),
+      regexDe: Regexes.ability({ source: 'Eisspiegel', id: '4DB[78]', capture: false }),
+      regexFr: Regexes.ability({ source: 'miroir de glace', id: '4DB[78]', capture: false }),
+      regexJa: Regexes.ability({ source: '氷面鏡', id: '4DB[78]', capture: false }),
+      suppressSeconds: 5,
+      infoText: {
+        en: 'Swap Sides',
+        de: 'Seiten wechseln',
+        ko: '반대로 이동',
+      },
+    },
+    {
       id: 'E8S Biting Frost',
       regex: Regexes.startsUsing({ source: 'Shiva', id: '4D66', capture: false }),
       regexDe: Regexes.startsUsing({ source: 'Shiva', id: '4D66', capture: false }),
@@ -101,7 +156,7 @@
       regexKo: Regexes.startsUsing({ source: '시바', id: '4D67', capture: false }),
       alertText: {
         en: 'Go Front / Sides',
-        de: 'Gehe nach Forne/ zu den Seiten',
+        de: 'Gehe nach Vorne/ zu den Seiten',
         fr: 'Devant / Côtés',
         ko: '앞 / 양옆으로',
         cn: '去前侧方',
@@ -126,7 +181,7 @@
           return {
             en: 'Biting Frost Next',
             de: 'Frosthieb als nächstes',
-            fr: 'Taillade de givre bientot',
+            fr: 'Taillade de givre bientôt',
             ko: '다음: Biting/スラッシュ',
             cn: '下次攻击前侧方',
           };
@@ -134,7 +189,7 @@
         return {
           en: 'Driving Frost Next',
           de: 'Froststoß als nächstes',
-          fr: 'Percée de givre bientot',
+          fr: 'Percée de givre bientôt',
           ko: '다음: Driving/スラスト',
           cn: '下次攻击后方',
         };
@@ -144,7 +199,7 @@
           return {
             en: 'Biting Frost Next',
             de: 'Frosthieb als nächstes',
-            fr: 'Taillade de givre bientot',
+            fr: 'Taillade de givre bientôt',
             ko: '다음: 바이팅 스라슈',
             cn: '下次攻击前侧方',
           };
@@ -152,7 +207,7 @@
         return {
           en: 'Driving Frost Next',
           de: 'Froststoß als nächstes',
-          fr: 'Percée de givre bientot',
+          fr: 'Percée de givre bientôt',
           ko: '다음: 드라이빙 스라스토',
           cn: '下次攻击后方',
         };
@@ -172,12 +227,18 @@
     {
       id: 'E8S Icicle Impact',
       regex: Regexes.abilityFull({ source: 'Shiva', id: '4DA0' }),
+      regexDe: Regexes.abilityFull({ source: 'Shiva', id: '4DA0' }),
+      regexFr: Regexes.abilityFull({ source: 'Shiva', id: '4DA0' }),
+      regexJa: Regexes.abilityFull({ source: 'シヴァ', id: '4DA0' }),
+      regexCn: Regexes.abilityFull({ source: '希瓦', id: '4DA0' }),
+      regexKo: Regexes.abilityFull({ source: '시바', id: '4DA0' }),
       suppressSeconds: 20,
       infoText: function(data, matches) {
         let x = parseFloat(matches.x);
         if (x >= 99 && x <= 101) {
           return {
             en: 'North / South',
+            de: 'Norden / Süden',
             fr: 'Nord / Sud',
             ko: '남 / 북',
             cn: '南北站位',
@@ -185,6 +246,7 @@
         }
         return {
           en: 'East / West',
+          de: 'Osten / Westen',
           fr: 'Est / Ouest',
           ko: '동 / 서',
           cn: '东西站位',
@@ -473,9 +535,9 @@
     {
       id: 'E8S Reflected Drachen Armor',
       regex: Regexes.ability({ source: 'Frozen Mirror', id: '4DC2', capture: false }),
-      regexDe: Regexes.ability({ source: 'Eisspiegel', id: '4DD2', capture: false }),
-      regexFr: Regexes.ability({ source: 'miroir de glace', id: '4DD2', capture: false }),
-      regexJa: Regexes.ability({ source: '氷面鏡', id: '4DD2', capture: false }),
+      regexDe: Regexes.ability({ source: 'Eisspiegel', id: '4DC2', capture: false }),
+      regexFr: Regexes.ability({ source: 'Miroir De Glace', id: '4DC2', capture: false }),
+      regexJa: Regexes.ability({ source: '氷面鏡', id: '4DC2', capture: false }),
       response: Responses.move('alert'),
     },
     {
@@ -509,7 +571,7 @@
       regexKo: Regexes.startsUsing({ source: '시바', id: '4D68', capture: false }),
       alertText: {
         en: 'Back Then Front',
-        de: 'Nach Hinten, danach nach Forne',
+        de: 'Nach Hinten, danach nach Vorne',
         fr: 'Derrière puis devant',
         ko: '뒤로 => 앞으로',
         cn: '后 => 前',
@@ -525,7 +587,7 @@
       regexKo: Regexes.startsUsing({ source: '시바', id: '4D69', capture: false }),
       alertText: {
         en: 'Front Then Back',
-        de: 'Nach Forne, danach nach Hinten',
+        de: 'Nach Vorne, danach nach Hinten',
         fr: 'Devant puis derrière',
         ko: '앞으로 => 뒤로',
         cn: '前 => 后',
@@ -583,7 +645,9 @@
       alertText: {
         en: 'Tank Stack in Tower',
         cn: '坦克塔内分摊',
+        de: 'Auf Tank im Turm sammeln',
         fr: 'Tank packé dans les tours',
+        ko: '탱커 집합',
       },
     },
     {
@@ -598,7 +662,9 @@
       alertText: {
         en: 'Tank Spread in Tower',
         cn: '坦克塔内分散',
+        de: 'Tank im Turm verteilen',
         fr: 'Tank écarté dans les tours',
+        ko: '탱커 산개',
       },
     },
   ],
@@ -606,19 +672,19 @@
     {
       'locale': 'de',
       'replaceSync': {
-        'luminous aether': 'Lichtäther',
+        'Luminous Aether': 'Lichtäther',
         'holy light': 'heilig(?:e|er|es|en) Licht',
         'great wyrm': 'Körper des heiligen Drachen',
-        'frozen mirror': 'Eisspiegel',
-        'electric aether': 'Blitzäther',
-        'earthen aether': 'Erdäther',
-        'aqueous aether': 'Wasseräther',
+        'Frozen Mirror': 'Eisspiegel',
+        'Electric Aether': 'Blitzäther',
+        'Earthen Aether': 'Erdäther',
+        'Aqueous Aether': 'Wasseräther',
         'Shiva': 'Shiva',
         'Mothercrystal': 'Urkristall',
       },
       'replaceText': {
-        'the Path of Light': 'Pfad des Lichts',
-        'the House of Light': 'Tsunami des Lichts',
+        'The Path Of Light': 'Pfad des Lichts',
+        'The House Of Light': 'Tsunami des Lichts',
         'Wyrm\'s Lament': 'Brüllen des heiligen Drachen',
         'Twin Stillness': 'Zwillingsschwerter der Stille',
         'Stoneskin': 'Steinhaut',
@@ -704,13 +770,13 @@
     {
       'locale': 'fr',
       'replaceSync': {
-        'luminous aether': 'éther de lumière',
+        'luminous Aether': 'éther de lumière',
         'holy light': 'lumière sacrée',
         'great wyrm': 'Dragon divin',
         'frozen mirror': 'miroir de glace',
-        'electric aether': 'éther de foudre',
-        'earthen aether': 'éther de terre',
-        'aqueous aether': 'éther d\'eau',
+        'electric Aether': 'éther de foudre',
+        'earthen Aether': 'éther de terre',
+        'aqueous Aether': 'éther d\'eau',
         'Shiva': 'Shiva',
         'Mothercrystal': 'Cristal-mère',
       },
@@ -804,13 +870,13 @@
     {
       'locale': 'ja',
       'replaceSync': {
-        'luminous aether': 'ライト・エーテル',
+        'luminous Aether': 'ライト・エーテル',
         'holy light': '聖なる光',
         'great wyrm': '聖竜',
         'frozen mirror': '氷面鏡',
-        'electric aether': 'ライトニング・エーテル',
-        'earthen aether': 'アース・エーテル',
-        'aqueous aether': 'ウォーター・エーテル',
+        'electric Aether': 'ライトニング・エーテル',
+        'earthen Aether': 'アース・エーテル',
+        'aqueous Aether': 'ウォーター・エーテル',
         'Shiva': 'シヴァ',
         'Mothercrystal': 'マザークリスタル',
       },

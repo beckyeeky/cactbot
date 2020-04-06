@@ -36,7 +36,8 @@
       infoText: {
         en: 'Death Sentence Soon',
         de: 'Todesurteil bald',
-        fr: 'Sentence de mort bientôt',
+        fr: 'Peine de mort bientôt',
+        cn: '死刑',
       },
     },
     {
@@ -51,6 +52,7 @@
         en: 'Liquid Hell',
         de: 'Höllenschmelze',
         fr: 'Enfer liquide',
+        cn: '液体地狱',
       },
     },
     {
@@ -77,6 +79,7 @@
             en: 'Fireball on YOU',
             de: 'Feuerball auf DIR',
             fr: 'Boule de feu sur VOUS',
+            cn: '火球点名',
           };
         }
       },
@@ -86,6 +89,7 @@
             en: 'Fireball on ' + data.ShortName(matches.target),
             de: 'Feuerball auf ' + data.ShortName(matches.target),
             fr: 'Boule de feu sur ' + data.ShortName(matches.target),
+            cn: '火球点' + data.ShortName(matches.target),
           };
         }
       },
@@ -103,7 +107,8 @@
           return {
             en: 'Conflag on YOU',
             de: 'Feuersturm auf DIR',
-            fr: 'Incendie sur VOUS',
+            fr: 'Tempête de feu sur VOUS',
+            cn: '火焰流点名',
           };
         }
       },
@@ -112,7 +117,8 @@
           return {
             en: 'Conflag on ' + data.ShortName(matches.target),
             de: 'Feuersturm auf ' + data.ShortName(matches.target),
-            fr: 'Incendie sur ' + data.ShortName(matches.target),
+            fr: 'Tempête de feu sur ' + data.ShortName(matches.target),
+            cn: '火焰流点' + data.ShortName(matches.target),
           };
         }
       },
@@ -139,6 +145,7 @@
         en: 'DIVEBOMB',
         de: 'STURZBOMBE',
         fr: 'BOMBE PLONGEANTE',
+        cn: '俯冲',
       },
     },
     {
@@ -155,6 +162,7 @@
         en: 'Divebombs Soon',
         de: 'Sturzbombe bald',
         fr: 'Bombe plongeante bientôt',
+        cn: '即将俯冲',
       },
     },
     {
@@ -172,12 +180,14 @@
             en: 'Knight on YOU',
             de: 'Furchtritter auf DIR',
             fr: 'Chevalier sur VOUS',
+            cn: '骑士点名',
           };
         }
         return {
           en: 'Knight on ' + data.ShortName(matches.target),
           de: 'Furchtritter auf ' + data.ShortName(matches.target),
           fr: 'Chevalier sur ' + data.ShortName(matches.target),
+          cn: '骑士点' + data.ShortName(matches.target),
         };
       },
     },
@@ -192,7 +202,8 @@
       alertText: {
         en: 'Twister!',
         de: 'Wirbelsturm!',
-        fr: 'Grande tornade !',
+        fr: 'Tornade !',
+        cn: '风风风！',
       },
     },
     {
@@ -219,6 +230,7 @@
             en: 'Hatch on YOU',
             de: 'Austritt auf DIR',
             fr: 'Eclosion sur VOUS',
+            cn: '黑球点名',
           };
         }
       },
@@ -228,6 +240,7 @@
             en: 'Hatch on ' + data.ShortName(matches.target),
             de: 'Austritt auf ' + data.ShortName(matches.target),
             fr: 'Eclosion sur ' + data.ShortName(matches.target),
+            cn: '黑球点' + data.ShortName(matches.target),
           };
         }
       },
@@ -272,7 +285,7 @@
         'Hygieia': 'Hygie',
         'Liquid Hell': 'Enfer liquide',
         'Plummet': 'Piqué',
-        'Twister': 'Grande tornade',
+        'Twister': 'Tornade',
         'Unwoven Will': 'Volonté dispersée',
       },
     },

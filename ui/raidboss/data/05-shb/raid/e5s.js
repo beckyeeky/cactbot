@@ -194,7 +194,7 @@
           return {
             en: 'Ready Spread',
             de: 'Bereitmachen zum Verteilen',
-            fr: 'Dispersion bientot',
+            fr: 'Dispersion bientôt',
             ko: '산개 준비',
             cn: '准备分散',
           };
@@ -210,17 +210,16 @@
     },
     {
       id: 'E5S Stepped Leader Spread',
-      regex: Regexes.startsUsing({ id: '4BC6', source: 'Ramuh', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '4BC6', source: 'Ramuh', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '4BC6', source: 'Ramuh', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '4BC6', source: 'ラムウ', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '4BC6', source: '라무', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '4BC6', source: '拉姆', capture: false }),
+      regex: Regexes.ability({ id: '4BC6', source: 'Ramuh', capture: false }),
+      regexDe: Regexes.ability({ id: '4BC6', source: 'Ramuh', capture: false }),
+      regexFr: Regexes.ability({ id: '4BC6', source: 'Ramuh', capture: false }),
+      regexJa: Regexes.ability({ id: '4BC6', source: 'ラムウ', capture: false }),
+      regexKo: Regexes.ability({ id: '4BC6', source: '라무', capture: false }),
+      regexCn: Regexes.ability({ id: '4BC6', source: '拉姆', capture: false }),
       condition: function(data) {
         return !data.furysBoltActive;
       },
-      delaySeconds: 3.0,
-      response: Responses.spread('alarm'),
+      response: Responses.move('alarm'),
     },
     {
       id: 'E5S Stepped Leader Cast',
@@ -308,7 +307,7 @@
     {
       'locale': 'de',
       'replaceSync': {
-        'stormcloud': 'Cumulonimbus-Wolke',
+        'Stormcloud': 'Cumulonimbus-Wolke',
         'Ramuh': 'Ramuh',
         'Raiden': 'Raiden',
         'Will Of Ixion': 'Ixion-Spiegelung',

@@ -21,7 +21,9 @@
       infoText: {
         en: 'Mangle',
         de: 'Biss und Schweifhieb',
+        fr: 'Broyage',
         ko: '으깨기',
+        cn: '去侧面',
       },
     },
     {
@@ -35,7 +37,9 @@
       alertText: {
         en: 'Rush',
         de: 'Stürmen',
+        fr: 'Ruée',
         ko: '돌진',
+        cn: '龙车',
       },
     },
     {
@@ -49,7 +53,9 @@
       alarmText: {
         en: 'Flaming Recoil',
         de: 'Flammenschlag vorne',
+        fr: 'Bond enflammé',
         ko: '반동 화염',
+        cn: '去背面',
       },
     },
     {
@@ -61,7 +67,9 @@
       infoText: {
         en: 'Fire Breath on YOU',
         de: 'Feueratem auf DIR',
+        fr: 'Souffle enflammé sur Vous',
         ko: '화염 숨결 대상자',
+        cn: '火点名',
       },
     },
     {

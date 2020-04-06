@@ -21,6 +21,8 @@
       alertText: {
         en: 'LOS Thrust',
         de: 'LOS Gravitationsschlag',
+        fr: 'LOS Percée gravitationelle',
+        cn: '死刑',
       },
     },
     {
@@ -37,6 +39,8 @@
       alarmText: {
         en: 'LOS Pox',
         de: 'LOS Pocken',
+        fr: 'LOS Vérole',
+        cn: '血量上限降低',
       },
     },
     {
@@ -51,6 +55,8 @@
       infoText: {
         en: 'Magic on Soldier, Physical on Knights',
         de: 'Magier auf Soldat, Physische auf Ritter',
+        fr: 'Magique sur Soldat, Physique sur Chevalier',
+        cn: '法系打士兵，物理打骑士',
       },
     },
   ],

@@ -34,6 +34,15 @@
           'Eden\'s Schlaffest',
           'tschüss Henochisch',
         ],
+        fr: [
+          'Brb',
+          ':zzz:',
+          'LA HEE',
+          'Courte sieste',
+          'brb faire du café',
+          'Eden\'s Dormez bien',
+          'Rip énochien',
+        ],
         cn: [
           '马上回来',
           '困了睡会儿',
@@ -193,7 +202,7 @@
           en: 'In, Stack Behind',
           de: 'Rein, hinten stacken',
           ja: '背面集合',
-          fr: 'Intérieur, pack derrière',
+          fr: 'Intérieur, packez derrière',
           cn: '背面集合',
           ko: '보스 가까이, 뒤에서 쉐어',
         };
@@ -428,7 +437,7 @@
       regexFr: Regexes.startsUsing({ id: '3D8D', source: 'Gardien Du Jardin' }),
       regexJa: Regexes.startsUsing({ id: '3D8D', source: 'エデン・ガーデナー' }),
       regexCn: Regexes.startsUsing({ id: '3D8D', source: '伊甸守护者' }),
-      regexKo: Regexes.startsUsing({ id: '3D8D', source: '에덴의 수호자' }),
+      regexKo: Regexes.startsUsing({ id: '3D8D', source: '에덴 정원사' }),
       condition: function(data) {
         return data.CanSilence();
       },

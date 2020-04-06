@@ -53,7 +53,8 @@
       },
       alertText: {
         en: 'Go Front / Sides',
-        de: 'Gehe nach Forne/ zu den Seiten',
+        de: 'Gehe nach Vorne/ zu den Seiten',
+        fr: 'Allez devant / sur les côtés',
         ko: '앞 / 양옆으로',
       },
     },
@@ -93,6 +94,8 @@
       },
       alertText: {
         en: 'Get behind, then South',
+        de: 'Gehe nach Hinten, danach in den Süden',
+        fr: 'Passer derrière, puis au Sud',
         ko: '보스 뒤로 => 남쪽으로',
       },
     },
@@ -109,6 +112,8 @@
       },
       alertText: {
         en: 'Go Front / Sides, then North',
+        de: 'Gehe nach Vorne, danach in den Norden',
+        fr: 'Allez devant / sur les côtés, puis au Nord',
         ko: '앞/양옆으로 => 북쪽으로',
       },
     },
@@ -128,19 +133,21 @@
     {
       id: 'E8N Reflected Scythe Kick',
       regex: Regexes.startsUsing({ source: 'Frozen Mirror', id: '4E01', capture: false }),
-      regexDe: Regexes.startsUsing({ source: 'Eisspeigel', id: '4E01', capture: false }),
+      regexDe: Regexes.startsUsing({ source: 'Eisspiegel', id: '4E01', capture: false }),
       regexFr: Regexes.startsUsing({ source: 'miroir de glace', id: '4E01', capture: false }),
       regexJa: Regexes.startsUsing({ source: '氷面鏡', id: '4E01', capture: false }),
       suppressSeconds: 3,
       infoText: {
         en: 'Close to mirrors',
+        de: 'Nahe zu den Spiegeln',
+        fr: 'Près des mirroirs',
         ko: '거울 밑으로',
       },
     },
     {
       id: 'E8N Mirror Cleanup',
       regex: Regexes.startsUsing({ source: 'Frozen Mirror', id: ['4DFE', '4DFF', '4E00', '4E01'], capture: false }),
-      regexDe: Regexes.startsUsing({ source: 'Eisspeigel', id: ['4DFE', '4DFF', '4E00', '4E01'], capture: false }),
+      regexDe: Regexes.startsUsing({ source: 'Eisspiegel', id: ['4DFE', '4DFF', '4E00', '4E01'], capture: false }),
       regexFr: Regexes.startsUsing({ source: 'miroir de glace', id: ['4DFE', '4DFF', '4E00', '4E01'], capture: false }),
       regexJa: Regexes.startsUsing({ source: '氷面鏡', id: ['4DFE', '4DFF', '4E00', '4E01'], capture: false }),
       // Maybe not necessary to delay here, but just to be safe.
@@ -178,6 +185,7 @@
       infoText: {
         en: 'Flare on YOU',
         de: 'Flare auf DIR',
+        fr: 'Brasier sur VOUS',
         ko: '플레어 대상자',
       },
     },
@@ -192,7 +200,9 @@
       regex: Regexes.headMarker({ id: '00C5' }),
       condition: Conditions.targetIsYou(),
       alertText: {
-        en: '3x puddles on you',
+        en: '3x puddles on YOU',
+        de: '3x Fläche auf DIR',
+        fr: '3x Zones au sol sur vous',
         ko: '따라오는 장판 피하기',
       },
     },
@@ -233,11 +243,15 @@
         if (data.rampant[data.me]) {
           return {
             en: 'Cone on YOU -- avoid towers',
+            de: 'Kegel AoE auf DIR -- Turm vermeiden',
+            fr: 'Cône sur Vous -- évitez les tours',
             ko: '부채꼴 대상자 - 장판 피하기',
           };
         }
         return {
           en: 'Stand in a tower',
+          de: 'Im Turm stehen',
+          fr: 'Se tenir dans une tour',
           ko: '장판 들어가기',
         };
       },
@@ -274,7 +288,7 @@
       regexKo: Regexes.startsUsing({ source: '시바', id: '4DDD', capture: false }),
       alertText: {
         en: 'Back Then Front',
-        de: 'Nach Hinten, danach nach Forne',
+        de: 'Nach Hinten, danach nach Vorne',
         fr: 'Derrière puis devant',
         ko: '뒤로 => 앞으로',
       },
@@ -289,7 +303,7 @@
       regexKo: Regexes.startsUsing({ source: '시바', id: '4DDE', capture: false }),
       alertText: {
         en: 'Front Then Back',
-        de: 'Nach Forne, danach nach Hinten',
+        de: 'Nach Vorne, danach nach Hinten',
         fr: 'Devant puis derrière',
         ko: '앞으로 => 뒤로',
       },
@@ -319,11 +333,11 @@
     {
       'locale': 'de',
       'replaceSync': {
-        'luminous aether': 'Lichtäther',
-        'holy light': 'heilig[a] Licht',
-        'frozen mirror': 'Eisspiegel',
-        'electric aether': 'Blitzäther',
-        'earthen aether': 'Erdäther',
+        'Luminous Aether': 'Lichtäther',
+        'holy light': 'heiliges Licht',
+        'Frozen Mirror': 'Eisspiegel',
+        'Electric Aether': 'Blitzäther',
+        'Earthen Aether': 'Erdäther',
         'aqueous aether': 'Wasseräther',
         'Shiva': 'Shiva',
         'Mothercrystal': 'Urkristall',
@@ -359,13 +373,11 @@
         'Biting Frost': 'Frosthieb',
         'Axe Kick': 'Axttritt',
         'Absolute Zero': 'Absoluter Nullpunkt',
-
-        // FIXME
-        'Twin Silence/Stillness': 'Twin Silence/Stillness',
-        'Spiteful/Embittered Dance': 'Spiteful/Embittered Dance',
-        'Reflected Kick/Frost': 'Reflected Kick/Frost',
-        'Reflected Frost': 'Reflected Frost',
-        'Kick/Frost': 'Kick/Frost',
+        'Twin Silence/Stillness': 'Zwillingsschwerter Der Ruhe/Stille',
+        'Spiteful/Embittered Dance': 'Kalter/Strenger Tanz',
+        'Reflected Kick/Frost': 'Spiegelung Tritt/Frost',
+        'Reflected Frost': 'Spiegelung Frost',
+        '(?<! )Kick/Frost': 'Tritt/Frost',
       },
       '~effectNames': {
         'Thin Ice': 'Glatteis',

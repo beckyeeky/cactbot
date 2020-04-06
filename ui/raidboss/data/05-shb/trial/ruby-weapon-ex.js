@@ -16,7 +16,10 @@
       beforeSeconds: 4,
       alertText: {
         en: 'Hide Behind Meteor',
+        de: 'Hinter dem Meteor verstecken',
+        fr: 'Allez derrière le météore',
         ko: '운석 뒤에 숨기',
+        cn: '躲在陨石后',
       },
     },
     {
@@ -25,7 +28,10 @@
       beforeSeconds: 0,
       infoText: {
         en: 'Away From Meteor',
+        de: 'Weg vom Meteor',
+        fr: 'Ecartez-vous du météore',
         ko: '운석에게서 멀어지기',
+        cn: '远离陨石',
       },
     },
   ],
@@ -63,6 +69,7 @@
         de: 'Weg von den Linien',
         fr: 'En dehors des sillons',
         ko: '선 피하기',
+        cn: '远离线',
       },
     },
     {
@@ -76,6 +83,7 @@
         de: 'Auf die Linien gehen',
         fr: 'Sur les sillons',
         ko: '선 위로 올라가기',
+        cn: '靠近线',
       },
     },
     {
@@ -143,6 +151,7 @@
         de: 'Finalangriff!',
         fr: 'Enrage !',
         ko: '전멸기!',
+        cn: '狂暴',
       },
     },
     {
@@ -162,6 +171,7 @@
             de: 'Greife Blau an (Osten)',
             fr: 'Attaquez le bleu (Est)',
             ko: '파란색 공격 (오른쪽)',
+            cn: '攻击蓝色(东)',
           };
         }
       },
@@ -183,6 +193,7 @@
             de: 'Greife Rot an (Westen)',
             fr: 'Attaquez le rouge (Ouest)',
             ko: '빨간색 공격 (왼쪽)',
+            cn: '攻击红色(西)',
           };
         }
       },
@@ -253,6 +264,7 @@
             de: 'Greife Rot an (Osten)',
             fr: 'Attaquez le rouge (Est)',
             ko: '빨간색 공격 (오른쪽)',
+            cn: '攻击红色(东)',
           };
         }
         return {
@@ -260,6 +272,7 @@
           de: 'Greife Blau an (Westen)',
           fr: 'Attaquez le bleu (Ouest)',
           ko: '파란색 공격 (왼쪽)',
+          cn: '攻击蓝色(西)',
         };
       },
     },
@@ -295,7 +308,10 @@
       regexJa: Regexes.startsUsing({ source: 'ルビーウェポン', id: '4AF0', capture: false }),
       infoText: {
         en: 'Away from Meteor!',
+        de: 'Weg vom Meteor!',
+        fr: 'Loin du météore !',
         ko: '운석에게서 멀어지기',
+        cn: '远离陨石',
       },
     },
     {
@@ -308,7 +324,10 @@
       delaySeconds: 11.5,
       alarmText: {
         en: 'Stand in Meteor Tankbuster',
+        de: 'Stehe im Meteor - Tankbuster',
+        fr: 'Tankbuster, Restez dans la comète',
         ko: '운석 막기',
+        cn: '接刀',
       },
     },
     {
@@ -321,7 +340,10 @@
       delaySeconds: 13,
       alertText: {
         en: 'Kill Meteor Adds',
+        de: 'Besiege die Meteor Adds',
+        fr: 'Tuez les comètes',
         ko: '운석 부수기',
+        cn: '击杀陨石',
       },
     },
     {
@@ -330,12 +352,20 @@
       condition: Conditions.targetIsYou(),
       infoText: {
         en: 'Avoid tanks with laser',
+        de: 'Tanks nicht mit dem Laser treffen',
+        fr: 'Évitez les tanks avec votre laser',
         ko: '레이저 대상자 - 탱커 피하기',
+        cn: '躲开坦克激光',
       },
     },
     {
       id: 'RubyEx Mark II Magitek Comet Directions',
       regex: Regexes.addedCombatantFull({ name: 'Comet' }),
+      regexDe: Regexes.addedCombatantFull({ name: 'Komet' }),
+      regexFr: Regexes.addedCombatantFull({ name: 'Comète' }),
+      regexJa: Regexes.addedCombatantFull({ name: 'コメット' }),
+      regexCn: Regexes.addedCombatantFull({ name: '彗星' }),
+      regexKo: Regexes.addedCombatantFull({ name: '혜성' }),
       infoText: function(data, matches) {
         // Possible positions:
         // 85.16,100.131 and 115.16,100.131
@@ -343,12 +373,18 @@
         if (matches.y < 90) {
           return {
             en: 'Comets N/S',
+            de: 'Meteor N/S',
+            fr: 'Comètes N/S',
             ko: '남/북 운석 낙하',
+            cn: '彗星 北/南',
           };
         } else if (matches.x < 90) {
           return {
             en: 'Comets E/W',
+            de: 'Meteor O/W',
+            fr: 'Comètes E/O',
             ko: '동/서 운석낙하',
+            cn: '彗星 东/西',
           };
         }
       },
@@ -371,6 +407,9 @@
       'missingTranslations': true,
       'replaceSync': {
         'The Ruby Weapon': 'Rubin-Waffe',
+        'Ruby Bit': 'Rubin-Drohne',
+        'Raven\'s Image': 'Naels Trugbild',
+        'Meteor': 'Meteor',
       },
       'replaceText': {
         'Undermine': 'Untergraben',
@@ -392,6 +431,32 @@
         'Helicoclaw': 'Spiralklauen',
         'Flexiclaw': 'Flex-Klauen',
         'Cut and Run': 'Klauensturm',
+        'Bradamante': 'Bradamante',
+        'Burst': 'Explosion',
+        'Chariot/Dynamo': 'Streitwagen/Dynamo',
+        'Dalamud Impact': 'Dalamud-Sturz',
+        'Landing': 'Einschlag',
+        'Change Of Heart': 'Sinneswandel',
+        'Cut And Run': 'Klauensturm',
+        'Greater Memory': 'Tiefe Erinnerung',
+        'High-Powered Homing Lasers': 'Hochenergie-Leitlaser',
+        'Magitek Meteor': 'Magitek-Meteor',
+        'Mark II Magitek Comet': 'Magitek-Komet Stufe II',
+        'Meteor Mine': 'Meteorsprengung',
+        'Meteor Project': 'Projekt Meteor',
+        'Meteor Stream': 'Meteorflug',
+        'Negative Affect': 'Affectus Negativa',
+        'Negative Aura': 'Aura Negativa',
+        'Negative Personae': 'Persona Negativa',
+        'Outrage': 'Empörung',
+        'Ruby Claw': 'Rubin-Klauen',
+        'Screech': 'Kreischen',
+        'Spike Of Flame': 'Flammenstachel',
+        'Tank Comets': 'Tank Meteore',
+        '--cutscene--': '--Zwischensequenz--',
+        '--middle--': '--Mitte--',
+        '--north--': '--Norden--',
+        '--teleport--': '--Teleportation--',
       },
       '~effectNames': {
         'Magic Vulnerability Up': 'Erhöhte Magie-Verwundbarkeit',
@@ -417,6 +482,7 @@
         'Retract': 'Rétraction',
         'Ravensflight': 'Vol du rapace',
         'Ravensclaw': 'Griffes du rapace',
+        'Outrage': 'Indignation',
         'Optimized Ultima': 'Ultima magitek',
         'Magitek Ray': 'Laser magitek',
         'Magitek Charge': 'Éthéroplasma magitek',

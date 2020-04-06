@@ -13,6 +13,8 @@
       beforeSeconds: 5,
       infoText: {
         en: 'Liftoff Soon',
+        fr: 'Décollage bientôt',
+        cn: '上升',
       },
     },
   ],
@@ -38,6 +40,8 @@
       condition: Conditions.targetIsYou(),
       alertText: {
         en: 'Hydrothermal on You',
+        fr: 'Missile hydrothermique sur Vous',
+        cn: '导弹点名',
       },
     },
     {
@@ -50,6 +54,8 @@
           return;
         return {
           en: 'Hydrothermal on ' + data.hydro.map((x) => data.ShortName(x)).join(', '),
+          fr: 'Missile hydrothermique sur ' + data.hydro.map((x) => data.ShortName(x)).join(', '),
+          cn: '导弹点' + data.hydro.map((x) => data.ShortName(x)).join(', '),
         };
       },
     },
@@ -63,10 +69,12 @@
     },
     {
       id: 'A1S Resin Bomb',
-      regex: Regexes.startsUsing({ id: 'E46', source: 'Oppressor' }),
+      regex: Regexes.startsUsing({ id: 'E47', source: 'Oppressor' }),
       condition: Conditions.targetIsYou(),
       infoText: {
         en: 'Bait Resin Bomb',
+        fr: 'Placez-vous pour Bombe de résine',
+        cn: '粘着弹',
       },
     },
     {
@@ -111,6 +119,35 @@
       delaySeconds: 10,
       run: function(data, matches) {
         delete data.hyper;
+      },
+    },
+  ],
+  timelineReplace: [
+    {
+      'locale': 'fr',
+      'replaceSync': {
+        'Faust': 'Faust',
+        'Oppressor 0.5': 'Oppresseur 0.5',
+        'Oppressor': 'Oppresseur',
+      },
+      'replaceText': {
+        '3000-Tonze Missile': 'Missile de 3000 tonz',
+        'Distress Beacon': 'Fanal de détresse',
+        'Emergency Deployment': 'Déploiement d\'urgence',
+        'Emergency Liftoff': 'Décollage d\'urgence',
+        'Gunnery Pod': 'Feu d\'artillerie',
+        'Hydrothermal Missile': 'Missile hydrothermique',
+        'Hypercompressed Plasma': 'Plasma hypercomprimé',
+        'Kaltstrahl': 'Kaltstrahl',
+        'Kaltstrahl Enrage': 'Kaltstrahl Enrage',
+        'Missile Impact': 'Frappe de missile',
+        'Photon Spaser': 'Spaser à photons',
+        'Pressure Increase': 'Hausse de pression',
+        'Resin Bomb': 'Bombe de résine',
+        'Royal Fount': 'Source royale',
+        'Self-Destruct Enrage': 'Auto-destruction Enrage',
+        'Sturm Doll Add': 'Add poupée sturm',
+        'Quick Landing': 'Atterissage rapide',
       },
     },
   ],
