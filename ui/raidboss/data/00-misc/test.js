@@ -51,9 +51,6 @@
     {
       id: 'Test Angry Dummy',
       regex: /(Angry Dummy)/,
-      regexDe: /(Wütender Dummy)/,
-      regexCn: /愤怒的木人/,
-      regexKo: /화난 나무인형/,
       beforeSeconds: 2,
       infoText: function(data, matches) {
         return {
@@ -73,9 +70,6 @@
     {
       id: 'Test Delayed Dummy',
       regex: /(Angry Dummy)/,
-      regexDe: /(Wütender Dummy)/,
-      regexCn: /愤怒的木人/,
-      regexKo: /화난 나무인형/,
       // Add in a huge delay to make it obvious the delay runs before promise.
       delaySeconds: 10,
       promise: function(data, matches) {
@@ -92,96 +86,19 @@
         let elapsed = data.delayedDummyTimestampAfter - data.delayedDummyTimestampBefore;
         return {
           en: 'Elapsed ms: ' + elapsed,
+          de: 'Abgelaufene ms: ' + elapsed,
         };
-      },
-    },
-  ],
-  timelineReplace: [
-    {
-      locale: 'de',
-      replaceText: {
-        'Final Sting': 'Schlussstich',
-        'Almagest': 'Almagest',
-        'Angry Dummy': 'Wütender Dummy',
-        'Long Castbar': 'Langer Zauberbalken',
-        'Dummy Stands Still': 'Dummy still stehen',
-        'Death': 'Tot',
-        'Super Tankbuster': 'Super Tankbuster',
-        'Pentacle Sac': 'Pentacle Sac',
-        'Engage': 'Start!',
-      },
-      replaceSync: {
-        'You bid farewell to the striking dummy': 'Du winkst der Trainingspuppe zum Abschied zu',
-        'You bow courteously to the striking dummy': 'Du verbeugst dich hochachtungsvoll vor der Trainingspuppe',
-        'test sync': 'test sync',
-      },
-    },
-    {
-      locale: 'ko',
-      replaceText: {
-        'Final Sting': '마지막 벌침',
-        'Almagest': '알마게스트',
-        'Angry Dummy': '화난 나무인형',
-        'Long Castbar': '긴 시전바',
-        'Dummy Stands Still': '나무인형이 아직 살아있다',
-        'Death': '데스',
-        'Super Tankbuster': '초강력 탱크버스터',
-        'Pentacle Sac': 'Pentacle Sac',
-        'Engage': '시작',
-      },
-      replaceSync: {
-        'You bid farewell to the striking dummy': '.*나무인형에게 작별 인사를 합니다',
-        'You bow courteously to the striking dummy': '.*나무인형에게 공손하게 인사합니다',
-        'test sync': '테스트 싱크',
-      },
-    },
-    {
-      locale: 'fr',
-      missingTranslations: true,
-      replaceText: {
-        'Final Sting': 'Dard final',
-        'Almagest': 'Almageste',
-        'Angry Dummy': 'Mannequin en colère',
-        'Long Castbar': 'Longue barre de lancement',
-        'Dummy Stands Still': 'Mannequin immobile',
-        'Death': 'Mort',
-      },
-      replaceSync: {
-        'You bid farewell to the striking dummy': 'Vous faites vos adieux au mannequin d\'entraînement',
-        'You bow courteously to the striking dummy': 'Vous vous inclinez devant le mannequin d\'entraînement',
-      },
-    },
-    {
-      locale: 'cn',
-      missingTranslations: true,
-      replaceText: {
-        'Final Sting': '终极针',
-        'Almagest': '至高无上',
-        'Angry Dummy': '愤怒的木人',
-        'Long Castbar': '长时间咏唱',
-        'Dummy Stands Still': '木人8动了',
-        'Super Tankbuster': '超级无敌转圈死刑',
-        'Death To': '嗝屁攻击：',
-        'Death': '嗝屁',
-        'Engage': '战斗开始',
-      },
-      replaceSync: {
-        'You bid farewell to the striking dummy': '.*向木人告别',
-        'You bow courteously to the striking dummy': '.*恭敬地对木人行礼',
       },
     },
   ],
   triggers: [
     {
       id: 'Test Poke',
-      // TODO: change this to Regexes
-      // e.g. "00:001d:\y{Name}:You poke the striking dummy."
-      // Are other emotes on the same id?
-      regex: /:You poke the striking dummy/,
-      regexDe: /:Du stupst die Trainingspuppe an/,
-      regexFr: /:Vous touchez légèrement le mannequin d'entraînement du doigt/,
-      regexCn: /:.*用手指戳向木人/,
-      regexKo: /:.*나무인형을 쿡쿡 찌릅니다/,
+      netRegex: NetRegexes.gameNameLog({ line: 'You poke the striking dummy.*?', capture: false }),
+      netRegexDe: NetRegexes.gameNameLog({ line: 'Du stupst die Trainingspuppe an.*?', capture: false }),
+      netRegexFr: NetRegexes.gameNameLog({ line: 'Vous touchez légèrement le mannequin d\'entraînement du doigt.*?', capture: false }),
+      netRegexCn: NetRegexes.gameNameLog({ line: '.*用手指戳向木人.*?', capture: false }),
+      netRegexKo: NetRegexes.gameNameLog({ line: '.*나무인형을 쿡쿡 찌릅니다.*?', capture: false }),
       preRun: function(data) {
         data.pokes = (data.pokes || 0) + 1;
       },
@@ -197,11 +114,11 @@
     },
     {
       id: 'Test Psych',
-      regex: /:You psych yourself up alongside the striking dummy/,
-      regexDe: /:Du willst wahren Kampfgeist in der Trainingspuppe entfachen/,
-      regexFr: /:Vous vous motivez devant le mannequin d'entraînement/,
-      regexCn: /:.*激励木人/,
-      regexKo: /:.*나무인형에게 힘을 불어넣습니다/,
+      regex: Regexes.gameNameLog({ line: 'You psych yourself up alongside the striking dummy.*.*?', capture: false }),
+      regexDe: Regexes.gameNameLog({ line: 'Du willst wahren Kampfgeist in der Trainingspuppe entfachen.*?', capture: false }),
+      regexFr: Regexes.gameNameLog({ line: 'Vous vous motivez devant le mannequin d\'entraînement.*?', capture: false }),
+      regexCn: Regexes.gameNameLog({ line: '.*激励木人.*?', capture: false }),
+      regexKo: Regexes.gameNameLog({ line: '.*나무인형에게 힘을 불어넣습니다.*?', capture: false }),
       alertText: {
         en: 'PSYCH!!!',
         de: 'AUF GEHTS!!!',
@@ -226,11 +143,11 @@
     },
     {
       id: 'Test Laugh',
-      regex: /:You burst out laughing at the striking dummy/,
-      regexDe: /:Du lachst herzlich mit der Trainingspuppe/,
-      regexFr: /:Vous vous esclaffez devant le mannequin d'entraînement/,
-      regexCn: /:.*看着木人高声大笑/,
-      regexKo: /:.*나무인형을 보고 폭소를 터뜨립니다/,
+      regex: Regexes.gameNameLog({ line: 'You burst out laughing at the striking dummy.*?', capture: false }),
+      regexDe: Regexes.gameNameLog({ line: 'Du lachst herzlich mit der Trainingspuppe.*?', capture: false }),
+      regexFr: Regexes.gameNameLog({ line: 'Vous vous esclaffez devant le mannequin d\'entraînement.*?', capture: false }),
+      regexCn: Regexes.gameNameLog({ line: '.*看着木人高声大笑.*?', capture: false }),
+      regexKo: Regexes.gameNameLog({ line: '.*나무인형을 보고 폭소를 터뜨립니다.*?', capture: false }),
       suppressSeconds: 5,
       alarmText: {
         en: 'hahahahaha',
@@ -256,11 +173,11 @@
     },
     {
       id: 'Test Clap',
-      regex: /:You clap for the striking dummy/,
-      regexDe: /:Du klatschst begeistert Beifall für die Trainingspuppe/,
-      regexFr: /:Vous applaudissez le mannequin d'entraînement/,
-      regexCn: /:.*向木人送上掌声/,
-      regexKo: /:.*나무인형에게 박수를 보냅니다/,
+      regex: Regexes.gameNameLog({ line: 'You clap for the striking dummy.*?', capture: false }),
+      regexDe: Regexes.gameNameLog({ line: 'Du klatschst begeistert Beifall für die Trainingspuppe.*?', capture: false }),
+      regexFr: Regexes.gameNameLog({ line: 'Vous applaudissez le mannequin d\'entraînement.*?', capture: false }),
+      regexCn: Regexes.gameNameLog({ line: '.*向木人送上掌声.*?', capture: false }),
+      regexKo: Regexes.gameNameLog({ line: '.*나무인형에게 박수를 보냅니다.*?', capture: false }),
       sound: '../../resources/sounds/WeakAuras/Applause.ogg',
       soundVolume: 0.3,
       tts: {
@@ -274,21 +191,23 @@
     {
       id: 'Test Lang',
       // In game: /echo cactbot lang
-      regex: Regexes.echo({ line: 'cactbot lang', capture: false }),
-      regexDe: Regexes.echo({ line: 'cactbot sprache', capture: false }),
-      regexKo: Regexes.echo({ line: 'cactbot 언어', capture: false }),
+      regex: Regexes.echo({ line: 'cactbot lang.*?', capture: false }),
+      regexDe: Regexes.echo({ line: 'cactbot sprache.*?', capture: false }),
+      regexKo: Regexes.echo({ line: 'cactbot 언어.*?', capture: false }),
       infoText: function(data) {
         return {
-          en: 'Language: ' + data.lang,
-          de: 'Sprache: ' + data.lang,
-          cn: '语言: ' + data.lang,
-          ko: '언어: ' + data.lang,
+          en: 'Language: ' + data.parserLang,
+          de: 'Sprache: ' + data.parserLang,
+          fr: 'Langage: ' + data.paserLang,
+          cn: '语言: ' + data.parserLang,
+          ko: '언어: ' + data.parserLang,
         };
       },
     },
     {
       id: 'Test Response',
-      regex: Regexes.echo({ line: 'cactbot test response', capture: false }),
+      regex: Regexes.echo({ line: 'cactbot test response.*?', capture: false }),
+      regexDe: Regexes.echo({ line: 'cactbot test antwort.*?', capture: false }),
       response: function(data) {
         return {
           alarmText: '1',
@@ -296,6 +215,87 @@
           infoText: '3',
           tts: '4',
         };
+      },
+    },
+  ],
+  timelineReplace: [
+    {
+      locale: 'de',
+      replaceSync: {
+        'You bid farewell to the striking dummy': 'Du winkst der Trainingspuppe zum Abschied zu',
+        'You bow courteously to the striking dummy': 'Du verbeugst dich hochachtungsvoll vor der Trainingspuppe',
+        'test sync': 'test sync',
+        'You burst out laughing at the striking dummy': 'Du lachst herzlich mit der Trainingspuppe',
+        'cactbot lang': 'cactbot sprache',
+        'cactbot test response': 'cactbot test antwort',
+        'You clap for the striking dummy': 'Du klatschst begeistert Beifall für die Trainingspuppe',
+        'You psych yourself up alongside the striking dummy.*': 'Du willst wahren Kampfgeist in der Trainingspuppe entfachen',
+        'You poke the striking dummy': 'Du stupst die Trainingspuppe an',
+      },
+      replaceText: {
+        'Final Sting': 'Schlussstich',
+        'Almagest': 'Almagest',
+        'Angry Dummy': 'Wütender Dummy',
+        'Long Castbar': 'Langer Zauberbalken',
+        'Dummy Stands Still': 'Dummy still stehen',
+        'Death': 'Tot',
+        'Super Tankbuster': 'Super Tankbuster',
+        'Pentacle Sac': 'Pentacle Sac',
+        'Engage': 'Start!',
+      },
+    },
+    {
+      locale: 'fr',
+      missingTranslations: true,
+      replaceSync: {
+        'You bid farewell to the striking dummy': 'Vous faites vos adieux au mannequin d\'entraînement',
+        'You bow courteously to the striking dummy': 'Vous vous inclinez devant le mannequin d\'entraînement',
+      },
+      replaceText: {
+        'Final Sting': 'Dard final',
+        'Almagest': 'Almageste',
+        'Angry Dummy': 'Mannequin en colère',
+        'Long Castbar': 'Longue barre de lancement',
+        'Dummy Stands Still': 'Mannequin immobile',
+        'Death': 'Mort',
+      },
+    },
+    {
+      locale: 'cn',
+      missingTranslations: true,
+      replaceSync: {
+        'You bid farewell to the striking dummy': '.*向木人告别',
+        'You bow courteously to the striking dummy': '.*恭敬地对木人行礼',
+      },
+      replaceText: {
+        'Final Sting': '终极针',
+        'Almagest': '至高无上',
+        'Angry Dummy': '愤怒的木人',
+        'Long Castbar': '长时间咏唱',
+        'Dummy Stands Still': '木人8动了',
+        'Super Tankbuster': '超级无敌转圈死刑',
+        'Death To': '嗝屁攻击：',
+        'Death': '嗝屁',
+        'Engage': '战斗开始',
+      },
+    },
+    {
+      locale: 'ko',
+      replaceSync: {
+        'You bid farewell to the striking dummy': '.*나무인형에게 작별 인사를 합니다',
+        'You bow courteously to the striking dummy': '.*나무인형에게 공손하게 인사합니다',
+        'test sync': '테스트 싱크',
+      },
+      replaceText: {
+        'Final Sting': '마지막 벌침',
+        'Almagest': '알마게스트',
+        'Angry Dummy': '화난 나무인형',
+        'Long Castbar': '긴 시전바',
+        'Dummy Stands Still': '나무인형이 아직 살아있다',
+        'Death': '데스',
+        'Super Tankbuster': '초강력 탱크버스터',
+        'Pentacle Sac': 'Pentacle Sac',
+        'Engage': '시작',
       },
     },
   ],

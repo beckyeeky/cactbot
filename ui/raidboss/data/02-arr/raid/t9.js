@@ -244,16 +244,17 @@
       regexCn: Regexes.addedCombatantFull({ name: ['火角', '冰爪', '雷翼'] }),
       regexKo: Regexes.addedCombatantFull({ name: ['화염뿔', '얼음발톱', '번개날개'] }),
       run: function(data, matches) {
-        let all_names = {
-          en: ['Firehorn', 'Iceclaw', 'Thunderwing'],
-          de: ['Feuerhorn', 'Eisklaue', 'Donnerschwinge'],
+        // Lowercase all of the names here for case insensitive matching.
+        let allNames = {
+          en: ['firehorn', 'iceclaw', 'thunderwing'],
+          de: ['feuerhorn', 'eisklaue', 'donnerschwinge'],
           fr: ['corne-de-feu', 'griffe-de-glace ', 'aile-de-foudre'],
           ja: ['ファイアホーン', 'アイスクロウ', 'サンダーウィング'],
           cn: ['火角', '冰爪', '雷翼'],
           ko: ['화염뿔', '얼음발톱', '번개날개'],
         };
-        let names = all_names[data.lang];
-        let idx = names.indexOf(matches.name);
+        let names = allNames[data.parserLang];
+        let idx = names.indexOf(matches.name.toLowerCase());
         if (idx == -1)
           return;
 
@@ -262,7 +263,7 @@
 
         // Most dragons are out on a circle of radius=~28.
         // Ignore spurious dragons like "Pos: (0.000919255,0.006120025,2.384186E-07)"
-        if (x*x + y*y < 20*20)
+        if (x * x + y * y < 20 * 20)
           return;
 
         // Positions are the 8 cardinals + numerical slop on a radius=28 circle.
@@ -286,13 +287,21 @@
         data.tetherCount = 0;
         data.naelDiveMarkerCount = 0;
 
+        // Missing dragons??
+        if (!data.dragons || data.dragons.length != 3) {
+          data.naelMarks = ['?', '?'];
+          data.safeZone = '?';
+          return;
+        }
+
         // T9 normal dragons are easy.
         // The first two are always split, so A is the first dragon + 1.
         // The last one is single, so B is the last dragon + 1.
+
         let dragons = data.dragons.sort();
-        let dir_names = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+        let dirNames = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
         data.naelMarks = [dragons[0], dragons[2]].map(function(i) {
-          return dir_names[(i + 1) % 8];
+          return dirNames[(i + 1) % 8];
         });
 
         // Safe zone is one to the left of the first dragon, unless
@@ -301,7 +310,7 @@
         let possibleSafe = (dragons[0] - 1 + 8) % 8;
         if ((dragons[2] + 2) % 8 == possibleSafe)
           possibleSafe = (dragons[1] + 1) % 8;
-        data.safeZone = dir_names[possibleSafe];
+        data.safeZone = dirNames[possibleSafe];
       },
     },
     {
@@ -341,6 +350,7 @@
         if (data.me == matches.target) {
           return {
             en: data.tetherDir + ' (on YOU)',
+            de: data.tetherDir + ' (auf DIR)',
             fr: data.tetherDir + ' (sur VOUS)',
             cn: data.tetherDir + ' (点名)',
           };
@@ -350,6 +360,7 @@
         if (data.me != matches.target) {
           return {
             en: data.tetherDir + ' (on ' + data.ShortName(matches.target) + ')',
+            de: data.tetherDir + ' (auf ' + data.ShortName(matches.target) + ')',
             fr: data.tetherDir + ' (sur ' + data.ShortName(matches.target) + ')',
             cn: data.tetherDir + ' (点 ' + data.ShortName(matches.target) + ')',
           };
@@ -425,17 +436,18 @@
       'replaceSync': {
         'Astral Debris': 'Lichtgestein',
         'Dalamud Fragment': 'Dalamud-Bruchstück',
+        'Dalamud Spawn': 'Dalamud-Golem',
         'Firehorn': 'Feuerhorn',
         'Iceclaw': 'Eisklaue',
         'Nael Geminus': 'Nael Geminus',
         'Nael deus Darnus': 'Nael deus Darnus',
         'Ragnarok': 'Ragnarök',
+        'The Ghost Of Meracydia': 'Geist von Meracydia',
         'Thunderwing': 'Donnerschwinge',
         'Umbral Debris': 'Schattengestein',
       },
       'replaceText': {
-        '\\(In\\)': '(Rein)',
-        '\\(Out\\)': '(Raus)',
+        '(?<! )Meteor(?! Stream)': 'Meteor',
         'Bahamut\'s Claw': 'Klauen Bahamuts',
         'Bahamut\'s Favor': 'Bahamuts Segen',
         'Binding Coil': 'Verschlungene Schatten',
@@ -450,7 +462,6 @@
         'Iron Chariot': 'Eiserner Streitwagen',
         'Lunar Dynamo': 'Lunarer Dynamo',
         'Megaflare': 'Megaflare',
-        '(?<! )Meteor(?! Stream)': 'Meteor',
         'Meteor Stream': 'Meteorflug',
         'Raven Dive': 'Bahamuts Schwinge',
         'Ravensbeak': 'Bradamante',
@@ -458,6 +469,15 @@
         'Stardust': 'Sternenstaub',
         'Super Nova': 'Supernova',
         'Thermionic Beam': 'Thermionischer Strahl',
+        '\\(East\\)': '(Osten)',
+        '\\(In\\)': '(Rein)',
+        '\\(North\\)': '(Norden)',
+        '\\(Out\\)': '(Raus)',
+        '\\(South\\)': '(Süden)',
+      },
+      '~effectNames': {
+        'Garrote Twist': 'Leicht fixierbar',
+        'Raven Blight': 'Pestschwinge',
       },
     },
     {
@@ -465,17 +485,18 @@
       'replaceSync': {
         'Astral Debris': 'Débris astral',
         'Dalamud Fragment': 'Débris de Dalamud',
+        'Dalamud Spawn': 'Golem de Dalamud',
         'Firehorn': 'Corne-de-feu',
         'Iceclaw': 'Griffe-de-glace',
         'Nael Geminus': 'Nael Geminus',
         'Nael deus Darnus': 'Nael deus Darnus',
         'Ragnarok': 'Ragnarok',
+        'The Ghost Of Meracydia': 'Fantôme Méracydien',
         'Thunderwing': 'Aile-de-foudre',
         'Umbral Debris': 'Débris ombral',
       },
       'replaceText': {
-        '\\(In\\)': '(Dedans)',
-        '\\(Out\\)': '(Dehors)',
+        '(?<! )Meteor(?! Stream)': 'Météore',
         'Bahamut\'s Claw': 'Griffe de Bahamut',
         'Bahamut\'s Favor': 'Auspice du dragon',
         'Binding Coil': 'Écheveau entravant',
@@ -483,7 +504,6 @@
         'Chain Lightning': 'Chaîne d\'éclairs',
         'Dalamud Dive': 'Chute de Dalamud',
         'Divebomb': 'Bombe plongeante',
-        'East': 'Est',
         'Fireball': 'Boule de feu',
         'Ghost Add': 'Add Fantôme',
         'Golem Meteors': 'Golem de Dalamud',
@@ -491,34 +511,42 @@
         'Iron Chariot': 'Char de fer',
         'Lunar Dynamo': 'Dynamo lunaire',
         'Megaflare': 'MégaBrasier',
-        '(?<! )Meteor(?! Stream)': 'Météore',
         'Meteor Stream': 'Rayon météore',
-        'North': 'Nord',
         'Raven Dive': 'Fonte du rapace',
         'Ravensbeak': 'Bec du rapace',
         'Ravensclaw': 'Serre du rapace',
-        'South': 'Sud',
         'Stardust': 'Poussière d\'étoile',
         'Super Nova': 'Supernova',
         'Thermionic Beam': 'Rayon thermoïonique',
+        '\\(East\\)': '(Est)',
+        '\\(In\\)': '(Intérieur)',
+        '\\(North\\)': '(Nord)',
+        '\\(Out\\)': '(Extérieur)',
+        '\\(South\\)': '(Sud)',
+      },
+      '~effectNames': {
+        'Garrote Twist': 'Sangle accélérée',
+        'Raven Blight': 'Bile de rapace',
       },
     },
     {
       'locale': 'ja',
+      'missingTranslations': true,
       'replaceSync': {
         'Astral Debris': 'アストラルデブリ',
         'Dalamud Fragment': 'ダラガブデブリ',
+        'Dalamud Spawn': 'ダラガブゴーレム',
         'Firehorn': 'ファイアホーン',
         'Iceclaw': 'アイスクロウ',
         'Nael Geminus': 'ネール・ジェミナス',
         'Nael deus Darnus': 'ネール・デウス・ダーナス',
         'Ragnarok': 'ラグナロク',
+        'The Ghost Of Meracydia': 'メラシディアン・ゴースト',
         'Thunderwing': 'サンダーウィング',
         'Umbral Debris': 'アンブラルデブリ',
       },
       'replaceText': {
-        '\\(In\\)': '(In)',
-        '\\(Out\\)': '(Out)',
+        '(?<! )Meteor(?! Stream)': 'メテオ',
         'Bahamut\'s Claw': 'バハムートクロウ',
         'Bahamut\'s Favor': '龍神の加護',
         'Binding Coil': 'バインディングコイル',
@@ -528,12 +556,10 @@
         'Divebomb': 'ダイブボム',
         'Fireball': 'ファイアボール',
         'Ghost': 'ゴースト',
-        'Golem Meteors': 'Golem Meteors', // FIXME
         'Heavensfall': 'ヘヴンスフォール',
         'Iron Chariot': 'アイアンチャリオット',
         'Lunar Dynamo': 'ルナダイナモ',
         'Megaflare': 'メガフレア',
-        '(?<! )Meteor(?! Stream)': 'メテオ',
         'Meteor Stream': 'メテオストリーム',
         'Raven Dive': 'レイヴンダイブ',
         'Ravensbeak': 'レイヴェンズビーク',
@@ -542,23 +568,29 @@
         'Super Nova': 'スーパーノヴァ',
         'Thermionic Beam': 'サーミオニックビーム',
       },
+      '~effectNames': {
+        'Garrote Twist': '拘束加速',
+        'Raven Blight': '凶鳥毒気',
+      },
     },
     {
       'locale': 'cn',
+      'missingTranslations': true,
       'replaceSync': {
         'Astral Debris': '星极岩屑',
         'Dalamud Fragment': '卫月岩屑',
+        'Dalamud Spawn': '卫月巨像',
         'Firehorn': '火角',
         'Iceclaw': '冰爪',
         'Nael Geminus': '奈尔双生子',
         'Nael deus Darnus': '奈尔·神·达纳斯',
         'Ragnarok': '诸神黄昏',
+        'The Ghost Of Meracydia': '美拉西迪亚幽龙',
         'Thunderwing': '雷翼',
         'Umbral Debris': '灵极岩屑',
       },
       'replaceText': {
-        '\\(In\\)': '(In)', // FIXME
-        '\\(Out\\)': '(Out)', // FIXME
+        '(?<! )Meteor(?! Stream)': '陨石',
         'Bahamut\'s Claw': '巴哈姆特之爪',
         'Bahamut\'s Favor': '龙神的加护',
         'Binding Coil': '拘束圈',
@@ -568,12 +600,10 @@
         'Divebomb': '爆破俯冲',
         'Fireball': '火球',
         'Ghost': '幽灵',
-        'Golem Meteors': 'Golem Meteors', // FIXME
         'Heavensfall': '惊天动地',
         'Iron Chariot': '钢铁战车',
         'Lunar Dynamo': '月流电圈',
         'Megaflare': '百万核爆',
-        '(?<! )Meteor(?! Stream)': '陨石',
         'Meteor Stream': '陨石流',
         'Raven Dive': '凶鸟冲',
         'Ravensbeak': '凶鸟尖喙',
@@ -582,23 +612,29 @@
         'Super Nova': '超新星',
         'Thermionic Beam': '热离子光束',
       },
+      '~effectNames': {
+        'Garrote Twist': '拘束加速',
+        'Raven Blight': '凶鸟毒气',
+      },
     },
     {
       'locale': 'ko',
+      'missingTranslations': true,
       'replaceSync': {
         'Astral Debris': '천상의 잔해',
         'Dalamud Fragment': '달라가브의 잔해',
+        'Dalamud Spawn': '달라가브 골렘',
         'Firehorn': '화염뿔',
         'Iceclaw': '얼음발톱',
         'Nael Geminus': '넬 게미누스',
         'Nael deus Darnus': '넬 데우스 다르누스',
         'Ragnarok': '라그나로크',
+        'The Ghost Of Meracydia': '메라시디아의 유령',
         'Thunderwing': '번개날개',
         'Umbral Debris': '저승의 잔해',
       },
       'replaceText': {
-        '\\(In\\)': '(In)', // FIXME
-        '\\(Out\\)': '(Out)', // FIXME
+        '(?<! )Meteor(?! Stream)': '메테오',
         'Bahamut\'s Claw': '바하무트의 발톱',
         'Bahamut\'s Favor': '용신의 가호',
         'Binding Coil': '구속의 고리',
@@ -608,12 +644,10 @@
         'Divebomb': '급강하 폭격',
         'Fireball': '화염구',
         'Ghost': '유령',
-        'Golem Meteors': 'Golem Meteors', // FIXME
         'Heavensfall': '천지 붕괴',
         'Iron Chariot': '강철 전차',
         'Lunar Dynamo': '달의 원동력',
         'Megaflare': '메가플레어',
-        '(?<! )Meteor(?! Stream)': '메테오',
         'Meteor Stream': '유성 폭풍',
         'Raven Dive': '흉조의 강하',
         'Ravensbeak': '흉조의 부리',
@@ -621,6 +655,10 @@
         'Stardust': '별조각',
         'Super Nova': '초신성',
         'Thermionic Beam': '열전자 광선',
+      },
+      '~effectNames': {
+        'Garrote Twist': '구속 가속',
+        'Raven Blight': '흉조의 독',
       },
     },
   ],

@@ -6,6 +6,7 @@ let localeReg = 'regex' + locale[0].toUpperCase() + locale[1];
 
 let fs = require('fs');
 let Regexes = require('../resources/regexes.js');
+let NetRegexes = require('../resources/netregexes.js');
 let Conditions = require('../resources/conditions.js');
 let responseModule = require('../resources/responses.js');
 let Responses = responseModule.responses;
@@ -88,7 +89,7 @@ function findMissingRegex() {
         let replace = Regexes.parse(regex);
         if (transRegex.match(replace))
           foundMatch = true;
-        transRegex = transRegex.replace(replace, set[regex]);
+        transRegex = transRegex.split(replace).join(set[regex]);
       }
     }
 

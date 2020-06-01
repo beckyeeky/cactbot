@@ -5,35 +5,40 @@ let kPrefixToCategory = {
     en: 'General Triggers',
     de: 'General Trigger',
     fr: 'Général',
-    cn: '通用',
+    ja: '汎用',
+    cn: '通用触发器',
     ko: '공용 트리거',
   },
   '02-arr': {
     en: 'A Realm Reborn (ARR 2.x)',
     de: 'A Realm Reborn (ARR 2.x)',
     fr: 'A Realm Reborn (ARR 2.x)',
-    cn: '重生之境（2.X）',
+    ja: '新生エオルゼア (2.x)',
+    cn: '重生之境 (2.x)',
     ko: '신생 에오르제아 (2.x)',
   },
   '03-hw': {
     en: 'Heavensward (HW 3.x)',
     de: 'Heavensward (HW 3.x)',
     fr: 'Heavensward (HW 3.x)',
-    cn: '苍穹之禁城（3.X）',
+    ja: '蒼天のイシュガルド (3.x)',
+    cn: '苍穹之禁城 (3.x)',
     ko: '창천의 이슈가르드 (3.x)',
   },
   '04-sb': {
     en: 'Stormblood (SB 4.x)',
     de: 'Stormblood (SB 4.x)',
     fr: 'Stormblood (SB 4.x)',
-    cn: '红莲之狂潮（4.X）',
+    ja: '紅蓮のリベレーター (4.x)',
+    cn: '红莲之狂潮 (4.x)',
     ko: '홍련의 해방자 (4.x)',
   },
   '05-shb': {
     en: 'Shadowbringers (ShB 5.x)',
     de: 'Shadowbringers (ShB 5.x)',
     fr: 'Shadowbringers (ShB 5.x)',
-    cn: '暗影之逆焰（5.X）',
+    ja: '漆黒のヴィランズ',
+    cn: '暗影之逆焰 (5.x)',
     ko: '칠흑의 반역자 (5.x)',
   },
 };
@@ -43,6 +48,7 @@ let kDirectoryToCategory = {
     en: 'Alliance Raid',
     de: 'Allianz-Raid',
     fr: 'Raid en Alliance',
+    ja: 'アライアンスレイド',
     cn: '团队任务',
     ko: '연합 레이드',
   },
@@ -50,13 +56,15 @@ let kDirectoryToCategory = {
     en: 'Dungeon',
     de: 'Dungeon',
     fr: 'Donjon',
+    ja: 'ダンジョン',
     cn: '迷宫挑战',
     ko: '던전',
   },
   eureka: {
     en: 'Eureka',
     de: 'Eureka',
-    fr: 'Eureka',
+    fr: 'Eurêka',
+    ja: '禁断の地エウレカ',
     cn: '禁地优雷卡',
     ko: '에우레카',
   },
@@ -64,27 +72,31 @@ let kDirectoryToCategory = {
     en: 'Raid',
     de: 'Raid',
     fr: 'Raid',
+    ja: 'レイド',
     cn: '大型任务',
     ko: '레이드',
   },
   pvp: {
     en: 'PVP',
     de: 'PvP',
-    fr: 'PvP',
-    cn: 'PVP',
+    fr: 'JcJ',
+    ja: 'PvP',
+    cn: 'PvP',
     ko: 'PvP',
   },
   trial: {
     en: 'Trial',
     de: 'Prüfung',
     fr: 'Défi',
+    ja: '討伐・討滅戦',
     cn: '讨伐歼灭战',
     ko: '토벌전',
   },
   ultimate: {
     en: 'Ultimate',
     de: 'Fatale Raids',
-    fr: 'Ultimate',
+    fr: 'Raid fatal',
+    ja: '絶シリーズ',
     cn: '绝境战',
     ko: '절 난이도',
   },
@@ -96,8 +108,9 @@ let kTriggerOptions = {
     label: {
       en: '✔ Defaults',
       de: '✔ Standards',
-      fr: '✔ Défaut',
-      cn: '✔ 默认',
+      fr: '✔ Défauts',
+      ja: '✔ 初期設定',
+      cn: '✔ 默认设置',
       ko: '✔ 기본',
     },
   },
@@ -105,8 +118,9 @@ let kTriggerOptions = {
     label: {
       en: '🆙🔊 Text and Sound',
       de: '🆙🔊 Text und Ton',
-      fr: '🆙🔊 Textes et sons',
-      cn: '🆙🔊 文字和语音',
+      fr: '🆙🔊 Texte et son',
+      ja: '🆙🔊 テキストと音声',
+      cn: '🆙🔊 文字显示与提示音',
       ko: '🆙🔊 텍스트와 소리',
     },
   },
@@ -114,8 +128,9 @@ let kTriggerOptions = {
     label: {
       en: '🆙💬 Text and TTS',
       de: '🆙💬 Text und TTS',
-      fr: '🆙💬 Textes et TTS',
-      cn: '🆙💬 文字和TTS',
+      fr: '🆙💬 Texte et TTS',
+      ja: '🆙💬 テキストとTTS',
+      cn: '🆙💬 文字显示与TTS',
       ko: '🆙💬 텍스트와 TTS',
     },
   },
@@ -124,6 +139,7 @@ let kTriggerOptions = {
       en: '💬 TTS Only',
       de: '💬 Nur TTS',
       fr: '💬 TTS Seulement',
+      ja: '💬 TTSのみ',
       cn: '💬 只使用TTS',
       ko: '💬 TTS만',
     },
@@ -133,7 +149,8 @@ let kTriggerOptions = {
       en: '🆙 Text Only',
       de: '🆙 Nur Text',
       fr: '🆙 Texte seulement',
-      cn: '🆙 只使用文字',
+      ja: '🆙 テキストのみ',
+      cn: '🆙 只使用文字显示',
       ko: '🆙 텍스트만',
     },
   },
@@ -142,6 +159,7 @@ let kTriggerOptions = {
       en: '❌ Disabled',
       de: '❌ Deaktiviert',
       fr: '❌ Désactivé',
+      ja: '❌ 無効',
       cn: '❌ 禁用',
       ko: '❌ 비활성화',
     },
@@ -154,8 +172,16 @@ let kDetailKeys = {
       en: 'regex',
       de: 'regex',
       fr: 'regex',
+      ja: '正規表現',
       cn: '正则表达式',
       ko: '정규식',
+    },
+    cls: 'regex-text',
+    debugOnly: true,
+  },
+  'triggerNetRegex': {
+    label: {
+      en: 'netregex',
     },
     cls: 'regex-text',
     debugOnly: true,
@@ -165,6 +191,7 @@ let kDetailKeys = {
       en: 'timeline',
       de: 'timeline',
       fr: 'timeline',
+      ja: 'タイムライン',
       cn: '时间轴',
       ko: '타임라인',
     },
@@ -176,6 +203,7 @@ let kDetailKeys = {
       en: 'condition',
       de: 'condition',
       fr: 'condition',
+      ja: '条件',
       cn: '条件',
       ko: '조건',
     },
@@ -187,6 +215,7 @@ let kDetailKeys = {
       en: 'preRun',
       de: 'preRun',
       fr: 'preRun',
+      ja: 'プレ実行',
       cn: '预运行',
       ko: '사전 실행',
     },
@@ -198,7 +227,8 @@ let kDetailKeys = {
       en: 'alarm',
       de: 'alarm',
       fr: 'alarme',
-      cn: '警报',
+      ja: '警報',
+      cn: '警报文本',
       ko: '경고',
     },
     cls: 'alarm-text',
@@ -208,7 +238,8 @@ let kDetailKeys = {
       en: 'alert',
       de: 'alert',
       fr: 'alerte',
-      cn: '警告',
+      ja: '警告',
+      cn: '警告文本',
       ko: '주의',
     },
     cls: 'alert-text',
@@ -218,7 +249,8 @@ let kDetailKeys = {
       en: 'info',
       de: 'info',
       fr: 'info',
-      cn: '信息',
+      ja: '情報',
+      cn: '信息文本',
       ko: '안내',
     },
     cls: 'info-text',
@@ -228,7 +260,8 @@ let kDetailKeys = {
       en: 'tts',
       de: 'tts',
       fr: 'tts',
-      cn: 'tts',
+      ja: 'TTS',
+      cn: 'TTS',
       ko: 'tts',
     },
     cls: 'tts-text',
@@ -238,7 +271,8 @@ let kDetailKeys = {
       en: 'sound',
       de: 'sound',
       fr: 'son',
-      cn: '声音',
+      ja: '音声',
+      cn: '提示音',
       ko: '소리',
     },
     cls: 'sound-text',
@@ -248,6 +282,7 @@ let kDetailKeys = {
       en: 'run',
       de: 'run',
       fr: 'run',
+      ja: '実行',
       cn: '运行',
       ko: '실행',
     },
@@ -314,6 +349,7 @@ class RaidbossConfigurator {
     // This is probably where using something like vue or react would be easier.
     // For the moment, folks can just reload, for real.
     this.alertsLang = this.base.getOption('raidboss', 'AlertsLanguage', this.base.lang);
+    this.timelineLang = this.base.getOption('raidboss', 'TimelineLanguage', this.base.lang);
   }
 
   buildUI(container, raidbossFiles) {
@@ -433,12 +469,14 @@ class RaidbossConfigurator {
 
   // This duplicates the raidboss function of the same name.
   valueOrFunction(f, data, matches) {
-    let result = (typeof(f) == 'function') ? f(data, matches) : f;
+    let result = (typeof f == 'function') ? f(data, matches) : f;
     if (result !== Object(result))
       return result;
     // TODO: somehow use the option for alert language here??
     if (result[this.alertsLang])
       return this.valueOrFunction(result[this.alertsLang]);
+    if (result[this.timelineLang])
+      return this.valueOrFunction(result[this.timelineLang]);
     // For partially localized results where this localization doesn't
     // exist, prefer English over nothing.
     return this.valueOrFunction(result['en']);
@@ -551,7 +589,7 @@ class RaidbossConfigurator {
         try {
           // Can't use ValueOrFunction here as r returns a non-localizable object.
           // FIXME: this hackily replicates some raidboss logic too.
-          let response = (typeof(r) == 'function') ? r(kFakeData[d], kFakeMatches) : r;
+          let response = (typeof r == 'function') ? r(kFakeData[d], kFakeMatches) : r;
           if (!response)
             continue;
           for (let i = 0; i < keys.length; ++i)
@@ -575,20 +613,31 @@ class RaidbossConfigurator {
     trig.output = output;
 
     let lang = this.base.lang;
-    let regexLocale = 'regex' + lang.charAt(0).toUpperCase() + lang.slice(1);
-    let baseRegex = Regexes.parse(trig[regexLocale] || trig.regex);
-    // FIXME: the current \y{Name} is extremely verbose due to some unicode characters.
-    // It would be nice to replace it with something much simpler like `.*?`, as Regexes does.
-    // However, this doesn't work for all regexes yet until they are converted over.
-    // Once everything using \y{Name} is using Regexes, then get rid of this hack by making
-    // \y{Name} be `.*?` itself (or something much simpler along those lines).
-    baseRegex = baseRegex.source.replace(/\\y\{Name}/g, '.*?');
-    let parsedRegex = Regexes.parse(baseRegex);
 
-    if (trig.isTimelineTrigger)
-      trig.timelineRegex = parsedRegex;
-    else
-      trig.triggerRegex = parsedRegex;
+    let getRegex = (baseField) => {
+      let shortLanguage = lang.charAt(0).toUpperCase() + lang.slice(1);
+      let langSpecificRegex = trig[baseField + shortLanguage] || trig[baseField];
+      if (!langSpecificRegex)
+        return;
+      let baseRegex = Regexes.parse(langSpecificRegex);
+      // FIXME: the current \y{Name} is extremely verbose due to some unicode characters.
+      // It would be nice to replace it with something much simpler like `.*?`, as Regexes does.
+      // However, this doesn't work for all regexes yet until they are converted over.
+      // Once everything using \y{Name} is using Regexes, then get rid of this hack by making
+      // \y{Name} be `.*?` itself (or something much simpler along those lines).
+
+      if (!baseRegex)
+        return;
+      baseRegex = baseRegex.source.replace(/\\y\{Name}/g, '.*?');
+      return Regexes.parse(baseRegex);
+    };
+
+    if (trig.isTimelineTrigger) {
+      trig.timelineRegex = getRegex('regex');
+    } else {
+      trig.triggerRegex = getRegex('regex');
+      trig.triggerNetRegex = getRegex('netRegex');
+    }
 
     return trig;
   }
@@ -753,6 +802,7 @@ UserConfig.registerOptions('raidboss', {
         en: 'Enable debug mode',
         de: 'Aktiviere Debugmodus',
         fr: 'Activer le mode debug',
+        ja: 'デバッグモードを有効にする',
         cn: '启用调试模式',
         ko: '디버그 모드 활성화',
       },
@@ -764,8 +814,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Default alert output',
         de: 'Standard Alert Ausgabe',
-        fr: 'Alertes par défaut',
-        cn: '默认警报输出方式',
+        fr: 'Alerte par défaut',
+        ja: '警告情報出力既定値',
+        cn: '默认警报提示信息输出方式',
         ko: '기본 알람 출력 방식',
       },
       type: 'select',
@@ -788,14 +839,21 @@ UserConfig.registerOptions('raidboss', {
           '🆙🔊 Texte et son': 'textAndSound',
           '🆙💬 Texte et TTS': 'ttsAndText',
           '💬 TTS seulement': 'ttsOnly',
-          '🆙 Text seulement': 'textOnly',
+          '🆙 Texte seulement': 'textOnly',
           '❌ Désactivé': 'disabled',
         },
+        ja: {
+          '🆙🔊 テキストと音声': 'textAndSound',
+          '🆙💬 テキストとTTS': 'ttsAndText',
+          '💬 TTSのみ': 'ttsOnly',
+          '🆙 テキストのみ': 'textOnly',
+          '❌ 無効': 'disabled',
+        },
         cn: {
-          '🆙🔊 文字和声音': 'textAndSound',
-          '🆙💬 文字和TTS': 'ttsAndText',
+          '🆙🔊 文字显示与提示音': 'textAndSound',
+          '🆙💬 文字显示与TTS': 'ttsAndText',
           '💬 只使用TTS': 'ttsOnly',
-          '🆙 只使用文字': 'textOnly',
+          '🆙 只使用文字显示': 'textOnly',
           '❌ 禁用': 'disabled',
         },
         ko: {
@@ -815,8 +873,75 @@ UserConfig.registerOptions('raidboss', {
         en: 'Alerts language',
         de: 'Alert Sprache',
         fr: 'Langue des alertes',
-        cn: '警报语言',
+        ja: '警告情報の言語',
+        cn: '警报提示文字的语言',
         ko: '알람 언어',
+      },
+      type: 'select',
+      options: {
+        en: {
+          'Use Display Language': 'default',
+          'English (en)': 'en',
+          'Chinese (cn)': 'cn',
+          'German (de)': 'de',
+          'French (fr)': 'fr',
+          'Japanese (ja)': 'ja',
+          'Korean (ko)': 'ko',
+        },
+        fr: {
+          'Utiliser la langue d\'affichage': 'default',
+          'Anglais (en)': 'en',
+          'Chinois (cn)': 'cn',
+          'Allemand (de)': 'de',
+          'Français (fr)': 'fr',
+          'Japonais (ja)': 'ja',
+          'Coréen (ko)': 'ko',
+        },
+        ja: {
+          '表示言語既定値': 'default',
+          '英語 (en)': 'en',
+          '中国語 (cn)': 'cn',
+          'ドイツ語 (de)': 'de',
+          'フランス語 (fr)': 'fr',
+          '日本語 (ja)': 'ja',
+          '韓国語 (ko)': 'ko',
+        },
+        cn: {
+          '使用显示语言': 'default',
+          '英语 (en)': 'en',
+          '汉语 (cn)': 'cn',
+          '德语 (de)': 'de',
+          '法语 (fr)': 'fr',
+          '日语 (ja)': 'ja',
+          '朝鲜语 (ko)': 'ko',
+        },
+        ko: {
+          '주 사용 언어 사용': 'default',
+          '영어 (en)': 'en',
+          '중국어 (cn)': 'cn',
+          '독일어 (de)': 'de',
+          '프랑스어 (fr)': 'fr',
+          '일본어 (ja)': 'ja',
+          '한국어 (ko)': 'ko',
+        },
+      },
+      default: 'default',
+      debug: true,
+      setterFunc: (options, value) => {
+        if (value === 'default')
+          return;
+        options['AlertsLanguage'] = value;
+      },
+    },
+    {
+      id: 'TimelineLanguage',
+      name: {
+        en: 'Timeline language',
+        de: 'Timeline Sprache',
+        fr: 'Langue de la timeline',
+        ja: 'タイムラインの言語',
+        cn: '时间轴文本的语言',
+        ko: '타임라인 언어',
       },
       type: 'select',
       options: {
@@ -847,6 +972,15 @@ UserConfig.registerOptions('raidboss', {
           'Japonais (ja)': 'ja',
           'Coréen (ko)': 'ko',
         },
+        ja: {
+          'FFXIV Pluginの言語設定': 'default',
+          '英語 (en)': 'en',
+          '中国語 (cn)': 'cn',
+          'ドイツ語 (de)': 'de',
+          'フランス語 (fr)': 'fr',
+          '日本語 (ja)': 'ja',
+          '韓国語 (ko)': 'ko',
+        },
         cn: {
           '使用最终幻想XIV解析插件设置的语言': 'default',
           '英语 (en)': 'en',
@@ -871,7 +1005,7 @@ UserConfig.registerOptions('raidboss', {
       setterFunc: (options, value) => {
         if (value === 'default')
           return;
-        options['AlertsLanguage'] = value;
+        options['TimelineLanguage'] = value;
       },
     },
     {
@@ -880,6 +1014,7 @@ UserConfig.registerOptions('raidboss', {
         en: 'Raidboss Skin',
         de: 'Raidboss Skin',
         fr: 'Raidboss Skin',
+        ja: 'Raidbossのスキン',
         cn: 'Raidboss皮肤',
         ko: 'Raidboss 스킨',
       },
@@ -895,6 +1030,10 @@ UserConfig.registerOptions('raidboss', {
         },
         fr: {
           'Défaut': 'default',
+          'lippe': 'lippe',
+        },
+        ja: {
+          '初期設定': 'default',
           'lippe': 'lippe',
         },
         cn: {
@@ -914,6 +1053,7 @@ UserConfig.registerOptions('raidboss', {
         en: 'Timeline enabled',
         de: 'Timeline aktiviert',
         fr: 'Timeline activée',
+        ja: 'タイムラインを有効にする',
         cn: '启用时间轴',
         ko: '타임라인 활성화',
       },
@@ -926,7 +1066,8 @@ UserConfig.registerOptions('raidboss', {
         en: 'Alerts enabled',
         de: 'Alerts aktiviert',
         fr: 'Alertes activées',
-        cn: '启用警报',
+        ja: '警告情報を有効にする',
+        cn: '启用提示文本显示',
         ko: '알람 활성화',
       },
       type: 'checkbox',
@@ -937,8 +1078,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Timer bar show window (seconds)',
         de: 'Timer-Bar Anzeigedauer (in Sekunden)',
-        fr: 'Affichage fenêtre ligne de temps (secondes)',
-        cn: '计时条显示时间（秒）',
+        fr: 'Fenêtre d\'affichage de la barre de temps (secondes)',
+        ja: 'タイムバーに時間表示 (秒)',
+        cn: '计时条显示时长 (秒)',
         ko: '타임라인을 표시할 기준 시간 (초 이하)',
       },
       type: 'float',
@@ -949,8 +1091,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Keep expired timer bar (seconds)',
         de: 'Behalte abgelaufene Timer-Bar (in Sekunden)',
-        fr: 'Garder les lignes de temps expirées (secondes)',
-        cn: '保留失效计时条时间（秒）',
+        fr: 'Garder la barre de temps expirée (secondes)',
+        ja: '終了したタイムバーが消えるまでの待ち時間 (秒)',
+        cn: '已失效的计时条的淡出时间 (秒)',
         ko: '만료된 타임라인이 사라지기까지의 시간 (초)',
       },
       type: 'float',
@@ -961,8 +1104,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Time to recolor timer as expiring soon (seconds)',
         de: 'Zeit bis ein bald auslaufender Timer umgefärbt wird (in Sekunden)',
-        fr: 'Durée de recolorisation du timer avant expiration (secondes)',
-        cn: '计时条即将失效重新着色时间（秒）',
+        fr: 'Recolorisation de la barre de temps avant expiration (secondes)',
+        ja: 'タイムバーが終了前に再度色付けの残り時間 (秒)',
+        cn: '倒计时小于该值时当前计时条变色 (秒)',
         ko: '타임라인의 색상을 바꿀 기준 시간 (초 이하)',
       },
       type: 'integer',
@@ -973,7 +1117,8 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Max number of timer bars',
         de: 'Max Anzahl an Timer-Bars',
-        fr: 'Nombre max de lignes de temps',
+        fr: 'Nombre max de barres de temps',
+        ja: 'タイムバーの最大数',
         cn: '计时条最大数量',
         ko: '표시할 타임라인의 최대 개수',
       },
@@ -986,7 +1131,8 @@ UserConfig.registerOptions('raidboss', {
         en: 'Alarm text display duration (seconds)',
         de: 'Alarm-Text Anzeigedauer (in Sekunden)',
         fr: 'Durée d\'affichage du texte d\'alarme (secondes)',
-        cn: '警报文字显示持续时间（秒）',
+        ja: '警報テキスト表示時間の長さ (秒)',
+        cn: '警报文字显示持续时间 (秒)',
         ko: '경고 텍스트를 표시할 시간 (초)',
       },
       type: 'float',
@@ -998,7 +1144,8 @@ UserConfig.registerOptions('raidboss', {
         en: 'Alert text display duration (seconds)',
         de: 'Alert-Text Anzeigedauer (in Sekunden)',
         fr: 'Durée d\'affichage du texte d\'alerte (secondes)',
-        cn: '警告文字显示持续时间（秒）',
+        ja: '警告テキスト表示時間の長さ (秒)',
+        cn: '警告文字显示持续时间 (秒)',
         ko: '주의 텍스트를 표시할 시간 (초)',
       },
       type: 'float',
@@ -1010,7 +1157,8 @@ UserConfig.registerOptions('raidboss', {
         en: 'Info text display duration (seconds)',
         de: 'Info-Text Anzeigedauer (in Sekunden)',
         fr: 'Durée d\'affichage du texte d\'information (secondes)',
-        cn: '信息文字显示持续时间（秒）',
+        ja: '情報テキスト表示時間の長さ (秒)',
+        cn: '信息文字显示持续时间 (秒)',
         ko: '안내 텍스트를 표시할 시간 (초)',
       },
       type: 'float',
@@ -1021,8 +1169,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Alarm sound volume (0-1)',
         de: 'Alarm Lautstärke (0-1)',
-        fr: 'Volume des alarmes (0-1)',
-        cn: '警报声音音量（0-1）',
+        fr: 'Volume de l\'alarme (0-1)',
+        ja: '警報音声の音量 (0-1)',
+        cn: '警报提示音的音量 (0-1)',
         ko: '경고 소리 크기 (0-1)',
       },
       type: 'float',
@@ -1033,8 +1182,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Alert sound volume (0-1)',
         de: 'Alert Lautstärke (0-1)',
-        fr: 'Volume des alertes (0-1)',
-        cn: '警告声音音量（0-1）',
+        fr: 'Volume de l\'alerte (0-1)',
+        ja: '警告音声の音量 (0-1)',
+        cn: '警告提示音的音量 (0-1)',
         ko: '주의 소리 크기 (0-1)',
       },
       type: 'float',
@@ -1045,8 +1195,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Info sound volume (0-1)',
         de: 'Info Lautstärke (0-1)',
-        fr: 'Volume des infos (0-1)',
-        cn: '信息声音音量（0-1）',
+        fr: 'Volume de l\'info (0-1)',
+        ja: '情報音声の音量 (0-1)',
+        cn: '信息提示音的音量 (0-1)',
         ko: '안내 소리 크기 (0-1)',
       },
       type: 'float',
@@ -1057,8 +1208,9 @@ UserConfig.registerOptions('raidboss', {
       name: {
         en: 'Long sound volume (0-1)',
         de: 'Langer Ton Lautstärke (0-1)',
-        fr: 'Volume des sons longs (0-1)',
-        cn: '长声音音量（0-1）',
+        fr: 'Volume du son long (0-1)',
+        ja: '長い音声の音量 (0-1)',
+        cn: '长提示音的音量 (0-1)',
         ko: '긴 소리 크기 (0-1)',
       },
       type: 'float',
@@ -1070,7 +1222,8 @@ UserConfig.registerOptions('raidboss', {
         en: 'Pull sound volume (0-1)',
         de: 'Pull Lautstärke (0-1)',
         fr: 'Volume du son de pull (0-1)',
-        cn: '开怪声音音量（0-1）',
+        ja: 'タゲ取る効果音の音量 (0-1)',
+        cn: '开怪提示音的音量 (0-1)',
         ko: '풀링 소리 크기 (0-1)',
       },
       type: 'float',
@@ -1082,8 +1235,9 @@ UserConfig.registerOptions('raidboss', {
         en: 'Use Browser for Text to Speech',
         de: 'Verwenden Sie den Browser für Text zu Sprache', // Machine translation
         fr: 'Utiliser le navigateur pour la synthèse vocale', // Machine Translation
-        ko: '텍스트 음성 변환을위한 브라우저 사용', // Machine translation
-        cn: '使用浏览器进行文字转语音', // Machine translation
+        ko: '웹브라우저를 이용해서 TTS 작동시키기',
+        ja: 'ブラウザでTTS',
+        cn: '忽略ACT的设置，使用Cactbot自带的Google TTS功能（需联网）',
       },
       type: 'checkbox',
       default: false,
@@ -1094,7 +1248,10 @@ UserConfig.registerOptions('raidboss', {
       // options if we end up having a lot?
       name: {
         en: 'Alex Ultimate: enable cactbot Wormhole strat',
+        de: 'Alex Ultimate: aktiviere cactbot Wormhole Strategie',
+        fr: 'Alex fatal : activer cactbot pour Wormhole strat',
         ko: '절 알렉: cactbot 웜홀 공략방식 활성화',
+        ja: '絶アレキサンダー討滅戦：cactbot「次元断絶のマーチ」ギミック',
         cn: '亚历山大绝境战：cactbot灵泉辅助功能',
       },
       type: 'checkbox',
@@ -1104,6 +1261,10 @@ UserConfig.registerOptions('raidboss', {
       id: 'cactbote8sUptimeKnockbackStrat',
       name: {
         en: 'e8s: enable cactbot Uptime Knockback strat',
+        de: 'e8s: aktiviere cactbot Uptime Knockback Strategie',
+        fr: 'e8s : activer cactbot pour Uptime Knockback strat',
+        ja: 'エデン零式共鳴編４層：cactbot「ヘヴンリーストライク (ノックバック)」ギミック',
+        cn: 'E8S: 启用cactbot的击退提示功能', // Temperory translation, may change when CN server get into 5.2 patch
       },
       type: 'checkbox',
       default: false,

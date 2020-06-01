@@ -44,7 +44,10 @@ namespace Cactbot {
     // Held while the |fast_update_timer_| is running.
     private FFXIVProcess ffxiv_;
     private WipeDetector wipe_detector_;
+    private FateWatcher fate_watcher_;
+
     private string language_ = null;
+    private string pc_locale_ = null;
     private List<FileSystemWatcher> watchers;
 
     public delegate void ForceReloadHandler(JSEvents.ForceReloadEvent e);
@@ -82,9 +85,17 @@ namespace Cactbot {
 
     public delegate void PartyWipeHandler(JSEvents.PartyWipeEvent e);
     public event PartyWipeHandler OnPartyWipe;
+
+    public delegate void FateEventHandler(JSEvents.FateEvent e);
+    public event FateEventHandler OnFateEvent;
+
     public void Wipe() {
       Advanced_Combat_Tracker.ActGlobals.oFormActMain.EndCombat(false);
       OnPartyWipe(new JSEvents.PartyWipeEvent());
+    }
+
+    public void DoFateEvent(JSEvents.FateEvent e) {
+      OnFateEvent(e);
     }
 
     public CactbotEventSource(RainbowMage.OverlayPlugin.ILogger logger)
@@ -102,6 +113,7 @@ namespace Cactbot {
         "onImportLogEvent",
         "onInCombatChangedEvent",
         "onZoneChangedEvent",
+        "onFateEvent",
         "onPlayerDied",
         "onPartyWipe",
         "onPlayerChangedEvent",
@@ -225,6 +237,7 @@ namespace Cactbot {
 
       FFXIVPlugin plugin_helper = new FFXIVPlugin(this);
       language_ = plugin_helper.GetLocaleString();
+      pc_locale_ = System.Globalization.CultureInfo.CurrentUICulture.Name;
 
       var versions = new VersionChecker(this);
       Version local = versions.GetCactbotVersion();
@@ -239,9 +252,15 @@ namespace Cactbot {
       LogInfo("FFXIV Plugin: {0} {1}", ffxiv.ToString(), versions.GetFFXIVPluginLocation());
       LogInfo("ACT: {0} {1}", act.ToString(), versions.GetACTLocation());
       if (language_ == null) {
-        LogInfo("Language: {0}", "(unknown)");
+        LogInfo("Parsing Plugin Language: {0}", "(unknown)");
       } else {
-        LogInfo("Language: {0}", language_);
+        LogInfo("Parsing Plugin Language: {0}", language_);
+      }
+      if (pc_locale_ == null){
+        LogInfo("System Locale: {0}", "(unknown)");
+      }
+      else{
+        LogInfo("System Locale: {0}", pc_locale_);
       }
 
       // Temporarily target cn if plugin is old v2.0.4.0
@@ -256,6 +275,7 @@ namespace Cactbot {
         LogInfo("Version: intl");
       }
       wipe_detector_ = new WipeDetector(this);
+      fate_watcher_ = new FateWatcher(this, language_);
 
       // Incoming events.
       Advanced_Combat_Tracker.ActGlobals.oFormActMain.OnLogLineRead += OnLogLineRead;
@@ -273,9 +293,11 @@ namespace Cactbot {
       OnInCombatChanged += (e) => DispatchToJS(e);
       OnPlayerDied += (e) => DispatchToJS(e);
       OnPartyWipe += (e) => DispatchToJS(e);
+      OnFateEvent += (e) => DispatchToJS(e);
 
       fast_update_timer_.Interval = kFastTimerMilli;
       fast_update_timer_.Start();
+      fate_watcher_.Start();
 
       string net_version_str = System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion;
       string[] net_version = net_version_str.Split('.');
@@ -287,6 +309,7 @@ namespace Cactbot {
 
     public override void Stop() {
       fast_update_timer_.Stop();
+      fate_watcher_.Stop();
       Advanced_Combat_Tracker.ActGlobals.oFormActMain.OnLogLineRead -= OnLogLineRead;
     }
 
@@ -406,6 +429,10 @@ namespace Cactbot {
       if (player != null) {
         bool send = false;
         if (!player.Equals(notify_state_.player)) {
+          // Clear the FATE dictionary if we switched characters
+          if (notify_state_.player != null && !player.name.Equals(notify_state_.player.name)) {
+            fate_watcher_.RemoveAndClearFates();
+          }
           notify_state_.player = player;
           send = true;
         }
@@ -648,6 +675,11 @@ namespace Cactbot {
       var result = new JObject();
       result["userLocation"] = config_dir;
       result["localUserFiles"] = user_files == null ? null : JObject.FromObject(user_files);
+
+      result["parserLanguage"] = language_;
+      result["systemLocale"] = pc_locale_;
+      result["displayLanguage"] = Config.DisplayLanguage;
+      // For backwards compatibility:
       result["language"] = language_;
 
       var response = new JObject();

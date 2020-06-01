@@ -4,6 +4,7 @@
   zoneRegex: {
     en: /Eureka Hydatos/,
     cn: /丰水之地/,
+    ko: /^금단의 땅 에우레카: 히다토스편$/,
   },
   timelineFile: 'eureka_hydatos.txt',
   resetWhenOutOfCombat: false,
@@ -11,45 +12,40 @@
     {
       id: 'BA Art Geas',
       regex: /Legendary Geas/,
-      regexDe: /Wirbelsturm/,
-      regexCn: /妖枪乱击/,
       beforeSeconds: 0,
       response: Responses.stopMoving(),
     },
     {
       id: 'BA Raiden Levinwhorl',
       regex: /Levinwhorl/,
-      regexDe: /Wirbelsturm/,
-      regexCn: /涡雷/,
       beforeSeconds: 10,
       alertText: {
         en: 'Shields and Mitigation',
         de: 'Schilde und Abschwächungen',
+        fr: 'Boucliers et mitigation',
         cn: '切盾减伤',
       },
     },
     {
       id: 'BA AV Eurekan Potion',
       regex: /Explosive Impulse/,
-      regexDe: /Explosiver Impuls/,
-      regexCn: /爆炸性冲击/,
       beforeSeconds: 10,
       suppressSeconds: 60,
       infoText: {
         en: 'Pop Eurekan Potions',
         de: 'Eureka-Heiltränke benutzen',
+        fr: 'Utilisez potion d\'Eurêka',
         cn: '磕优雷卡回复药',
       },
     },
     {
       id: 'BA Ozma Black Hole Warning',
       regex: /Black Hole/,
-      regexDe: /Schwarzes Loch/,
-      regexCn: /黑洞/,
       beforeSeconds: 12,
       infoText: {
         en: 'Black Hole Soon',
         de: 'Schwarzes Loch',
+        fr: 'Trou noir bientôt',
         cn: '黑洞警告',
       },
     },
@@ -57,41 +53,47 @@
   triggers: [
     {
       id: 'BA Falling Asleep',
-      regex: Regexes.gameLog({ line: '5 minutes have elapsed since your last activity.', capture: false }),
-      regexDe: Regexes.gameLog({ line: 'Seit deiner letzten Aktivität sind 5 Minuten vergangen.', capture: false }),
-      regexFr: Regexes.gameLog({ line: 'Votre personnage est inactif depuis 5 minutes', capture: false }),
-      regexCn: Regexes.gameLog({ line: '已经5分钟没有进行任何操作', capture: false }),
+      regex: Regexes.gameLog({ line: '5 minutes have elapsed since your last activity..*?', capture: false }),
+      regexDe: Regexes.gameLog({ line: 'Seit deiner letzten Aktivität sind 5 Minuten vergangen..*?', capture: false }),
+      regexFr: Regexes.gameLog({ line: 'Votre personnage est inactif depuis 5 minutes.*?', capture: false }),
+      regexCn: Regexes.gameLog({ line: '已经5分钟没有进行任何操作.*?', capture: false }),
+      regexKo: Regexes.gameLog({ line: '5분 동안 아무 조작을 하지 않았습니다..*?', capture: false }),
       alarmText: {
         en: 'WAKE UP',
         de: 'AUFWACHEN',
-        fr: 'REVEILLES TOI',
+        fr: 'RÉVEILLES-TOI',
         cn: '醒醒！动一动！！',
+        ko: '강제 퇴장 5분 전',
       },
     },
     {
       id: 'BA Saved By Rememberance',
-      regex: Regexes.gameLog({ line: 'The memories of heroes past live on again', capture: false }),
-      regexDe: Regexes.gameLog({ line: 'Das Vermächtnis vergangener Helden lebt von Neuem auf', capture: false }),
-      regexFr: Regexes.gameLog({ line: 'L\'égide des héros vaillants vous a ressuscitée', capture: false }),
-      regexJa: Regexes.gameLog({ line: '英傑の加護の効果が発揮され、蘇生された', capture: false }),
-      regexCn: Regexes.gameLog({ line: '发动了英杰的加护效果，重新苏醒了过来', capture: false }),
-      regexKo: Regexes.gameLog({ line: '영걸의 가호의 효과가 발휘되어 부활했습니다', capture: false }),
+      regex: Regexes.gameLog({ line: 'The memories of heroes past live on again.*?', capture: false }),
+      regexDe: Regexes.gameLog({ line: 'Das Vermächtnis vergangener Helden lebt von Neuem auf.*?', capture: false }),
+      regexFr: Regexes.gameLog({ line: 'L\'égide des héros vaillants vous a ressuscité.*?', capture: false }),
+      regexJa: Regexes.gameLog({ line: '英傑の加護の効果が発揮され、蘇生された.*?', capture: false }),
+      regexCn: Regexes.gameLog({ line: '发动了英杰的加护效果，重新苏醒了过来.*?', capture: false }),
+      regexKo: Regexes.gameLog({ line: '영걸의 가호의 효과가 발휘되어 부활했습니다.*?', capture: false }),
       sound: 'Long',
     },
     {
       id: 'BA Seal',
-      regex: Regexes.message({ line: '.*will be sealed off', capture: false }),
-      regexDe: Regexes.message({ line: '.*bis sich der Zugang', capture: false }),
-      regexCn: Regexes.message({ line: '距.*被封锁还有', capture: false }),
+      regex: Regexes.message({ line: '.*will be sealed off.*?', capture: false }),
+      regexDe: Regexes.message({ line: '.*bis sich der Zugang.*?', capture: false }),
+      regexFr: Regexes.message({ line: '.*Fermeture de.*?', capture: false }),
+      regexCn: Regexes.message({ line: '距.*被封锁还有.*?', capture: false }),
+      regexKo: Regexes.message({ line: '.*(?:이|가) 봉쇄됩니다.*?', capture: false }),
       run: function(data) {
         data.sealed = true;
       },
     },
     {
       id: 'BA Clear Data',
-      regex: Regexes.message({ line: '.*is no longer sealed', capture: false }),
-      regexDe: Regexes.message({ line: '.*öffnet sich wieder', capture: false }),
-      regexCn: Regexes.message({ line: '.*的封锁解除了', capture: false }),
+      regex: Regexes.message({ line: '.*is no longer sealed.*?', capture: false }),
+      regexDe: Regexes.message({ line: '.*öffnet sich wieder.*?', capture: false }),
+      regexFr: Regexes.message({ line: '.*Ouverture de.*?', capture: false }),
+      regexCn: Regexes.message({ line: '.*的封锁解除了.*?', capture: false }),
+      regexKo: Regexes.message({ line: '의 봉쇄가 해제되었습니다.*?', capture: false }),
       run: function(data) {
         delete data.side;
         delete data.mythcall;
@@ -168,7 +170,9 @@
         return {
           en: 'Orb on YOU',
           de: 'Orb auf DIR',
+          fr: 'Orbe sur VOUS',
           cn: '点名',
+          ko: '구슬 대상자',
         };
       },
       alertText: function(data, matches) {
@@ -177,7 +181,9 @@
         return {
           en: 'Away From Orb Marker',
           de: 'Weg vom Orb-Marker',
+          fr: 'Éloignez-vous du marquage Orbe',
           cn: '远离点名',
+          ko: '구슬 대상자에서 떨어지기',
         };
       },
     },
@@ -244,7 +250,9 @@
       infoText: {
         en: 'Under Spears',
         de: 'Unter einen Speer',
+        fr: 'En dessous des lances',
         cn: '枪脚下',
+        ko: '창 아래로',
       },
     },
     {
@@ -278,40 +286,50 @@
     },
     {
       id: 'BA Owain Fire Element',
-      regex: Regexes.dialog({ line: '[^:]*:Munderg, turn flesh to ash', capture: false }),
-      regexDe: Regexes.dialog({ line: '[^:]*:Munderg, entfessele den Flammeneid', capture: false }),
-      regexCn: Regexes.dialog({ line: '[^:]*:红颈妖枪，点燃一切', capture: false }),
+      regex: Regexes.dialog({ line: '[^:]*:Munderg, turn flesh to ash.*?', capture: false }),
+      regexDe: Regexes.dialog({ line: '[^:]*:Munderg, entfessele den Flammeneid.*?', capture: false }),
+      regexFr: Regexes.dialog({ line: '[^:]*:Oui... Munderg, sens le feu embraser nos âmes.*?', capture: false }),
+      regexCn: Regexes.dialog({ line: '[^:]*:红颈妖枪，点燃一切.*?', capture: false }),
       condition: function(data) {
         return data.side == 'east';
       },
       alertText: {
         en: 'Get to Ice',
         de: 'Geh zum Eis',
+        fr: 'Allez à la glace',
         cn: '冰',
+        ko: '얼음',
       },
       infoText: {
         en: 'Switch Magia',
         de: 'Magia-Brett drehen',
+        fr: 'Changez de Magia',
         cn: '切换元素板',
+        ko: '마기아 전환',
       },
     },
     {
       id: 'BA Owain Ice Element',
-      regex: Regexes.dialog({ line: '[^:]*:Munderg, turn blood to ice', capture: false }),
-      regexDe: Regexes.dialog({ line: '[^:]*:Munderg, das Eis der Ewigkeit soll sie für Äonen bannen', capture: false }),
-      regexCn: Regexes.dialog({ line: '[^:]*:红颈妖枪，冻结万物', capture: false }),
+      regex: Regexes.dialog({ line: '[^:]*:Munderg, turn blood to ice.*?', capture: false }),
+      regexDe: Regexes.dialog({ line: '[^:]*:Munderg, das Eis der Ewigkeit soll sie für Äonen bannen.*?', capture: false }),
+      regexFr: Regexes.dialog({ line: '[^:]*:C\'est bien, Munderg... Glace le sang de mes ennemis.*?', capture: false }),
+      regexCn: Regexes.dialog({ line: '[^:]*:红颈妖枪，冻结万物.*?', capture: false }),
       condition: function(data) {
         return data.side == 'east';
       },
       alertText: {
         en: 'Get to Fire',
         de: 'Geh zum Feuer',
+        fr: 'Allez au feu',
         cn: '火',
+        ko: '불',
       },
       infoText: {
         en: 'Switch Magia',
         de: 'Magia-Brett drehen',
+        fr: 'Changez de Magia',
         cn: '切换元素板',
+        ko: '마기아 전환',
       },
     },
     {
@@ -466,7 +484,9 @@
       infoText: {
         en: 'Dark Bracelets',
         de: 'Dunkle Armreife',
+        fr: 'Bracelets ténèbreux',
         cn: '黑光环',
+        ko: '어두운 고리',
       },
       run: function(data) {
         data.bracelets = 'dark';
@@ -486,7 +506,9 @@
       infoText: {
         en: 'Light Bracelets',
         de: 'Helle Armreife',
+        fr: 'Bracelets lumineux',
         cn: '白光环',
+        ko: '빛 고리',
       },
       run: function(data) {
         data.bracelets = 'light';
@@ -509,14 +531,18 @@
             return {
               en: 'Away From Light Circles',
               de: 'Weg von hellen Kreisen',
+              fr: 'Éloignez-vous des cercles lumineux',
               cn: '远离白圈',
+              ko: '밝은 원에서 떨어지기',
             };
           }
           if (data.bracelets == 'dark') {
             return {
               en: 'Away From Dark Circles',
               de: 'Weg von dunklen Kreisen',
+              fr: 'Éloignez-vous des cercles ténèbreux',
               cn: '远离黑圈',
+              ko: '어두운 원에서 떨어지기',
             };
           }
           return;
@@ -525,14 +551,18 @@
           return {
             en: 'Stand By Dark Circles',
             de: 'Zu den dunklen Kreisen',
+            fr: 'Tenez-vous près des cercles ténèbreux',
             cn: '靠近黑圈',
+            ko: '어두운 원 옆에 서기',
           };
         }
         if (data.bracelets == 'dark') {
           return {
             en: 'Stand By Light Circles',
             de: 'zu den hellen Kreisen',
+            fr: 'Tenez-vous près des cercles lumineux',
             cn: '靠近白圈',
+            ko: '밝은 원 옆에 서기',
           };
         }
       },
@@ -556,31 +586,54 @@
           return {
             en: 'Dark',
             de: 'Dunkel',
+            fr: 'Ténèbres',
             cn: '黑',
+            ko: '어둠',
           };
         }
         if (data.bracelets == 'dark') {
           return {
             en: 'Light',
             de: 'Hell',
+            fr: 'Lumière',
             cn: '白',
+            ko: '빛',
           };
         }
       },
     },
     {
       // Note: These use 00:329e: lines, without any proper "gains effect" lines.
-      id: 'BA AV Eidos Relative Virtue Colors',
-      regex: Regexes.gameLog({ line: 'Relative Virtue gains the effect of (Astral|Umbral) Essence', capture: false }),
-      regexDe: Regexes.gameLog({ line: 'Relative Tugend gains the effect of Arm (des Lichts|der Dunkelheit)', capture: false }),
-      regexCn: Regexes.gameLog({ line: '相对的美德 gains the effect of (光|暗)之腕', capture: false }),
+      id: 'BA AV Eidos Relative Virtue Astral',
+      regex: Regexes.gameLog({ line: 'Relative Virtue gains the effect of Astral Essence.*?', capture: false }),
+      regexDe: Regexes.gameLog({ line: 'Relative Tugend gains the effect of Arm des Lichts.*?', capture: false }),
+      regexFr: Regexes.gameLog({ line: 'Vertu relative gains the effect of Bras de Lumière.*?', capture: false }),
+      regexCn: Regexes.gameLog({ line: '相对的美德 gains the effect of 光之腕.*?', capture: false }),
+      regexKo: Regexes.gameLog({ line: '상대미덕 gains the effect of 빛의 팔.*?', capture: false }),
       condition: function(data) {
         return data.sealed;
       },
-      run: function(data, matches) {
+      run: function(data) {
         // RV clones get buffs in the reverse order that they do their attacks in.
         data.clones = data.clones || [];
-        data.clones.push(matches[1]);
+        data.clones.push('astral');
+      },
+    },
+    {
+      // Note: These use 00:329e: lines, without any proper "gains effect" lines.
+      id: 'BA AV Eidos Relative Virtue Umbral',
+      regex: Regexes.gameLog({ line: 'Relative Virtue gains the effect of Umbral Essence.*?', capture: false }),
+      regexDe: Regexes.gameLog({ line: 'Relative Tugend gains the effect of Arm der Dunkelheit.*?', capture: false }),
+      regexFr: Regexes.gameLog({ line: 'Vertu relative gains the effect of Bras de Ténèbres.*?', capture: false }),
+      regexCn: Regexes.gameLog({ line: '相对的美德 gains the effect of 暗之腕.*?', capture: false }),
+      regexKo: Regexes.gameLog({ line: '상대미덕 gains the effect of 어둠의 팔.*?', capture: false }),
+      condition: function(data) {
+        return data.sealed;
+      },
+      run: function(data) {
+        // RV clones get buffs in the reverse order that they do their attacks in.
+        data.clones = data.clones || [];
+        data.clones.push('umbral');
       },
     },
     {
@@ -602,14 +655,18 @@
           return {
             en: 'Dark',
             de: 'Dunkel',
+            fr: 'Ténèbres',
             cn: '黑',
+            ko: '어둠',
           };
         }
         if (wrists == 'Umbral') {
           return {
             en: 'Light',
             de: 'Hell',
+            fr: 'Lumière',
             cn: '白',
+            ko: '빛',
           };
         }
       },
@@ -628,7 +685,9 @@
       infoText: {
         en: 'Orbs to Opposite Colors',
         de: 'Kugeln zu umgekehrter Farbe',
+        fr: 'Orbes aux couleurs opposées',
         cn: '连线去相反颜色',
+        ko: '구슬 반대 색깔로',
       },
     },
     {
@@ -663,14 +722,18 @@
         return {
           en: 'Black Hole ' + data.blackHoleCount + ' / 6',
           de: 'Schwarzes Loch ' + data.blackHoleCount + ' / 6',
+          fr: 'Trou noir ' + data.blackHoleCount + ' / 6',
           cn: '黑洞 ' + data.blackHoleCount + ' / 6',
+          ko: '블랙홀' + data.blackHoleCount + ' / 6',
         };
       },
       tts: function(data) {
         return {
           en: 'Black Hole ' + data.blackHoleCount,
           de: 'Schwarzes Loch ' + data.blackHoleCount,
+          fr: 'Trou noir ' + data.blackHoleCount,
           cn: '黑洞 ' + data.blackHoleCount,
+          ko: '블랙홀' + data.blackHoleCount,
         };
       },
     },
@@ -693,7 +756,9 @@
       alertText: {
         en: 'Off the Platform',
         de: 'Weg von der Fläche',
+        fr: 'Hors de la plateforme',
         cn: '远离平台',
+        ko: '멀어지기',
       },
     },
     {
@@ -711,7 +776,9 @@
       infoText: {
         en: 'Spread for Bleed',
         de: 'Blutung verteilen',
+        fr: 'Dispersez-vous pour le saignement',
         cn: '分散',
+        ko: '산개',
       },
     },
     {
@@ -728,7 +795,9 @@
       alertText: {
         en: 'Go Far',
         de: 'Weit weg',
+        fr: 'Éloignez-vous',
         cn: '远离',
+        ko: '멀리가기',
       },
     },
     {
@@ -750,13 +819,17 @@
           return {
             en: 'Stack (if not tanking)',
             de: 'Stack (wenn nicht am tanken)',
+            fr: 'Packez-vous (sauf les tanks)',
             cn: '集合（如果没在坦怪）',
+            ko: '집합 (탱킹 중인 사람 제외)',
           };
         }
         return {
           en: 'Stack Up',
           de: 'Stacken',
+          fr: 'Packez-vous en haut',
           cn: '集合',
+          ko: '집합',
         };
       },
     },
@@ -774,7 +847,9 @@
       alertText: {
         en: 'Get Close',
         de: 'Nah dran',
+        fr: 'Rapprochez-vous',
         cn: '靠近',
+        ko: '가까이',
       },
     },
     {
@@ -796,7 +871,9 @@
           return {
             en: 'Offtanks Get Orbs',
             de: 'Offtanks holt Kugeln',
+            fr: 'Offtanks, prenez les orbes',
             cn: 'ST撞球',
+            ko: '섭탱 구슬 가져가기',
           };
         }
       },
@@ -805,7 +882,9 @@
           return {
             en: 'Stack Away From Tank',
             de: 'Weg vom Tank stacken',
+            fr: 'Packez-vous loin du tank',
             cn: '远离坦克集合',
+            ko: '탱커에서 멀어지기',
           };
         }
       },
@@ -825,7 +904,9 @@
       alertText: {
         en: 'Get Off',
         de: 'Weg da',
+        fr: 'Descendez',
         cn: '远离平台',
+        ko: '멀어지기',
       },
     },
     {
@@ -843,7 +924,9 @@
       alertText: {
         en: 'Get Close',
         de: 'Nah dran',
+        fr: 'Rapprochez-vous',
         cn: '靠近',
+        ko: '가까이',
       },
     },
     {
@@ -861,14 +944,16 @@
       alertText: {
         en: 'Go Far',
         de: 'Weit weg',
+        fr: 'Éloignez-vous',
         cn: '远离',
+        ko: '멀리',
       },
     },
     {
       id: 'BA Ozma Adds',
       regex: Regexes.ability({ source: 'Cloudlarker', id: '37B0', capture: false }),
       regexDe: Regexes.ability({ source: 'Wolkenlauerer', id: '37B0', capture: false }),
-      regexFr: Regexes.ability({ source: 'Rôdeur Des Nuages', id: '37B0', capture: false }),
+      regexFr: Regexes.ability({ source: 'Urolithe De L\'arsenal', id: '37B0', capture: false }),
       regexJa: Regexes.ability({ source: 'クラウドラーカー', id: '37B0', capture: false }),
       regexCn: Regexes.ability({ source: '翻云狮鹫', id: '37B0', capture: false }),
       regexKo: Regexes.ability({ source: '구름 잠복자', id: '37B0', capture: false }),
@@ -904,6 +989,7 @@
   timelineReplace: [
     {
       'locale': 'de',
+      'missingTranslations': true,
       'replaceSync': {
         'Absolute Virtue': 'Absolut(?:e|er|es|en) Tugend',
         'Arsenal Centaur': 'Arsenal-Zentaur',
@@ -915,36 +1001,33 @@
         'Owain': 'Owain',
         '(?<! )Ozma(?!\\w)': 'Yadis',
         'Ozmashade': 'Yadis-Schatten',
-        'Proto Ozma': 'Proto-Yadis',
+        'Proto Ozma(?!\ containment)': 'Proto-Yadis',
         'Raiden': 'Raiden',
-        'Relative Virtue': 'Relativ(?:e|er|es|en) Tugend',
+        'Relative Virtue': 'Relative Tugend',
         'Shadow': 'Proto-Yadis-Schatten',
         'Streak Lightning': 'Blitzladung',
-        'The Lance of Virtue Containment Unit will be sealed off': 'The Lance of Virtue Containment Unit will be sealed off', // FIXME
-        'The Proto Ozma Containment Unit will be sealed off': 'The Proto Ozma Containment Unit will be sealed off', // FIXME
-        'The Shin-Zantetsuken Containment Unit will be sealed off': 'The Shin-Zantetsuken Containment Unit will be sealed off', // FIXME
+        '5 minutes have elapsed since your last activity': 'Seit deiner letzten Aktivität sind 5 Minuten vergangen',
+        'The memories of heroes past live on again': 'Das Vermächtnis vergangener Helden lebt von Neuem auf',
+        'Munderg, turn flesh to ash': 'Munderg, entfessele den Flammeneid',
+        'Munderg, turn blood to ice': 'Munderg, das Eis der Ewigkeit soll sie für Äonen bannen',
       },
       'replaceText': {
         'Acallam Na Senorach': 'Legendärer Lanzenwirbel',
         'Acceleration Bomb': 'Beschleunigungsbombe',
-        'Adds': 'Adds', // FIXME
+        'Adds': 'Adds',
         'Ame-no-Sakahoko': 'Himmelsriposte',
         'Astral Essence': 'Arm des Lichts',
         'Auroral Wind': 'Aurorawind',
         'Berserk': 'Berserker',
         'Bitter Barbs': 'Dornige Schuld',
         'Black Hole': 'Schwarzes Loch',
-        'Bleed Attack': 'Bleed Attack', // FIXME
         'Booming Lament': 'Donnerschlag der Trauer',
         'Call Wyvern': 'Wyvernruf',
-        'Carver/Spinner': 'Carver/Spinner', // FIXME
         'Cloud to Ground': 'Sturmkonzentration',
-        'Cube Form': 'Cube Form', // FIXME
         'Eidos': 'Sarva',
         'Elemental Magicks': 'Elementmagie',
         'Elemental Shift': 'Elementwechsel',
         'Execration': 'Exsekration',
-        'Explosion Enrage': 'Explosion Enrage', // FIXME
         'Explosive Impulse': 'Explosiver Impuls',
         'Flare Star': 'Flare-Stern',
         'For Honor': 'Hieb der Gefallenen',
@@ -963,25 +1046,13 @@
         'Meteor': 'Meteo',
         'Mourning Star': 'Morgenstern',
         'Mythcall': 'Mythenruf',
-        'Orb x5': 'Orb x5', // FIXME
-        'Ozma Ability': 'Ozma Ability', // FIXME
         'Piercing Dark': 'Lanze der Finsternis',
         'Piercing Light': 'Lanze des Lichts',
         'Pitfall': 'Berstender Boden',
-        'Pyramid Form': 'Pyramid Form', // FIXME
-        'Random Form': 'Random Form', // FIXME
-        'Random Shade': 'Random Shade', // FIXME
-        'Shade Ability': 'Shade Ability', // FIXME
         'Shingan': 'Betäubungsschlag',
         'Shooting Star': 'Sternschnuppe',
-        'Soak Attack': 'Soak Attack', // FIXME
-        'Spear Copy': 'Spear Copy', // FIXME
-        'Spear Shade': 'Spear Shade', // FIXME
-        'Sphere Form': 'Sphere Form', // FIXME
         'Spiritcull': 'Kettendämon',
         'Spirits of the Fallen': 'Heroische Seele',
-        'Stack': 'Stack', // FIXME
-        'Star Form': 'Star Form', // FIXME
         'Streak Lightning': 'Blitzladung',
         'Thricecull': 'Dreifachlanze',
         'Thundercall': 'Donnerruf',
@@ -989,59 +1060,64 @@
         'Ultimate Zantetsuken': 'Goku-Zantetsuken',
         'Umbral Essence': 'Arm der Dunkelheit',
         'Whirling Zantetsuken': 'Sen-Zantetsuken',
-        'Wyvern Explosion': 'Wyvern Explosion', // FIXME
+      },
+      '~effectNames': {
+        'Astral Essence': 'Arm des Lichts',
+        'Umbral Essence': 'Arm der Dunkelheit',
       },
     },
     {
       'locale': 'fr',
+      'missingTranslations': true,
       'replaceSync': {
         'Absolute Virtue': 'Vertu absolue',
-        'Arsenal Centaur': 'centaure de l\'Arsenal',
+        'Arsenal Centaur': 'Centaure de l\'Arsenal',
         'Art': 'Art',
-        'Ball Lightning': 'orbe de foudre',
-        'Cloudlarker': 'rôdeur des nuages',
-        'Ivory Palm': 'paume d\'ivoire',
+        'Ball Lightning': 'Orbe de foudre',
+        'Cloudlarker': 'Urolithe de l\'Arsenal',
+        'Ivory Palm': 'Paume d\'ivoire',
         'Orlasrach': 'Orlasrach',
         'Owain': 'Owain',
         '(?<! )Ozma(?!\\w)': 'Ozma',
-        'Ozmashade': 'ombre d\'Ozma',
-        'Proto Ozma': 'Proto-Ozma',
+        'Ozmashade': 'Ombre d\'Ozma',
+        'Proto Ozma(?!\ containment)': 'Proto-Ozma',
         'Raiden': 'Raiden',
         'Relative Virtue': 'Vertu relative',
-        'Shadow': 'ombre de Proto-Ozma',
+        'Shadow': 'Ombre de Proto-Ozma',
         'Streak Lightning': 'Éclair chargeant',
-        'The Lance of Virtue Containment Unit will be sealed off': 'The Lance of Virtue Containment Unit will be sealed off', // FIXME
-        'The Proto Ozma Containment Unit will be sealed off': 'The Proto Ozma Containment Unit will be sealed off', // FIXME
-        'The Shin-Zantetsuken Containment Unit will be sealed off': 'The Shin-Zantetsuken Containment Unit will be sealed off', // FIXME
+        'The Lance of Virtue Containment Unit': 'l\'enceinte de confinement de la lance de la vertu',
+        'The Proto Ozma Containment Unit': 'l\'enceinte de confinement de Proto-Ozma',
+        'The Shin-Zantetsuken Containment Unit': 'l\'enceinte de confinement de Shin-Zantetsuken',
       },
       'replaceText': {
+        '\\?': ' ?',
         'Acallam Na Senorach': 'Spirale sépulcrale',
         'Acceleration Bomb': 'Bombe accélératrice',
-        'Adds': 'Adds', // FIXME
+        'Adds': 'Adds',
         'Ame-no-Sakahoko': 'Ama-no-sakahoko',
         'Astral Essence': 'Bras de Lumière',
         'Auroral Wind': 'Vent d\'aurore',
         'Berserk': 'Furie',
         'Bitter Barbs': 'Ronce du péché',
         'Black Hole': 'Trou noir',
-        'Bleed Attack': 'Bleed Attack', // FIXME
+        'Bleed Attack': 'Attaque saignement',
         'Booming Lament': 'Tonnerre du regret',
         'Call Wyvern': 'Appel de wyverne',
-        'Carver/Spinner': 'Carver/Spinner', // FIXME
+        'Carver/Spinner': 'Taillade/Spirale',
         'Cloud to Ground': 'Attaque fulminante',
-        'Cube Form': 'Cube Form', // FIXME
+        'Cube Form': 'Forme cube',
         'Eidos': 'Sarva',
         'Elemental Magicks': 'Magie élémentaire',
         'Elemental Shift': 'Changement d\'élément',
         'Execration': 'Exécration',
-        'Explosion Enrage': 'Explosion Enrage', // FIXME
+        'Explosion Enrage': 'Explosion Enrage',
         'Explosive Impulse': 'Impulsion explosive',
         'Flare Star': 'Astre flamboyant',
         'For Honor': 'Carnage martial',
         'Holy': 'Miracle',
         'Hostile Aspect': 'Onde polarisée',
         'Impact Stream': 'Courant d\'impact',
-        'Ivory Palm': 'paume d\'ivoire',
+        'Ivory Palm': 'Paume d\'ivoire',
         'Lancing Bolt': 'Lance fulminante',
         'Lateral Zantetsuken': 'Hen Zantetsuken',
         'Legendary Geas': 'Tuerie spectrale',
@@ -1053,25 +1129,25 @@
         'Meteor': 'Météore',
         'Mourning Star': 'Étoile du matin',
         'Mythcall': 'Invitation fantasmagorique',
-        'Orb x5': 'Orb x5', // FIXME
-        'Ozma Ability': 'Ozma Ability', // FIXME
+        'Orb x5': 'Orbe x5',
+        'Ozma Ability': 'Aptitude d\'Ozma',
         'Piercing Dark': 'Lance des ténèbres',
         'Piercing Light': 'Lance de lumière',
         'Pitfall': 'Embûche',
-        'Pyramid Form': 'Pyramid Form', // FIXME
-        'Random Form': 'Random Form', // FIXME
-        'Random Shade': 'Random Shade', // FIXME
-        'Shade Ability': 'Shade Ability', // FIXME
+        'Pyramid Form': 'Forme pyramide',
+        'Random Form': 'Forme aléatoire',
+        'Random Shade': 'Ombre aléatoire',
+        'Shade Ability': 'Aptitude d\'Ombre',
         'Shingan': 'Impact oculaire',
         'Shooting Star': 'Étoile filante',
-        'Soak Attack': 'Soak Attack', // FIXME
-        'Spear Copy': 'Spear Copy', // FIXME
-        'Spear Shade': 'Spear Shade', // FIXME
-        'Sphere Form': 'Sphere Form', // FIXME
+        'Soak Attack': 'Absorbez l\'attaque',
+        'Spear Copy': 'Copie de lance',
+        'Spear Shade': 'Ombre de lance',
+        'Sphere Form': 'Forme sphère',
         'Spiritcull': 'Salve magique',
         'Spirits of the Fallen': 'Âme héroïque',
-        'Stack': 'Stack', // FIXME
-        'Star Form': 'Star Form', // FIXME
+        'Stack': 'Package',
+        'Star Form': 'Forme étoile',
         'Streak Lightning': 'Éclair chargeant',
         'Thricecull': 'Triple perforation',
         'Thundercall': 'Drain fulminant',
@@ -1079,11 +1155,12 @@
         'Ultimate Zantetsuken': 'Goku Zantetsuken',
         'Umbral Essence': 'Bras de Ténèbres',
         'Whirling Zantetsuken': 'Sen Zantetsuken',
-        'Wyvern Explosion': 'Wyvern Explosion', // FIXME
+        'Wyvern Explosion': 'Wyverne Explosion',
       },
     },
     {
       'locale': 'ja',
+      'missingTranslations': true,
       'replaceSync': {
         'Absolute Virtue': 'アブソリュートヴァーチュー',
         'Arsenal Centaur': 'アーセナル・セントール',
@@ -1100,31 +1177,23 @@
         'Relative Virtue': 'レラティブヴァーチュー',
         'Shadow': 'プロトオズマの影',
         'Streak Lightning': 'ストリークライトニング',
-        'The Lance of Virtue Containment Unit will be sealed off': 'The Lance of Virtue Containment Unit will be sealed off', // FIXME
-        'The Proto Ozma Containment Unit will be sealed off': 'The Proto Ozma Containment Unit will be sealed off', // FIXME
-        'The Shin-Zantetsuken Containment Unit will be sealed off': 'The Shin-Zantetsuken Containment Unit will be sealed off', // FIXME
       },
       'replaceText': {
         'Acallam Na Senorach': '真妖槍旋',
         'Acceleration Bomb': '加速度爆弾',
-        'Adds': 'Adds', // FIXME
         'Ame-no-Sakahoko': '天逆鉾',
         'Astral Essence': '光の腕',
         'Auroral Wind': 'オーロラルウィンド',
         'Berserk': 'ベルセルク',
         'Bitter Barbs': '罪の荊棘',
         'Black Hole': 'ブラックホール',
-        'Bleed Attack': 'Bleed Attack', // FIXME
         'Booming Lament': '哀惜の雷鳴',
         'Call Wyvern': 'コールワイバーン',
-        'Carver/Spinner': 'Carver/Spinner', // FIXME
         'Cloud to Ground': '襲雷',
-        'Cube Form': 'Cube Form', // FIXME
         'Eidos': '変異',
         'Elemental Magicks': 'エレメンタルマジック',
         'Elemental Shift': 'エレメントスイッチ',
         'Execration': 'エクセクレイション',
-        'Explosion Enrage': 'Explosion Enrage', // FIXME
         'Explosive Impulse': 'エクスプロシブインパルス',
         'Flare Star': 'フレアスター',
         'For Honor': '戦死撃',
@@ -1143,25 +1212,13 @@
         'Meteor': 'メテオ',
         'Mourning Star': 'モーニングスター',
         'Mythcall': '幻槍招来',
-        'Orb x5': 'Orb x5', // FIXME
-        'Ozma Ability': 'Ozma Ability', // FIXME
         'Piercing Dark': '闇の槍',
         'Piercing Light': '光の槍',
         'Pitfall': '強襲',
-        'Pyramid Form': 'Pyramid Form', // FIXME
-        'Random Form': 'Random Form', // FIXME
-        'Random Shade': 'Random Shade', // FIXME
-        'Shade Ability': 'Shade Ability', // FIXME
         'Shingan': '真眼撃',
         'Shooting Star': 'シューティングスター',
-        'Soak Attack': 'Soak Attack', // FIXME
-        'Spear Copy': 'Spear Copy', // FIXME
-        'Spear Shade': 'Spear Shade', // FIXME
-        'Sphere Form': 'Sphere Form', // FIXME
         'Spiritcull': '連装魔',
         'Spirits of the Fallen': '英霊魂',
-        'Stack': 'Stack', // FIXME
-        'Star Form': 'Star Form', // FIXME
         'Streak Lightning': 'ストリークライトニング',
         'Thricecull': '三連槍',
         'Thundercall': '招雷',
@@ -1169,7 +1226,6 @@
         'Ultimate Zantetsuken': '極・斬鉄剣',
         'Umbral Essence': '闇の腕',
         'Whirling Zantetsuken': '旋・斬鉄剣',
-        'Wyvern Explosion': 'Wyvern Explosion', // FIXME
       },
     },
     {
@@ -1275,36 +1331,36 @@
         'Owain': '오와인',
         '(?<! )Ozma(?!\\w)': '오즈마',
         'Ozmashade': '오즈마의 그림자',
-        'Proto Ozma': '프로토 오즈마',
+        'Proto Ozma(?!\ Containment)': '프로토 오즈마',
         'Raiden': '라이딘',
         'Relative Virtue': '상대미덕',
         'Shadow': '프로토 오즈마의 그림자',
         'Streak Lightning': '연쇄 번개',
-        'The Lance of Virtue Containment Unit will be sealed off': 'The Lance of Virtue Containment Unit will be sealed off', // FIXME
-        'The Proto Ozma Containment Unit will be sealed off': 'The Proto Ozma Containment Unit will be sealed off', // FIXME
-        'The Shin-Zantetsuken Containment Unit will be sealed off': 'The Shin-Zantetsuken Containment Unit will be sealed off', // FIXME
+        'The Lance of Virtue Containment Unit': '미덕의 창 봉인 구역',
+        'The Proto Ozma Containment Unit': '프로토 오즈마 봉인 구역',
+        'The Shin-Zantetsuken Containment Unit': '진 참철검 봉인 구역',
       },
       'replaceText': {
         'Acallam Na Senorach': '피어너의 창',
         'Acceleration Bomb': '가속도 폭탄',
-        'Adds': 'Adds', // FIXME
+        'Adds': '쫄',
         'Ame-no-Sakahoko': '아메노사카호코',
         'Astral Essence': '빛의 팔',
         'Auroral Wind': '오로라 바람',
         'Berserk': '광포',
         'Bitter Barbs': '죄의 가시',
         'Black Hole': '블랙홀',
-        'Bleed Attack': 'Bleed Attack', // FIXME
+        'Bleed Attack': '출혈 공격',
         'Booming Lament': '애도의 뇌명',
         'Call Wyvern': '와이번 소환',
-        'Carver/Spinner': 'Carver/Spinner', // FIXME
+        'Carver/Spinner': '요창 떨치기/후리기',
         'Cloud to Ground': '습뢰',
-        'Cube Form': 'Cube Form', // FIXME
+        'Cube Form': '네모 모양',
         'Eidos': '변이',
         'Elemental Magicks': '엘리멘탈 마법',
         'Elemental Shift': '엘리멘탈 변환',
         'Execration': '혐오의 저주',
-        'Explosion Enrage': 'Explosion Enrage', // FIXME
+        '(?<! )Explosion': '폭발',
         'Explosive Impulse': '폭발적 추진력',
         'Flare Star': '타오르는 별',
         'For Honor': '전사격',
@@ -1323,25 +1379,25 @@
         'Meteor': '메테오',
         'Mourning Star': '샛별',
         'Mythcall': '환창 소환',
-        'Orb x5': 'Orb x5', // FIXME
-        'Ozma Ability': 'Ozma Ability', // FIXME
+        'Orb x5': '구슬 5회',
+        'Ozma Ability': '오즈마 능력',
         'Piercing Dark': '어둠의 창',
         'Piercing Light': '빛의 창',
         'Pitfall': '강습',
-        'Pyramid Form': 'Pyramid Form', // FIXME
-        'Random Form': 'Random Form', // FIXME
-        'Random Shade': 'Random Shade', // FIXME
-        'Shade Ability': 'Shade Ability', // FIXME
+        'Pyramid Form': '세모 모양',
+        'Random Form': '무작위 모양',
+        'Random Shade': '무작위 그림자',
+        'Shade Ability': '그림자 능력',
         'Shingan': '진안격',
         'Shooting Star': '유성',
-        'Soak Attack': 'Soak Attack', // FIXME
-        'Spear Copy': 'Spear Copy', // FIXME
-        'Spear Shade': 'Spear Shade', // FIXME
-        'Sphere Form': 'Sphere Form', // FIXME
+        'Soak Attack': '평타 쉐어 공격',
+        'Spear Copy': '창 복사',
+        'Spear Shade': '창 그림자',
+        'Sphere Form': '원 모양',
         'Spiritcull': '마법 연발',
         'Spirits of the Fallen': '영령혼',
-        'Stack': 'Stack', // FIXME
-        'Star Form': 'Star Form', // FIXME
+        'Stack': '모이기',
+        'Star Form': '별 모양',
         'Streak Lightning': '연쇄 번개',
         'Thricecull': '삼연창',
         'Thundercall': '초뢰',
@@ -1349,7 +1405,7 @@
         'Ultimate Zantetsuken': '극 참철검',
         'Umbral Essence': '어둠의 팔',
         'Whirling Zantetsuken': '선 참철검',
-        'Wyvern Explosion': 'Wyvern Explosion', // FIXME
+        'Wyvern Explosion': '와이번 폭발',
       },
     },
   ],

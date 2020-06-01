@@ -81,13 +81,13 @@
       },
     },
     {
-      id: 'T7 Voice',
-      regex: Regexes.gainsEffect({ effect: 'Cursed Voice' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Stimme Der Verwünschung' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Voix Du Maléfice' }),
-      regexJa: Regexes.gainsEffect({ effect: '呪詛の声' }),
-      regexCn: Regexes.gainsEffect({ effect: '诅咒之声' }),
-      regexKo: Regexes.gainsEffect({ effect: '저주의 목소리' }),
+      id: 'T7 Cursed Voice',
+      netRegex: NetRegexes.gainsEffect({ effectId: '1C3' }),
+      netRegexDe: NetRegexes.gainsEffect({ effectId: '1C3' }),
+      netRegexFr: NetRegexes.gainsEffect({ effectId: '1C3' }),
+      netRegexJa: NetRegexes.gainsEffect({ effectId: '1C3' }),
+      netRegexCn: NetRegexes.gainsEffect({ effectId: '1C3' }),
+      netRegexKo: NetRegexes.gainsEffect({ effectId: '1C3' }),
       condition: function(data, matches) {
         return data.me == matches.target;
       },
@@ -97,25 +97,25 @@
       alertText: {
         en: 'Voice Soon',
         de: 'Stimme Der Verwünschung bald',
-        fr: 'Voix maudite bientôt',
+        fr: 'Voix du maléfice bientôt',
         cn: '诅咒之声即将判定',
       },
     },
     {
-      id: 'T7 Shriek',
-      regex: Regexes.gainsEffect({ effect: 'Cursed Shriek' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Schrei Der Verwünschung' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Cri Du Maléfice' }),
-      regexJa: Regexes.gainsEffect({ effect: '呪詛の叫声' }),
-      regexCn: Regexes.gainsEffect({ effect: '诅咒之嚎' }),
-      regexKo: Regexes.gainsEffect({ effect: '저주의 외침' }),
+      id: 'T7 Cursed Shriek',
+      netRegex: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexDe: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexFr: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexJa: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexCn: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexKo: NetRegexes.gainsEffect({ effectId: '1C4' }),
       durationSeconds: 3,
       alarmText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Shriek on YOU',
             de: 'Schrei Der Verwünschung auf DIR',
-            fr: 'Cri maudit sur VOUS',
+            fr: 'Cri du maléfice sur VOUS',
             cn: '诅咒之嚎点名',
           };
         }
@@ -125,20 +125,20 @@
           return {
             en: 'Shriek on ' + data.ShortName(matches.target),
             de: 'Schrei Der Verwünschung auf ' + data.ShortName(matches.target),
-            fr: 'Cri maudit sur ' + data.ShortName(matches.target),
+            fr: 'Cri du maléfice sur ' + data.ShortName(matches.target),
             cn: '诅咒之嚎点' + data.ShortName(matches.target),
           };
         }
       },
     },
     {
-      id: 'T7 Shriek Reminder',
-      regex: Regexes.gainsEffect({ effect: 'Cursed Shriek' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Schrei Der Verwünschung' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Cri Du Maléfice' }),
-      regexJa: Regexes.gainsEffect({ effect: '呪詛の叫声' }),
-      regexCn: Regexes.gainsEffect({ effect: '诅咒之嚎' }),
-      regexKo: Regexes.gainsEffect({ effect: '저주의 외침' }),
+      id: 'T7 Cursed Shriek Reminder',
+      netRegex: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexDe: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexFr: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexJa: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexCn: NetRegexes.gainsEffect({ effectId: '1C4' }),
+      netRegexKo: NetRegexes.gainsEffect({ effectId: '1C4' }),
       delaySeconds: 7,
       durationSeconds: 3,
       infoText: function(data, matches) {
@@ -146,7 +146,7 @@
           return {
             en: 'Shriek Soon',
             de: 'Schrei Der Verwünschung bald',
-            fr: 'Cri maudit bientôt',
+            fr: 'Cri du maléfice bientôt',
             cn: '诅咒之嚎即将判定',
           };
         }
@@ -229,8 +229,12 @@
       'locale': 'de',
       'replaceSync': {
         'Bioweapon Storage': 'Biowaffen-Magazin',
+        'Cursed Shriek': 'Schrei der Verwünschung',
+        'Cursed Voice': 'Stimme der Verwünschung',
         'Lamia Prosector': 'Lamia-Prosektorin',
         'Melusine': 'Melusine',
+        'Proto-Chimera': 'Proto-Chimära',
+        'Renaud': 'Renaud',
       },
       'replaceText': {
         'Circle Blade': 'Kreisklinge',
@@ -245,20 +249,28 @@
         'Tail Slap': 'Schweifklapser',
         'Venomous Tail': 'Venomschweif',
       },
+      '~effectNames': {
+        'Cursed Shriek': 'Schrei der Verwünschung',
+        'Cursed Voice': 'Stimme der Verwünschung',
+      },
     },
     {
       'locale': 'fr',
       'replaceSync': {
         'Bioweapon Storage': 'l\'entrepôt d\'armes biologiques',
+        'Cursed Shriek': 'Cri maudit',
+        'Cursed Voice': 'Voix maudite',
         'Lamia Prosector': 'Lamia dissectrice',
         'Melusine': 'Mélusine',
+        'Proto-Chimera': 'Protochimère',
+        'Renaud': 'Renaud',
       },
       'replaceText': {
         'Circle Blade': 'Lame circulaire',
         'Circle Of Flames': 'Cercle de flammes',
         'Cursed Shriek': 'Cri maudit',
         'Cursed Voice': 'Voix maudite',
-        'Deathdancer': 'Danseuse de mort',
+        'Deathdancer Add': 'Add Danseuse de mort',
         'Frenzy': 'Frénésie',
         'Petrifaction': 'Pétrification',
         'Red Lotus Blade': 'Lame lotus rouge',
@@ -266,13 +278,21 @@
         'Tail Slap': 'Gifle caudale',
         'Venomous Tail': 'Queue venimeuse',
       },
+      '~effectNames': {
+        'Cursed Shriek': 'Cri du maléfice',
+        'Cursed Voice': 'Voix du maléfice',
+      },
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
+        'Bioweapon Storage': '生体管理区',
+        'Cursed Shriek': '呪詛の叫声',
+        'Cursed Voice': '呪詛の声',
         'Lamia Prosector': 'ラミア・プロセクター',
         'Melusine': 'メリュジーヌ',
+        'Proto-Chimera': 'プロトキマイラ',
+        'Renaud': 'ルノー',
       },
       'replaceText': {
         'Circle Blade': 'サークルブレード',
@@ -287,13 +307,21 @@
         'Tail Slap': 'テールスラップ',
         'Venomous Tail': 'ベノモステール',
       },
+      '~effectNames': {
+        'Cursed Shriek': '呪詛の叫声',
+        'Cursed Voice': '呪詛の声',
+      },
     },
     {
       'locale': 'cn',
-      'missingTranslations': true,
       'replaceSync': {
+        'Bioweapon Storage': '生体管理区',
+        'Cursed Shriek': '诅咒之嚎',
+        'Cursed Voice': '诅咒之声',
         'Lamia Prosector': '拉米亚解剖女王',
         'Melusine': '美瑠姬奴',
+        'Proto-Chimera': '原型奇美拉',
+        'Renaud': '雷诺',
       },
       'replaceText': {
         'Circle Blade': '回旋斩',
@@ -308,13 +336,21 @@
         'Tail Slap': '尾部猛击',
         'Venomous Tail': '猛毒之尾',
       },
+      '~effectNames': {
+        'Cursed Shriek': '诅咒之嚎',
+        'Cursed Voice': '诅咒之声',
+      },
     },
     {
       'locale': 'ko',
-      'missingTranslations': true,
       'replaceSync': {
+        'Bioweapon Storage': '생체 관리 구역',
+        'Cursed Shriek': '저주의 외침',
+        'Cursed Voice': '저주의 목소리',
         'Lamia Prosector': '라미아 시체해부자',
         'Melusine': '멜뤼진',
+        'Proto-Chimera': '프로토 키마이라',
+        'Renaud': '르노',
       },
       'replaceText': {
         'Circle Blade': '회전 베기',
@@ -328,6 +364,10 @@
         'Sacrifice': '제물',
         'Tail Slap': '꼬리치기',
         'Venomous Tail': '맹독 꼬리',
+      },
+      '~effectNames': {
+        'Cursed Shriek': '저주의 외침',
+        'Cursed Voice': '저주의 목소리',
       },
     },
   ],

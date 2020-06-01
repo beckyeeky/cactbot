@@ -38,11 +38,30 @@
     {
       id: 'VarisEx Festina Lente',
       // This is headMarker({id: '00A1'}), but is a timeline trigger both
-      // for more warning, and to space around other triggers (dodge clones).
+      // for more warning, and to precede the "dodge clones" call.
       regex: /^Festina Lente$/,
       beforeSeconds: 6,
       durationSeconds: 6,
-      response: Responses.stack('alert'),
+      response: function(data) {
+        // In any case where you need to position stacks in the right lane,
+        // use this special call, no matter how far ahead in time it is.
+        if (data.clonesActive) {
+          // Sometimes in the fight, dodge clones + stack happen right next to each other.
+          // In these cases, don't also call out "dodge clones", by setting this variable.
+          // For cases where they are far apart, this gets cleared in the cleanup trigger.
+          data.suppressDodgeCloneCall = true;
+          return {
+            alertText: {
+              en: 'Dodge Clones + Stack',
+              de: 'Klonen ausweichen und Sammeln',
+              ja: 'ターミナス・エストを避け／頭割り集合',
+              cn: '躲避剑气 + 集合分摊',
+              ko: '분신 피하기 + 집합',
+            },
+          };
+        }
+        return Responses.stack('alert');
+      },
     },
     {
       id: 'VarisEx Magitek Burst',
@@ -51,6 +70,11 @@
       durationSeconds: 5,
       infoText: {
         en: 'Spread Soon',
+        de: 'Bald verteilen',
+        fr: 'Écartez-vous bientôt',
+        ja: 'まもなく散開',
+        cn: '即将散开',
+        ko: '잠시후 산개',
       },
     },
   ],
@@ -95,8 +119,10 @@
       infoText: {
         en: 'Bait Slashes',
         de: 'Schnitte ködern',
+        fr: 'Attirez les taillades',
         ja: '縦へ、アルティウスを誘導',
         cn: 'Boss身后诱导剑气方向',
+        ko: '슬래시 유도',
       },
     },
     {
@@ -109,9 +135,9 @@
         const target = matches.target;
         if (data.me == target) {
           return {
-            en: 'Buster on YOU',
-            de: 'Tankbuster auf DIR',
-            fr: 'Tankbuster sur VOUS',
+            en: 'Tank Buster on YOU',
+            de: 'Tank buster auf DIR',
+            fr: 'Tank buster sur VOUS',
             ja: '自分にタンクバスター',
             cn: '死刑点名',
             ko: '탱버 대상자',
@@ -121,16 +147,16 @@
           return {
             en: 'Avoid tank cleave',
             de: 'Tank Cleave ausweichen',
-            fr: 'Evitez le cleave sur le tank',
+            fr: 'Évitez le cleave sur le tank',
             ja: '前方範囲攻撃を避け',
-            ko: '광역 탱버 피하기',
             cn: '远离顺劈',
+            ko: '광역 탱버 피하기',
           };
         }
         return {
-          en: 'Buster on ' + data.ShortName(target),
-          de: 'Tankbuster auf ' + data.ShortName(target),
-          fr: 'Tankbuster sur ' + data.ShortName(target),
+          en: 'Tank Buster on ' + data.ShortName(target),
+          de: 'Tank buster auf ' + data.ShortName(target),
+          fr: 'Tank buster sur ' + data.ShortName(target),
           ja: data.ShortName(target) + 'にタンクバスター',
           cn: '死刑 -> ' + data.ShortName(target),
           ko: '탱버 → ' + data.ShortName(target),
@@ -158,8 +184,10 @@
       infoText: {
         en: 'Go Front',
         de: 'Nach Vorne gehen',
+        fr: 'Allez devant le boss',
         ja: '前へ',
         cn: '到正面',
+        ko: '앞으로',
       },
     },
     {
@@ -183,24 +211,26 @@
       alertText: {
         en: 'Stop attacking',
         de: 'Angriffe stoppen',
+        fr: 'Arrêtez d\'attaquer',
         ja: 'ブロックしない側に攻撃',
         cn: '攻击未格挡的方向',
+        ko: '공격 중지',
       },
     },
     {
       id: 'VarisEx Reinforced Gunshield Sides',
       regex: Regexes.ability({ source: 'Varis Yae Galvus', id: '4CDC', capture: false }),
-      regexDe: Regexes.startsUsing({ source: 'Varis yae Galvus', id: '4CDC', capture: false }),
-      regexFr: Regexes.startsUsing({ source: 'Varis yae Galvus', id: '4CDC', capture: false }),
-      regexJa: Regexes.startsUsing({ source: 'ヴァリス・イェー・ガルヴァス', id: '4CDC', capture: false }),
+      regexDe: Regexes.ability({ source: 'Varis Yae Galvus', id: '4CDC', capture: false }),
+      regexFr: Regexes.ability({ source: 'Varis Yae Galvus', id: '4CDC', capture: false }),
+      regexJa: Regexes.ability({ source: 'ヴァリス・イェー・ガルヴァス', id: '4CDC', capture: false }),
       response: Responses.goFrontBack('info'),
     },
     {
       id: 'VarisEx Reinforced Gunshield Front',
       regex: Regexes.ability({ source: 'Varis Yae Galvus', id: '4CDB', capture: false }),
-      regexDe: Regexes.startsUsing({ source: 'Varis yae Galvus', id: '4CDB', capture: false }),
-      regexFr: Regexes.startsUsing({ source: 'Varis yae Galvus', id: '4CDB', capture: false }),
-      regexJa: Regexes.startsUsing({ source: 'ヴァリス・イェー・ガルヴァス', id: '4CDB', capture: false }),
+      regexDe: Regexes.ability({ source: 'Varis Yae Galvus', id: '4CDB', capture: false }),
+      regexFr: Regexes.ability({ source: 'Varis Yae Galvus', id: '4CDB', capture: false }),
+      regexJa: Regexes.ability({ source: 'ヴァリス・イェー・ガルヴァス', id: '4CDB', capture: false }),
       response: Responses.goSides('info'),
     },
     {
@@ -227,8 +257,10 @@
           return {
             en: 'Grab Tethers',
             de: 'Verbindung nehmen',
+            fr: 'Prenez un lien',
             ja: '線を取る',
             cn: '接线',
+            ko: '선 가로채기',
           };
         }
         return {
@@ -236,9 +268,21 @@
           de: 'Adds besiegen',
           fr: 'Tuez les adds',
           ja: '雑魚を処理',
-          ko: '쫄 잡기',
           cn: '击杀小怪',
+          ko: '쫄 잡기',
         };
+      },
+    },
+    {
+      // The warning is taken care of above with a timeline trigger.  See notes.
+      id: 'VarisEx Festina Lente Cleanup',
+      regex: Regexes.ability({ source: 'Varis Yae Galvus', id: '4CC9', capture: false }),
+      regexDe: Regexes.ability({ source: 'Varis yae Galvus', id: '4CC9', capture: false }),
+      regexFr: Regexes.ability({ source: 'Varis yae Galvus', id: '4CC9', capture: false }),
+      regexJa: Regexes.ability({ source: 'ヴァリス・イェー・ガルヴァス', id: '4CC9', capture: false }),
+      delaySeconds: 10,
+      run: function(data) {
+        delete data.suppressDodgeCloneCall;
       },
     },
     {
@@ -248,13 +292,21 @@
       regexFr: Regexes.startsUsing({ source: 'Terminus Est', id: '4CB4', capture: false }),
       regexJa: Regexes.startsUsing({ source: 'ターミナス・エスト', id: '4CB4', capture: false }),
       condition: (data) => data.clonesActive,
-      infoText: {
-        en: 'Dodge Clones',
-        de: 'Klonen ausweichen',
-        ja: 'ターミナス・エストを避け',
-        cn: '躲避剑气',
+      infoText: function(data) {
+        // Sometimes this is called out with the stack mechanic.
+        if (data.suppressDodgeCloneCall)
+          return;
+        return {
+          en: 'Dodge Clones',
+          de: 'Klonen ausweichen',
+          fr: 'Esquivez les clones',
+          ja: 'ターミナス・エストを避け',
+          cn: '躲避剑气',
+          ko: '클론 피하기',
+        };
       },
       run: function(data) {
+        delete data.suppressDodgeCloneCall;
         delete data.clonesActive;
       },
     },
@@ -264,7 +316,17 @@
       regexDe: Regexes.startsUsing({ source: 'Gewehrschild', id: '4E4F', capture: false }),
       regexFr: Regexes.startsUsing({ source: 'bouclier-canon', id: '4E4F', capture: false }),
       regexJa: Regexes.startsUsing({ source: 'ガンシールド', id: '4E4F', capture: false }),
-      response: Responses.stack(),
+      response: Responses.stack('info'),
+    },
+    {
+      id: 'VarisEx Magitek Spark',
+      regex: Regexes.startsUsing({ source: 'Gunshield', id: '4E50', capture: false }),
+      regexDe: Regexes.startsUsing({ source: 'Gewehrschild', id: '4E50', capture: false }),
+      regexFr: Regexes.startsUsing({ source: 'bouclier-canon', id: '4E50', capture: false }),
+      regexJa: Regexes.startsUsing({ source: 'ガンシールド', id: '4E50', capture: false }),
+      // TODO: This is technicallly a spread, but it's more like "protean" spread?
+      // Not sure how to make this more clear.
+      response: Responses.spread('alert'),
     },
     {
       id: 'VarisEx Fortius',
@@ -275,8 +337,10 @@
       alertText: {
         en: 'Bait Puddles Out',
         de: 'Flächen nach draußen ködern',
+        fr: 'Attirez les taillades en dehors',
         ja: '外周に安置',
         cn: '外圈放黑泥',
+        ko: '장판 바깥쪽으로 유도',
       },
     },
   ],
@@ -326,36 +390,38 @@
     },
     {
       'locale': 'fr',
-      'missingTranslations': true,
       'replaceSync': {
-        'Bladesblood': 'onde de choc',
+        'Bladesblood': 'Onde De Choc',
         'Gunshield': 'bouclier-canon',
         'I shall not yield!': 'Mon pavois est infrangible!',
         'Ignis Est': 'Ignis Est',
         'Magitek Turret II': 'tourelle magitek TM-II',
-        'Phantom Varis': 'double de Varis',
+        'Phantom Varis': 'Double De Varis',
         'Terminus Est': 'Terminus Est',
         'Varis Yae Galvus': 'Varis yae Galvus',
         'Ventus Est': 'Ventus Est',
       },
       'replaceText': {
-        'Aetherochemical Grenado': 'Grenade magitek',
+        '\\?': ' ?',
+        '--clones appear--': '--Apparition des clones--',
+        'Aetherochemical Grenado': 'Grenade Magitek',
         'Alea Iacta Est': 'Alea Jacta Est',
         'Altius': 'Altius',
+        'Blade\'s Pulse': 'Duel d\'armes',
         'Citius': 'Citius',
         'Electrified Gunshield': 'Bouclier-canon : Choc magitek',
+        'Ignis Est': 'Ignis Est',
         'Festina Lente': 'Festina Lente',
         'Fortius': 'Fortius',
         '(?<! )Gunshield(?! )': 'bouclier-canon',
-        'Ignis Est': 'Ignis Est',
         'Loaded Gunshield': 'Bouclier-canon : Explosion magitek',
         'Magitek Burst': 'Explosion magitek',
         'Magitek Shielding': 'Contre magitek',
         'Magitek Shock': 'Choc magitek',
         'Magitek Spark/Torch': 'Étincelle/Flammes magitek',
         'Magitek Torch/Spark': 'Flammes/Étincelle magitek',
-        'Reinforced Gunshield': 'Bouclier-canon : Contre magitek',
         'Reinforcements': 'Demande de renforts',
+        'Reinforced Gunshield': 'Bouclier-canon : Contre magitek',
         'Shockwave': 'Onde de choc',
         'Terminus Est': 'Terminus Est',
         'Ventus Est': 'Ventus Est',
@@ -364,7 +430,6 @@
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
         'Bladesblood': '剣気',
         'Gunshield': 'ガンシールド',
@@ -377,15 +442,17 @@
         'Ventus Est': 'ウェントゥス・エスト',
       },
       'replaceText': {
+        '\\?': ' ?',
+        '--clones appear--': '--幻影が現れる--',
         'Aetherochemical Grenado': '魔導榴弾',
         'Alea Iacta Est': 'アーレア・ヤクタ・エスト',
         'Altius': 'アルティウス',
+        'Blade\'s Pulse': '攻撃を受け止める',
         'Citius': 'キティウス',
         'Electrified Gunshield': 'ガンシールド：魔導ショック',
         'Festina Lente': 'フェスティナ・レンテ',
         'Fortius': 'フォルティウス',
         '(?<! )Gunshield(?! )': 'ガンシールド',
-        'Gunshield Actions': 'ガンシールド技',
         'Ignis Est': 'イグニス・エスト',
         'Loaded Gunshield': 'ガンシールド：魔導バースト',
         'Magitek Burst': '魔導バースト',

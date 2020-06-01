@@ -488,7 +488,6 @@ class Buff {
   }
 
   clearCooldown(source) {
-    this.onLose();
     let ready = this.ready[source];
     if (ready)
       ready.removeCallback();
@@ -498,6 +497,7 @@ class Buff {
   }
 
   onGain(seconds, source) {
+    this.onLose();
     this.clearCooldown(source);
     this.active = this.makeAura(this.name, this.activeList, seconds, 0, 0, 'white', '', 1);
     this.addCooldown(source, seconds);
@@ -830,7 +830,7 @@ class BuffTracker {
       }
     }
 
-    const v5_20 = {
+    const v520 = {
       // identical with latest patch
       /* example
       trick: {
@@ -840,13 +840,13 @@ class BuffTracker {
     };
 
     let buffOverrides = {
-      ko: v5_20,
-      cn: v5_20,
+      ko: v520,
+      cn: v520,
     };
 
-    for (let key in buffOverrides[this.options.Language]) {
-      for (let key2 in buffOverrides[this.options.Language][key])
-        this.buffInfo[key][key2] = buffOverrides[this.options.Language][key][key2];
+    for (let key in buffOverrides[this.options.ParserLanguage]) {
+      for (let key2 in buffOverrides[this.options.ParserLanguage][key])
+        this.buffInfo[key][key2] = buffOverrides[this.options.ParserLanguage][key][key2];
     }
   }
 
@@ -1462,50 +1462,55 @@ class Bars {
   }
 
   setupBlu() {
-    let gcd = kUnknownGCD;
-
-    let offguardBox = this.addProcBox({
-      id: 'blu-procs-offguard',
-      fgColor: 'blu-color-offguard',
-      scale: gcd,
-      threshold: gcd * 3,
-    });
-
-    let tormentBox = this.addProcBox({
-      id: 'blu-procs-torment',
-      fgColor: 'blu-color-torment',
-      scale: gcd,
-      threshold: gcd * 3,
-    });
-
-    let offguardDuration = () => {
+    let bluGcd = (timeMs) => {
       // If you've reloaded the jobs overlay since the last time an `0C` line went by,
       // then spellSpeed will be 0.  Assume that you have at least the default spell speed
       // at level 60.
       let defaultLevel = 60;
       let spellSpeed = Math.max(this.spellSpeed, kLevelMod[defaultLevel][0]);
 
-      return this.CalcGCDFromStat(spellSpeed, 60000);
+      return this.CalcGCDFromStat(spellSpeed, timeMs);
     };
+
+    let gcd = bluGcd(2500);
+
+    let offguardBox = this.addProcBox({
+      id: 'blu-procs-offguard',
+      fgColor: 'blu-color-offguard',
+    });
+
+    let tormentBox = this.addProcBox({
+      id: 'blu-procs-torment',
+      fgColor: 'blu-color-torment',
+    });
+
+    let lucidBox = this.addProcBox({
+      id: 'blu-procs-lucid',
+      fgColor: 'blu-color-lucid',
+    });
+
+    this.statChangeFuncMap['BLU'] = () => {
+      offguardBox.threshold = this.gcdSpell() * 2;
+      tormentBox.threshold = this.gcdSpell() * 3;
+      lucidBox.threshold = this.gcdSpell() * 4;
+    };
+    this.statChangeFuncMap['BLU']();
 
     this.abilityFuncMap[gLang.kAbility.OffGuard] = () => {
       offguardBox.duration = 0;
-      offguardBox.duration = offguardDuration();
+      offguardBox.duration = bluGcd(60000);
     };
     this.abilityFuncMap[gLang.kAbility.PeculiarLight] = () => {
       offguardBox.duration = 0;
-      offguardBox.duration = offguardDuration();
+      offguardBox.duration = bluGcd(60000);
     };
     this.abilityFuncMap[gLang.kAbility.SongOfTorment] = () => {
       tormentBox.duration = 0;
       tormentBox.duration = 30;
     };
-
-    this.statChangeFuncMap['BLU'] = () => {
-      offguardBox.valuescale = this.gcdSpell();
-      offguardBox.threshold = this.gcdSpell() * 3;
-      tormentBox.valuescale = this.gcdSpell();
-      tormentBox.threshold = this.gcdSpell() * 3;
+    this.abilityFuncMap[gLang.kAbility.LucidDreaming] = () => {
+      lucidBox.duration = 0;
+      lucidBox.duration = 60;
     };
   }
 
@@ -2166,9 +2171,9 @@ class Bars {
 
     // Returns the number of ms until it should be shown. If <= 0, show it.
     let TimeToShowWellFedWarning = function() {
-      let now_ms = Date.now();
-      let show_at_ms = this.foodBuffExpiresTimeMs - (this.options.HideWellFedAboveSeconds * 1000);
-      return show_at_ms - now_ms;
+      let nowMs = Date.now();
+      let showAtMs = this.foodBuffExpiresTimeMs - (this.options.HideWellFedAboveSeconds * 1000);
+      return showAtMs - nowMs;
     };
 
     window.clearTimeout(this.foodBuffTimer);
@@ -2224,11 +2229,11 @@ class Bars {
   SetPullCountdown(seconds) {
     if (this.o.pullCountdown == null) return;
 
-    let in_countdown = seconds > 0;
-    let showing_countdown = parseFloat(this.o.pullCountdown.duration) > 0;
-    if (in_countdown != showing_countdown) {
+    let inCountdown = seconds > 0;
+    let showingCountdown = parseFloat(this.o.pullCountdown.duration) > 0;
+    if (inCountdown != showingCountdown) {
       this.o.pullCountdown.duration = seconds;
-      if (in_countdown) {
+      if (inCountdown) {
         let audio = new Audio('../../resources/sounds/PowerAuras/sonar.ogg');
         audio.volume = 0.3;
         audio.play();
@@ -2347,7 +2352,7 @@ class Bars {
       if (log[15] == '0') {
         let r = log.match(gLang.countdownStartRegex());
         if (r != null) {
-          let seconds = parseFloat(r[1]);
+          let seconds = parseFloat(r.groups.time);
           this.SetPullCountdown(seconds);
           continue;
         }

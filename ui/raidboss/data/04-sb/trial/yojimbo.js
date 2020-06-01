@@ -4,6 +4,7 @@
   zoneRegex: {
     en: /^Kugane Ohashi$/,
     cn: /^保镖歼灭战$/,
+    ko: /^진 요우진보 토벌전$/,
   },
   timelineFile: 'yojimbo.txt',
   triggers: [
@@ -17,6 +18,7 @@
         en: 'Run Marker Away',
         de: 'Mit Marker weglaufen',
         cn: '远离点名',
+        ko: '징 멀리 떨어뜨리기',
       },
     },
     {
@@ -37,6 +39,7 @@
         en: 'Gekko Marker',
         de: 'Gekko Marker',
         cn: '月光点名',
+        ko: '월광 징',
       },
     },
     {
@@ -51,6 +54,7 @@
   timelineReplace: [
     {
       'locale': 'de',
+      'missingTranslations': true,
       'replaceSync': {
         'Electrogenetic Force': 'Elektro-Kraft',
         'Embodiment': 'Gilgamesch-Doppelgänger',
@@ -59,8 +63,6 @@
         'Yojimbo': 'Yojinbo',
       },
       'replaceText': {
-        'A Giant Me': 'A Giant Me', // FIXME
-        'Ame-no-Murakamo': 'Ame-no-Murakamo', // FIXME
         'Bitter End': 'Klingenschimmer',
         'Dragon Night': 'Drachennacht',
         'Dragon\'s Lair': 'Drachenhort',
@@ -69,7 +71,6 @@
         'Epic Stormsplitter': 'Fließende Welt',
         'Gekko': 'Gekko',
         'Giga Jump': 'Giga-Sprung',
-        'Hell\'s Gate': 'Hell\'s Gate', // FIXME
         'Inoshikacho': 'Ino-shika-cho',
         'Kasha': 'Kasha',
         'Masamune': 'Masamune',
@@ -83,6 +84,7 @@
     },
     {
       'locale': 'fr',
+      'missingTranslations': true,
       'replaceSync': {
         'Electrogenetic Force': 'Force électrogénétique',
         'Embodiment': 'double de Gilgamesh',
@@ -91,8 +93,6 @@
         'Yojimbo': 'Yojimbo',
       },
       'replaceText': {
-        'A Giant Me': 'A Giant Me', // FIXME
-        'Ame-no-Murakamo': 'Ame-no-Murakamo', // FIXME
         'Bitter End': 'Éradication',
         'Dragon Night': 'Nuit du dragon',
         'Dragon\'s Lair': 'Fléau du dragon',
@@ -101,7 +101,6 @@
         'Epic Stormsplitter': 'Monde flottant',
         'Gekko': 'Gekkô',
         'Giga Jump': 'Giga saut',
-        'Hell\'s Gate': 'Hell\'s Gate', // FIXME
         'Inoshikacho': 'Ino-shika-cho',
         'Kasha': 'Kasha',
         'Masamune': 'Masamune',
@@ -115,6 +114,7 @@
     },
     {
       'locale': 'ja',
+      'missingTranslations': true,
       'replaceSync': {
         'Electrogenetic Force': '電撃',
         'Embodiment': 'ギルガメッシュの分身',
@@ -123,8 +123,6 @@
         'Yojimbo': 'ヨウジンボウ',
       },
       'replaceText': {
-        'A Giant Me': 'A Giant Me', // FIXME
-        'Ame-no-Murakamo': 'Ame-no-Murakamo', // FIXME
         'Bitter End': 'ヒット・ジ・エンド',
         'Dragon Night': '竜星撃',
         'Dragon\'s Lair': '雲蒸竜変',
@@ -133,7 +131,6 @@
         'Epic Stormsplitter': '我流海嵐斬',
         'Gekko': '月光',
         'Giga Jump': 'ギガジャンプ',
-        'Hell\'s Gate': 'Hell\'s Gate', // FIXME
         'Inoshikacho': '猪鹿蝶',
         'Kasha': '花車',
         'Masamune': 'マサムネ',
@@ -187,8 +184,8 @@
         'Yojimbo': '요우진보',
       },
       'replaceText': {
-        'A Giant Me': 'A Giant Me', // FIXME
-        'Ame-no-Murakamo': 'Ame-no-Murakamo', // FIXME
+        'A Giant Me': '거대 길가메시',
+        'Ame-no-Murakamo': '아메노무라쿠모',
         'Bitter End': '끝장타',
         'Dragon Night': '용성격',
         'Dragon\'s Lair': '운증용변',
@@ -197,7 +194,7 @@
         'Epic Stormsplitter': '아류해풍참',
         'Gekko': '월광',
         'Giga Jump': '기가 점프',
-        'Hell\'s Gate': 'Hell\'s Gate', // FIXME
+        'Hell\'s Gate': '지옥문',
         'Inoshikacho': '멧돼지사슴나비',
         'Kasha': '화차',
         'Masamune': '마사무네',

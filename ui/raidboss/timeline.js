@@ -43,9 +43,11 @@ class Timeline {
       return text;
 
     let orig = text;
-    let locale = this.options.Language || 'en';
+    let replaceLang = this.options.ParserLanguage || 'en';
+    if (replaceKey === 'replaceText')
+      replaceLang = this.options.TimelineLanguage || this.options.ParserLanguage || 'en';
     for (let r of this.replacements) {
-      if (r.locale && r.locale != locale)
+      if (r.locale && r.locale != replaceLang)
         continue;
       if (!r[replaceKey])
         continue;
@@ -55,7 +57,7 @@ class Timeline {
     }
     // Common Replacements
     for (let key in commonReplacement) {
-      let repl = commonReplacement[key][locale];
+      let repl = commonReplacement[key][replaceLang];
       if (!repl)
         continue;
       text = text.replace(Regexes.parse(key), repl);
@@ -77,8 +79,8 @@ class Timeline {
       '--sync--',
       'Start',
       '^ ?21:',
-      '^(\\^\\.\\{14\\})? ?1B:',
-      '^(\\^\\.\\{14\\})? ?21:',
+      '^(\\(\\?\\<timestamp\\>\\^\\.\\{14\\}\\)) (1B|21|23):',
+      '^(\\^\\.\\{14\\})? ?(1B|21|23):',
       '^::\\y{AbilityCode}:$',
       '^\\.\\*$',
     ].map((x) => Regexes.parse(x));
@@ -579,25 +581,15 @@ class TimelineUI {
     this.init = true;
 
     this.root = document.getElementById('timeline-container');
-    if (Options.Language)
-      this.root.classList.add('lang-' + Options.Language);
+    this.root.classList.add('lang-' + Options.TimelineLanguage || Options.ParserLanguage || 'en');
     if (Options.Skin)
       this.root.classList.add('skin-' + Options.Skin);
-
-    this.barWidth = window.getComputedStyle(this.root).width;
-    let windowHeight = parseFloat(window.getComputedStyle(this.root).height.match(/([0-9.]+)px/)[1]);
-    this.barHeight = windowHeight / this.options.MaxNumberOfTimerBars - 2;
 
     this.barColor = computeBackgroundColorFrom(this.root, 'timeline-bar-color');
     this.barExpiresSoonColor = computeBackgroundColorFrom(this.root, 'timeline-bar-color.soon');
 
     this.timerlist = document.getElementById('timeline');
-    this.timerlist.maxnumber = this.options.MaxNumberOfTimerBars;
-    this.timerlist.rowcolsize = this.options.MaxNumberOfTimerBars;
-    this.timerlist.elementwidth = this.barWidth;
-    this.timerlist.elementheight = this.barHeight + 2;
-    this.timerlist.toward = 'down right';
-
+    this.timerlist.style.gridTemplateRows = 'repeat(' + this.options.MaxNumberOfTimerBars + ', 1fr)';
     this.activeBars = {};
     this.expireTimers = {};
   }
@@ -626,9 +618,6 @@ class TimelineUI {
       else
         helperBar.innerText = 'Test bar ' + (i + 1);
       helper.appendChild(helperBar);
-      let borderWidth = parseFloat(window.getComputedStyle(helperBar).borderWidth.match(/([0-9.]+)px/)[1]);
-      helperBar.style.width = this.barWidth - borderWidth * 2;
-      helperBar.style.height = this.barHeight - borderWidth * 2;
     }
 
     this.debugElement = document.getElementById('timeline-debug');
@@ -649,7 +638,8 @@ class TimelineUI {
       this.timeline.SetSpeakTTS(null);
       this.timeline.SetTrigger(null);
       this.timeline.SetSyncTime(null);
-      this.timerlist.clear();
+      while (this.timerlist.lastChild)
+        this.timerlist.removeChild(this.timerlist.lastChild);
       this.debugElement.innerHTML = '';
       this.debugFightTimer = null;
       this.activeBars = {};
@@ -671,9 +661,8 @@ class TimelineUI {
   OnAddTimer(fightNow, e, channeling) {
     let div = document.createElement('div');
     let bar = document.createElement('timer-bar');
+    div.classList.add('timer-bar');
     div.appendChild(bar);
-    bar.width = this.barWidth;
-    bar.height = this.barHeight;
     bar.duration = channeling ? e.time - fightNow : this.options.ShowTimerBarsAtSeconds;
     bar.value = e.time - fightNow;
     bar.righttext = 'remain';
@@ -693,7 +682,15 @@ class TimelineUI {
       bar.fg = this.barExpiresSoonColor;
     }
 
-    this.timerlist.addElement(e.id, div, e.sortKey);
+    // Adding a timer with the same id immediately removes the previous.
+    if (this.activeBars[e.id]) {
+      let div = this.activeBars[e.id].parentNode;
+      div.parentNode.removeChild(div);
+    }
+
+    div.style.order = e.sortKey;
+    div.id = e.id;
+    this.timerlist.appendChild(div);
     this.activeBars[e.id] = bar;
     if (e.id in this.expireTimers) {
       window.clearTimeout(this.expireTimers[e.id]);
@@ -716,7 +713,10 @@ class TimelineUI {
       window.clearTimeout(this.expireTimers[e.id]);
       delete this.expireTimers[e.id];
     }
-    this.timerlist.removeElement(e.id);
+
+    let bar = this.activeBars[e.id];
+    let div = bar.parentNode;
+    div.parentNode.removeChild(div);
     delete this.activeBars[e.id];
   }
 
@@ -758,8 +758,8 @@ class TimelineUI {
 
     if (!this.debugFightTimer) {
       this.debugFightTimer = document.createElement('timer-bar');
-      this.debugFightTimer.width = this.barWidth;
-      this.debugFightTimer.height = this.barHeight;
+      this.debugFightTimer.width = '100px';
+      this.debugFightTimer.height = '17px';
       this.debugFightTimer.duration = 10000; // anything big
       this.debugFightTimer.lefttext = 'elapsed';
       this.debugFightTimer.toward = 'right';
@@ -861,10 +861,12 @@ class TimelineLoader {
 }
 
 // Node compatibility shenanigans.  There's probably a better way to do this.
+// TODO: Probably everything should be converted over to import.
 /* eslint-disable no-var */
 if (typeof require !== 'undefined') {
   let path = require('path');
   var Regexes = require('../../resources/regexes.js');
+  var NetRegexes = require('../../resources/netregexes.js');
 }
 if (typeof module !== 'undefined' && module.exports)
   module.exports = Timeline;

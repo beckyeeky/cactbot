@@ -17,7 +17,11 @@
 // TODO: ordained capital punishment hitting non-tanks
 
 [{
-  zoneRegex: /^The Epic [Oo]f Alexander \(Ultimate\)$/,
+  zoneRegex: {
+    en: /^The Epic [Oo]f Alexander \(Ultimate\)$/,
+    cn: /^亚历山大绝境战$/,
+    ko: /^절 알렉산더 토벌전$/,
+  },
   damageWarn: {
     'TEA Sluice': '49B1',
     'TEA Protean Wave 1': '4824',
@@ -117,10 +121,10 @@
     },
     {
       id: 'TEA Tether Tracking',
-      regex: / 23:(\y{ObjectId}):Jagd Doll:\y{ObjectId}:(\y{Name}):....:....:0011:/,
+      regex: Regexes.tether({ source: 'Jagd Doll', id: '0011' }),
       run: function(e, data, matches) {
         data.jagdTether = data.jagdTether || {};
-        data.jagdTether[matches[1]] = matches[2];
+        data.jagdTether[matches.sourceId] = matches.target;
       },
     },
     {

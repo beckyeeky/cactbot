@@ -27,10 +27,10 @@
           blame: e.targetName,
           text: {
             en: 'lost food buff',
-            fr: 'Buff nourriture terminée',
             de: 'Nahrungsbuff verloren',
-            ko: '음식 버프 해제',
+            fr: 'Buff nourriture terminée',
             cn: '失去食物BUFF',
+            ko: '음식 버프 해제',
           },
         };
       },
@@ -45,7 +45,7 @@
     },
     {
       id: 'General Rabbit Medium',
-      abilityRegex: gLang.kAbility.RabbitMedium,
+      abilityRegex: '8E0',
       condition: function(e, data) {
         return data.IsPlayerId(e.attackerId);
       },
@@ -56,10 +56,10 @@
           text: {
             en: 'bunny',
             de: 'Hase',
-            fr: e.abilityName,
-            ja: e.abilityName,
-            ko: '토끼',
+            fr: 'lapin',
+            ja: 'うさぎ',
             cn: '兔子',
+            ko: '토끼',
           },
         };
       },

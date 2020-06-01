@@ -5,6 +5,7 @@
   zoneRegex: {
     en: /^The Pool Of Tribute \(Extreme\)$/,
     cn: /^须佐之男歼殛战$/,
+    ko: /^극 스사노오 토벌전$/,
   },
   timelineFile: 'susano-ex.txt',
   timelineTriggers: [
@@ -16,6 +17,7 @@
         en: 'look for cloud',
         de: 'Nach Wolke ausschau halten',
         cn: '寻找雷云',
+        ko: '구름 확인',
       },
     },
   ],
@@ -97,6 +99,7 @@
             ja: 'スイッチ',
             fr: 'Tank Swap',
             cn: '换T',
+            ko: '탱 교대',
           };
         }
         return false;
@@ -108,6 +111,7 @@
             de: 'Tank Buster',
             fr: 'Tankbuster',
             cn: '死刑',
+            ko: '탱버',
           };
         }
         return false;
@@ -118,6 +122,7 @@
             en: 'tank buster',
             de: 'tenkbasta',
             cn: '坦克死刑',
+            ko: '탱버',
           };
         }
       },
@@ -135,18 +140,21 @@
             en: 'Knockback on you (cloud)',
             de: 'Rückstoss auf Dir (Wolke)',
             cn: '击退点名（雷云）',
+            ko: '넉백 대상자 (구름)',
           };
         } else if (data.churning) {
           return {
             en: 'Knockback + dice (STOP)',
             de: 'Rückstoss + Würfel (STOPP)',
             cn: '击退+水泡（静止）',
+            ko: '넉백 + 주사위 (가만히)',
           };
         }
         return {
           en: 'Knockback on YOU',
           de: 'Rückstoß auf DIR',
           cn: '击退点名',
+          ko: '넉백 대상자',
         };
       },
       tts: function(data) {
@@ -155,12 +163,14 @@
             en: 'knockback with cloud',
             de: 'Rückstoß mit wolke',
             cn: '雷云击退',
+            ko: '넉백과 구름 장판',
           };
         } else if (data.churning) {
           return {
             en: 'Knockback with dice',
             de: 'Rückstoß mit Würfel',
             cn: '水泡击退',
+            ko: '넉백과 주사위',
           };
         }
         return {
@@ -168,6 +178,7 @@
           de: 'Rückstoß',
           fr: 'Poussée',
           cn: '击退',
+          ko: '넉백',
         };
       },
     },
@@ -183,12 +194,14 @@
             en: 'Levinbolt on you (cloud)',
             de: 'Blitz auf Dir (Wolke)',
             cn: '闪电点名（雷云）',
+            ko: '우레 대상자 (구름)',
           };
         }
         return {
           en: 'Levinbolt on you',
           de: 'Blitz auf dir',
           cn: '闪电点名',
+          ko: '우레 대상자',
         };
       },
       tts: function(data) {
@@ -197,12 +210,14 @@
             en: 'bolt with cloud',
             de: 'blitz mit wolke',
             cn: '闪电带雷云',
+            ko: '구름 번개',
           };
         }
         return {
           en: 'bolt',
           de: 'blitz',
           cn: '闪电',
+          ko: '번개',
         };
       },
     },
@@ -222,9 +237,10 @@
         // sound indicator for jumping rope back and forth.
         if (data.role == 'tank') {
           return {
-            en: 'Stun: ' + matches.target,
-            de: 'Paralyse ' + matches.target,
-            cn: '击晕'+ matches.target,
+            en: 'Stun: ' + data.ShortName(matches.target),
+            de: 'Paralyse ' + data.ShortName(matches.target),
+            cn: '击晕' + data.ShortName(matches.target),
+            ko: data.ShortName(matches.target) + '스턴',
           };
         }
       },
@@ -247,6 +263,7 @@
         en: 'Stop',
         de: 'Stopp',
         cn: '停止动作',
+        ko: '가만히 있기',
       },
 
     },
@@ -262,11 +279,11 @@
         'Let the revels begin': 'Kommt, lasst uns singen und tanzen!',
         'REJOICE!': 'Uohhh!',
         'Susano': 'Susano',
-        'Thunderhead': 'Donnerhall',
+        'Thunderhead': 'Gewitterwolke',
       },
       'replaceText': {
         'Ame No Murakumo': 'Ame No Murakumo',
-        'Ame-No-Murakumo add': 'Ame-No-Murakumo add', // FIXME
+        'Ame-No-Murakumo add': 'Ame No Murakumo Add',
         'Assail': 'Schwere Attacke',
         'Brightstorm': 'Heller Sturm',
         'Churn': 'Schaum',
@@ -306,6 +323,7 @@
     },
     {
       'locale': 'fr',
+      'missingTranslations': true,
       'replaceSync': {
         'Ama-No-Iwato': 'ama no iwato',
         'Ame-No-Murakumo': 'Ame no Murakumo',
@@ -318,21 +336,17 @@
       },
       'replaceText': {
         'Ame No Murakumo': 'Ame No Murakumo',
-        'Ame-No-Murakumo add': 'Ame-No-Murakumo add', // FIXME
         'Assail': 'Assaut',
         'Brightstorm': 'Claire tempête',
         'Churn': 'Agitation',
         'Churning Deep': 'Agitation profonde',
         'Dark Levin': 'foudre violette',
         'Electrocution': 'Électrocution',
-        'Knockback': 'Knockback', // FIXME
         'Levinbolt': 'Fulguration',
-        'Phase': 'Phase', // FIXME
         'Rasen Kaikyo': 'Rasen Kaikyo',
         'Seasplitter': 'Fendeur de mers',
         'Sheer Force': 'Force pure',
         'Shock': 'Décharge électrostatique',
-        'Stack': 'Stack', // FIXME
         'Stormsplitter': 'Fendeur de tempêtes',
         'The Altered Gate': 'Porte altérée',
         'The Hidden Gate': 'Porte cachée',
@@ -341,8 +355,6 @@
         'Ukehi': 'Ukehi',
         'Yasakani No Magatama': 'Yasakani No Magatama',
         'Yata No Kagami': 'Yata No Kagami',
-        'cloud': 'cloud', // FIXME
-        'dice': 'dice', // FIXME
       },
       '~effectNames': {
         'Churning': 'Agitation',
@@ -358,6 +370,7 @@
     },
     {
       'locale': 'ja',
+      'missingTranslations': true,
       'replaceSync': {
         'Ama-No-Iwato': '天岩戸',
         'Ame-No-Murakumo': 'アメノムラクモ',
@@ -370,21 +383,17 @@
       },
       'replaceText': {
         'Ame No Murakumo': 'アメノムラクモ',
-        'Ame-No-Murakumo add': 'Ame-No-Murakumo add', // FIXME
         'Assail': '強撃',
         'Brightstorm': '晴嵐',
         'Churn': '禍泡付着',
         'Churning Deep': '禍泡',
         'Dark Levin': '紫電',
         'Electrocution': '感電',
-        'Knockback': 'Knockback', // FIXME
         'Levinbolt': '稲妻',
-        'Phase': 'Phase', // FIXME
         'Rasen Kaikyo': '螺旋海峡',
         'Seasplitter': '海割り',
         'Sheer Force': '剣圧',
         'Shock': '放電',
-        'Stack': 'Stack', // FIXME
         'Stormsplitter': '海嵐斬',
         'The Altered Gate': '岩戸返し',
         'The Hidden Gate': '岩戸隠れ',
@@ -393,8 +402,6 @@
         'Ukehi': '宇気比',
         'Yasakani No Magatama': 'ヤサカニノマガタマ',
         'Yata No Kagami': 'ヤタノカガミ',
-        'cloud': 'cloud', // FIXME
-        'dice': 'dice', // FIXME
       },
       '~effectNames': {
         'Churning': '禍泡',
@@ -414,7 +421,7 @@
         'Ama-No-Iwato': '天之岩户',
         'Ame-No-Murakumo': '天之丛云',
         'Dark Levin': '紫电',
-        'How our hearts sing in the chaos': '(有意思，真有意思|终于到了该使用神器的时候了吗)', // FIXME: they have the same english translation
+        'How our hearts sing in the chaos': '有意思，真有意思！',
         'Let the revels begin': '欢庆吧！跳舞吧！',
         'REJOICE!': '哇啊啊啊！',
         'Susano': '须佐之男',
@@ -464,47 +471,48 @@
       'locale': 'ko',
       'replaceSync': {
         'Ama-No-Iwato': '신의 바위',
-        'Ame-No-Murakumo': '아메노무라쿠모',
+        'Ame-No-Murakumo(?! )': '아메노무라쿠모',
         'Dark Levin': '번갯불',
-        'How our hearts sing in the chaos': 'How our hearts sing in the chaos', // FIXME
-        'Let the revels begin': 'Let the revels begin', // FIXME
-        'REJOICE!': 'REJOICE!', // FIXME
+        'How our hearts sing in the chaos': '카하하, 흥이 나는구나!',
+        'Let the revels begin': '자, 춤춰라! 제를 올려라!',
+        'REJOICE!': '흐아아아아압!',
         'Susano': '스사노오',
         'Thunderhead': '번개 머리',
       },
       'replaceText': {
-        'Ame No Murakumo': 'Ame No Murakumo', // FIXME
-        'Ame-No-Murakumo add': 'Ame-No-Murakumo add', // FIXME
+        'Ame No Murakumo': '아메노무라쿠모',
+        'Ame-No-Murakumo add': '아메노무라쿠모 쫄',
         'Assail': '강력 공격',
         'Brightstorm': '산바람',
         'Churn': '재앙거품 부착',
         'Churning Deep': '재앙거품',
         'Dark Levin': '번갯불',
         'Electrocution': '감전',
-        'Knockback': 'Knockback', // FIXME
+        'Knockback': '넉백',
         'Levinbolt': '우레',
-        'Phase': 'Phase', // FIXME
+        'Phase': '페이즈',
         'Rasen Kaikyo': '나선 해협',
         'Seasplitter': '바다 가르기',
         'Sheer Force': '검압',
         'Shock': '방전',
-        'Stack': 'Stack', // FIXME
+        'Stack': '집합',
+        'Stun': '기절',
         'Stormsplitter': '해풍참',
         'The Altered Gate': '바위 뒤섞기',
         'The Hidden Gate': '바위 숨기기',
         'The Parting Clouds': '구름 방전',
         'The Sealed Gate': '바위 조이기',
         'Ukehi': '내기 선언',
-        'Yasakani No Magatama': 'Yasakani No Magatama', // FIXME
-        'Yata No Kagami': 'Yata No Kagami', // FIXME
-        'cloud': 'cloud', // FIXME
-        'dice': 'dice', // FIXME
+        'Yasakani No Magatama': '야사카니의 곡옥',
+        'Yata No Kagami': '야타의 거울',
+        'cloud': '구름',
+        'dice': '주사위',
       },
       '~effectNames': {
         'Churning': '재앙거품',
         'Clashing': '칼 막기',
         'Fetters': '구속',
-        'Flesh Wound': '', // FIXME
+        'Flesh Wound': '절상',
         'Lightning Resistance Down': '번개속성 저항 감소',
         'Paralysis': '마비',
         'Sinking': '침몰',

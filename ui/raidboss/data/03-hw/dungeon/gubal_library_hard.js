@@ -65,14 +65,14 @@
             return {
               en: 'Close to boss',
               de: 'Nahe zum Boss',
-              fr: 'Près du boss',
+              fr: 'Rapprochez-vous du boss',
               cn: '靠近boss',
             };
           }
           return {
             en: 'Away from boss',
             de: 'Weg vom Boss',
-            fr: 'Eloignez-vous du boss',
+            fr: 'Éloignez-vous du boss',
             cn: '远离boss',
           };
         }
@@ -92,7 +92,7 @@
       infoText: {
         en: 'Away from boss',
         de: 'Weg vom Boss',
-        fr: 'Eloignez-vous du boss',
+        fr: 'Éloignez-vous du boss',
         cn: '远离boss',
       },
     },
@@ -110,7 +110,7 @@
       infoText: {
         en: 'Stand in red',
         de: 'Im Roten stehen',
-        fr: 'Restez dans le rouge',
+        fr: 'Tenez-vous dans le rouge',
         cn: '站在红色',
       },
     },
@@ -128,7 +128,7 @@
       infoText: {
         en: 'Stand in blue',
         de: 'Im Blauen stehen',
-        fr: 'Restez dans le bleu',
+        fr: 'Tenez-vous dans le bleu',
         cn: '站在蓝色',
       },
     },
@@ -154,7 +154,7 @@
           return {
             en: 'Stun Mechanoscribe',
             de: 'betäube Mechanoscholar',
-            fr: 'Etourdissez le Mécano-scribe',
+            fr: 'Stun sur le Mécano-scribe',
             cn: '眩晕人偶',
           };
         }
@@ -171,7 +171,7 @@
       infoText: {
         en: 'Stand in light circle',
         de: 'Im hellen Kreis stehen',
-        fr: 'Restez dans le cercle blanc',
+        fr: 'Tenez-vous dans le cercle blanc',
         cn: '去白色区域',
       },
     },
@@ -186,7 +186,7 @@
       infoText: {
         en: 'Stand in dark circle',
         de: 'Im dunklen Kreis stehen',
-        fr: 'Restez dans le cercle noir',
+        fr: 'Tenez-vous dans le cercle noir',
         cn: '去黑色区域',
       },
     },
@@ -201,7 +201,7 @@
       infoText: {
         en: 'Cleanse in green circle',
         de: 'Im grünen Kreis reinigen',
-        fr: 'Nettoyez dans le cercle vert',
+        fr: 'Purifiez-vous dans le cercle vert',
         cn: '去绿色区域',
       },
     },
@@ -240,7 +240,7 @@
       alertText: {
         en: 'Hide behind boulder',
         de: 'Hinter dem Brocken verstecken',
-        fr: 'Derrière le rocher',
+        fr: 'Cachez-vous derrière le rocher',
         cn: '站在陨石后',
       },
     },
@@ -252,9 +252,12 @@
         'Behemoth Ward': 'Buch-Behemoth',
         'Demon of the Tome': 'Bücherdämon',
         'Liquid Flame': 'flüssig(?:e|er|es|en) Flamme',
+        'Mechanoscribe': 'Mechanoscholar',
         'Meteor': 'Meteo',
         'Middle Shelf Tome': 'Pappband',
+        'Moonseal': 'Mondsiegel',
         'Strix': 'Strix',
+        'Sunseal': 'Sonnensiegel',
         'The Astrology and Astromancy Camera': 'Astrologische und Astronomische Gewölbe',
         'The Hall of Magicks': 'Halle der Magie',
         'The Rare Tomes Room': 'Abteilung für seltene Schriften',
@@ -262,7 +265,7 @@
       },
       'replaceText': {
         'Bibliocide': 'Bibliozid',
-        'Book Drop': 'Book Drop', // FIXME
+        'Book Drop': 'Buch fällt',
         'Check Out': 'Anthologie',
         'Discontinue': 'Druck einstellen',
         'Ecliptic Meteor': 'Ekliptik-Meteor',
@@ -290,18 +293,22 @@
     {
       'locale': 'fr',
       'replaceSync': {
-        'Behemoth Ward': 'béhémoth conjuré',
+        'Behemoth Ward': 'Béhémoth conjuré',
         'Demon of the Tome': 'Démon du Tome',
-        'Liquid Flame': 'flamme liquide',
+        'Liquid Flame': 'Flamme liquide',
+        'Mechanoscribe': 'Mécano-scribe',
         'Meteor': 'Météore',
-        'Middle Shelf Tome': 'livre broché',
+        'Middle Shelf Tome': 'Livre broché',
+        'Moonseal': 'Marque lunaire',
         'Strix': 'Strix',
-        'The Astrology and Astromancy Camera': 'Dôme d\'astrologie et d\'astromancie',
-        'The Hall of Magicks': 'Puits des magies',
-        'The Rare Tomes Room': 'Dôme des manuscrits rares',
-        'Top Shelf Tome': 'livre relié',
+        'Sunseal': 'Marque solaire',
+        'The Astrology and Astromancy Camera': 'dôme d\'astrologie et d\'astromancie',
+        'The Hall of Magicks': 'puits des magies',
+        'The Rare Tomes Room': 'dôme des manuscrits rares',
+        'Top Shelf Tome': 'Livre relié',
       },
       'replaceText': {
+        '\\?': ' ?',
         'Bibliocide': 'Bibliocide',
         'Book Drop': 'Laché de livre',
         'Check Out': 'Anthologie',
@@ -312,15 +319,15 @@
         'Frightful Roar': 'Rugissement effroyable',
         'Hand/Tornado': 'Main/Tornade',
         'Issue': 'Publication',
-        'Magnetism': 'Magnétisme',
+        'Magnetism/Repel': 'Attraction/Répulsion',
         'Meteor Impact': 'Impact de météore',
-        'Properties Of Darkness': 'Des propriétés d\'Obscurité',
-        'Properties Of Imps': 'Des propriétés de Coup du kappa',
-        'Properties Of Quakes': 'Des propriétés de Méga Séisme',
-        'Properties Of Thunder III': 'Des propriétés de Méga Foudre',
-        'Properties Of Tornados': 'Des propriétés de Tornade',
+        'Properties Of Darkness II': 'Propriétés d\'Extra Obscurité',
+        'Properties Of Darkness(?! II)': 'Propriétés d\'Obscurité',
+        'Properties Of Imps': 'Propriétés de Coup du kappa',
+        'Properties Of Quakes': 'Propriétés de Méga Séisme',
+        'Properties Of Thunder III': 'Propriétés de Méga Foudre',
+        'Properties Of Tornados': 'Propriétés de Tornade',
         'Quakes/Tornados': 'Séismes/Tornades',
-        'Repel': 'Répulsion',
         'Sea Of Flames': 'Mer de flammes',
         'Seal Of Night And Day': 'Gravure',
         'Searing Wind': 'Carbonisation',
@@ -330,13 +337,17 @@
     },
     {
       'locale': 'ja',
+      'missingTranslations': true,
       'replaceSync': {
         'Behemoth Ward': 'ベヒーモス・ワード',
         'Demon of the Tome': 'デモン・オブ・トーム',
         'Liquid Flame': 'リクイドフレイム',
+        'Mechanoscribe': 'メカノスクライブ',
         'Meteor': 'メテオ',
         'Middle Shelf Tome': '並製本',
+        'Moonseal': '月の刻印',
         'Strix': 'ストリックス',
+        'Sunseal': '太陽の刻印',
         'The Astrology and Astromancy Camera': '占星学研究室',
         'The Hall of Magicks': '魔書の翼廊',
         'The Rare Tomes Room': '思想稀覯書庫',
@@ -344,14 +355,12 @@
       },
       'replaceText': {
         'Bibliocide': '火炎',
-        'Book Drop': 'Book Drop', // FIXME
         'Check Out': '選書',
         'Discontinue': '廃刊',
         'Ecliptic Meteor': 'エクリプスメテオ',
         'Folio': '重版',
         'Form Shift': '演武',
         'Frightful Roar': 'フライトフルロア',
-        'Hand/Tornado': 'Hand/Tornado', // FIXME
         'Issue': '刊行',
         'Magnetism': '磁力',
         'Meteor Impact': 'メテオインパクト',
@@ -360,7 +369,6 @@
         'Properties Of Quakes': 'クエイガの章',
         'Properties Of Thunder III': 'サンダガの章',
         'Properties Of Tornados': 'トルネドの章',
-        'Quakes/Tornados': 'Quakes/Tornados', // FIXME
         'Repel': '反発',
         'Sea Of Flames': 'シー・オブ・フレイム',
         'Seal Of Night And Day': '刻印',
@@ -371,13 +379,17 @@
     },
     {
       'locale': 'cn',
+      'missingTranslations': true,
       'replaceSync': {
         'Behemoth Ward': '贝希摩斯护卫',
         'Demon of the Tome': '书中恶魔',
         'Liquid Flame': '液态火焰',
+        'Mechanoscribe': '自走人偶抄写员',
         'Meteor': '陨石',
         'Middle Shelf Tome': '平装本',
+        'Moonseal': '月亮刻印',
         'Strix': '博学林鸮',
+        'Sunseal': '太阳刻印',
         'The Astrology and Astromancy Camera': '占星学研究室',
         'The Hall of Magicks': '魔书翼廊',
         'The Rare Tomes Room': '思想珍秘书库',
@@ -385,14 +397,12 @@
       },
       'replaceText': {
         'Bibliocide': '焚书',
-        'Book Drop': 'Book Drop', // FIXME
         'Check Out': '选集',
         'Discontinue': '停刊',
         'Ecliptic Meteor': '黄道陨石',
         'Folio': '再版',
         'Form Shift': '演武',
         'Frightful Roar': '骇人嚎叫',
-        'Hand/Tornado': 'Hand/Tornado', // FIXME
         'Issue': '发行',
         'Magnetism': '磁力',
         'Meteor Impact': '陨石冲击',
@@ -401,9 +411,8 @@
         'Properties Of Quakes': '爆震之章',
         'Properties Of Thunder III': '暴雷之章',
         'Properties Of Tornados': '龙卷之章',
-        'Quakes/Tornados': 'Quakes/Tornados', // FIXME
         'Repel': '相斥',
-        'Sea Of Flames': '', // FIXME
+        'Sea Of Flames': '火海',
         'Seal Of Night And Day': '刻印',
         'Searing Wind': '热风',
         'Slosh': '突进',
@@ -412,13 +421,17 @@
     },
     {
       'locale': 'ko',
+      'missingTranslations': true,
       'replaceSync': {
         'Behemoth Ward': '고서의 베히모스',
         'Demon of the Tome': '고서의 악마',
         'Liquid Flame': '액체 불꽃',
+        'Mechanoscribe': '기계 서기',
         'Meteor': '메테오',
         'Middle Shelf Tome': '문고본',
+        'Moonseal': '달의 각인',
         'Strix': '스트릭스',
+        'Sunseal': '태양의 각인',
         'The Astrology and Astromancy Camera': '점성학 연구실',
         'The Hall of Magicks': '악마서 복도',
         'The Rare Tomes Room': '사상희귀서고',
@@ -426,14 +439,12 @@
       },
       'replaceText': {
         'Bibliocide': '화염',
-        'Book Drop': 'Book Drop', // FIXME
         'Check Out': '도서 선정',
         'Discontinue': '폐간',
         'Ecliptic Meteor': '황도 메테오',
         'Folio': '증쇄',
         'Form Shift': '연무',
         'Frightful Roar': '끔찍한 포효',
-        'Hand/Tornado': 'Hand/Tornado', // FIXME
         'Issue': '간행',
         'Magnetism': '자력',
         'Meteor Impact': '운석 낙하',
@@ -442,9 +453,8 @@
         'Properties Of Quakes': '퀘이가의 장',
         'Properties Of Thunder III': '선더가의 장',
         'Properties Of Tornados': '토네이도의 장',
-        'Quakes/Tornados': 'Quakes/Tornados', // FIXME
         'Repel': '반발',
-        'Sea Of Flames': '', // FIXME
+        'Sea Of Flames': '화염의 바다',
         'Seal Of Night And Day': '각인',
         'Searing Wind': '열풍',
         'Slosh': '돌진',

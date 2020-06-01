@@ -762,6 +762,8 @@ class EmulatorView {
     // This needs to match the data construction from popup.
     let data = {
       lang: gPopupText.data.lang,
+      displayLang: gPopupText.data.displayLang,
+      parserLang: gPopupText.data.parserLang,
       currentHP: 0,
       options: gPopupText.options,
       party: new PartyTracker(),
@@ -862,6 +864,10 @@ class EmulatorView {
       if (trigger.response) {
         let r = trigger.response;
         response = (typeof r === 'function') ? r(data, matches) : r;
+
+        // Turn falsy values into a default no-op response.
+        if (!response)
+          response = {};
       }
 
       // popup text

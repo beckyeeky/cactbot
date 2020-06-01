@@ -42,29 +42,48 @@ If the overlay doesn't register your casting/catches/reeling in your rod there a
 
 - **Ingame chat log filter**
 
-![image](https://user-images.githubusercontent.com/12807478/68880497-47da3300-0703-11ea-9cf2-2d785656bb04.png)
+![image](images/troubleshooting_chatlogfilter.png)
 
 You need to have at least one chat log set to show `Own Gathering Messages` You can find this option in
 `Character Configuration` -> `Log Window Settings` -> `Log Filters 1/2/3/4` -> `Announcements`
 
 - **ACT FFXIV Plugin options**
 
-![image](https://user-images.githubusercontent.com/12807478/68882607-693d1e00-0707-11ea-96d1-ede45644842a.png)
+![image](images/troubleshooting_hidechatlog.png)
 
 You must have the `Hide Chat Log (for privacy)` option disabled.
 
-- **fisher.js language setting**
-If your game has a text language setting other than english you will need to open /ui/fisher/fisher.js and change the language option to your chosen language:
-  - `en` - English
-  - `de` - German
-  - `fr` - French
-  - `jp` - Japanese
-  - `cn` - Chinese
-
+- Supported language
 Korean is not supported at this time.
-You will need to restart ACT for this setting to take effect.
+You will need to restart ACT after you change parser language.
 
 ## Places To Get Help
 
 - ask in the [FFXIV ACT discord](https://discord.gg/ahFKcmx) #troubleshooting channel
 - open a [github issue](https://github.com/quisquous/cactbot/issues)
+
+## How To Find A Network Log
+
+If you are having issues with triggers or timelines,
+it can be useful to attach a network log from ACT
+so that the [network logs](LogGuide.md#network-log-lines)
+can be replayed and investigated for errors.
+
+To find your network logs, go to the **Plugins** tab in ACT,
+click the **FFXIV Settings** button,
+and then click **Open FFXIV Log Folder**.
+
+![image](images/troubleshooting_openlogfolder.png)
+
+This will open up a folder window with files in it.
+Select a file named something like **Network_etc.log**.
+The files are named with your FFXIV ACT Plugin version and the date.
+
+![image](images/troubleshooting_networklog.png)
+
+These files are often large, so zip them up first.
+
+You can attach these to github issues directly.
+Alternatively, find some file hosting site,
+upload the files there,
+and then attach the link.

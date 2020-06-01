@@ -33,10 +33,10 @@ let gRadar;
 
 let instanceChangedRegex = {
   'en': / 00:0039:You are now in the instanced area/,
-  'cn': / 00:0039:当前所在副本区为/,
   'de': / 00:0039:Du bist nun in dem instanziierten Areal/,
-  'fr': / 00:0039:Vous avez été transporté/,
+  'fr': / 00:0039:Vous êtes maintenant dans la zone instanciée/,
   'ja': / 00:0039:インスタンスエリア/,
+  'cn': / 00:0039:当前所在副本区为/,
   'ko': / 00:0039:인스턴스 지역/,
 };
 
@@ -90,7 +90,7 @@ class Radar {
     this.table = element;
     this.options = Options;
     this.monsters = Object.assign({}, gMonster, Options.CustomMonsters);
-    this.lang = this.options.Language || 'en';
+    this.lang = this.options.ParserLanguage || 'en';
     this.nameToMonster = {};
     for (let i in this.monsters) {
       let monster = this.monsters[i];
@@ -244,7 +244,7 @@ class Radar {
   }
 
   OnLogEvent(e) {
-    let lang = this.options.Language;
+    let lang = this.options.ParserLanguage;
     for (let i = 0; i < e.detail.logs.length; i++) {
       // added new combatant
       let matches = e.detail.logs[i].match(Regexes.addedCombatantFull());

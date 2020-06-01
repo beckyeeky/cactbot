@@ -91,7 +91,7 @@
       regexCn: Regexes.startsUsing({ id: ['3350', '3351'], source: ['欧米茄', '欧米茄M'] }),
       regexKo: Regexes.startsUsing({ id: ['3350', '3351'], source: ['오메가', '오메가 M'] }),
       condition: function(data, matches) {
-        return data.me == matches[1] || data.role == 'healer';
+        return data.me == matches.target || data.role == 'healer';
       },
       suppressSeconds: 1,
       response: Responses.tankBuster(),
@@ -105,7 +105,7 @@
       regexCn: Regexes.startsUsing({ id: ['334B', '334C'], source: ['欧米茄', '欧米茄M'] }),
       regexKo: Regexes.startsUsing({ id: ['334B', '334C'], source: ['오메가', '오메가 M'] }),
       condition: function(data, matches) {
-        return data.me == matches[1] || data.role == 'healer';
+        return data.me == matches.target || data.role == 'healer';
       },
       suppressSeconds: 1,
       response: Responses.tankBuster(),
@@ -130,7 +130,7 @@
           ja: '四角',
           cn: '四角',
           ko: '짝수',
-        }[data.lang];
+        }[data.displayLang];
         let triangleName = {
           en: 'Triangle',
           de: 'Dreieck',
@@ -138,7 +138,7 @@
           ja: '三角',
           cn: '三角',
           ko: '홀수',
-        }[data.lang];
+        }[data.displayLang];
         return '#' + num + ' ' + (isTriangle ? triangleName : squareName);
       },
     },
@@ -675,7 +675,7 @@
             0b110: '남서쪽(7시)',
             0b111: '서쪽(9시)',
           },
-        }[data.lang][v];
+        }[data.displayLang][v];
       },
     },
   ],
@@ -689,7 +689,9 @@
         'Omega-M': 'Omega-M',
         'Optical Unit': 'Optikmodul',
         'Rear Power Unit': 'hinter(?:e|er|es|en) Antriebseinheit',
-        'Right Arm Unit': 'recht(?:e|er|es|en) Arm',
+        'Right Arm Unit': 'rechter Arm',
+        '(?<! )Latent Defect': 'Latenter Bug',
+        'Cascading Latent Defect': 'Latenter Bug: Unterlauf',
       },
       'replaceText': {
         'Advanced Optical Laser': 'Optischer Laser S',

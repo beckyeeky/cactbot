@@ -1,7 +1,6 @@
 'use strict';
 
 let Options = {
-  Language: 'en',
   IQRHookQuantity: 100,
   IQRTugQuantity: 10,
   Colors: {
@@ -126,7 +125,7 @@ class Fisher {
       },
       'ko': {
         'undiscovered': /미지의 낚시터/,
-        'cast': /00:08c3:(?:[\w'가-힣]+) 님이 (?:[\s\d':가-힣]+)에서 낚시를 시작합니다\./,
+        'cast': /00:08c3:(?:[\w'가-힣]+) 님이 ([\s\d':가-힣]+)에서 낚시를 시작합니다\./,
         'bite': /00:08c3:낚싯대를 낚아챘습니다!/,
         'catch': /00:0843:(?:[\w'가-힣]+) 님이 (?:[\s\d':가-힣]+)\(\d+\.\d일름\)(?:을|를) 낚았습니다./,
         'nocatch': /00:08c3:(?:어느새 미끼만 먹고 도망간 것 같습니다……\.|물고기가 도망갔습니다……\.|낚싯줄이 끊어졌습니다!!|아무것도 낚이지 않았습니다\.|이곳에는 물고기가 없는 것 같습니다……\.|물고기는 있는 것 같지만,|.+놓쳐버렸습니다!|물고기를 놓치고 .+도 잃었습니다……\.|물고기들이 경계하기 시작했습니다\.|소지품에 공간이 부족하여)/,
@@ -218,7 +217,7 @@ class Fisher {
     this.fishing = true;
 
     // undiscovered fishing hole
-    if (this.regex[Options.Language]['undiscovered'].test(place)) {
+    if (this.regex[Options.ParserLanguage]['undiscovered'].test(place)) {
       // store this for now
       // if we catch anything we'll pull the data then
       // "data on 'x' is added to your fishing log" is printed before the catch
@@ -262,7 +261,7 @@ class Fisher {
         'castTimestamp': +this.castStart,
         'hookTime': (this.castEnd - this.castStart),
         'reelTime': (this.castGet - this.castEnd),
-        'chum': this.chum?1:0,
+        'chum': this.chum ? 1 : 0,
         'snagging': this.snagging,
       });
     }
@@ -337,8 +336,8 @@ class Fisher {
   parseLine(log) {
     let result = null;
 
-    for (let type in this.regex[Options.Language]) {
-      result = this.regex[Options.Language][type].exec(log);
+    for (let type in this.regex[Options.ParserLanguage]) {
+      result = this.regex[Options.ParserLanguage][type].exec(log);
       if (result != null) {
         switch (type) {
         // case 'bait': this.handleBait(result[1]); break;

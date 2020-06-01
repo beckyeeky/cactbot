@@ -210,15 +210,16 @@
     },
     {
       id: 'E5S Stepped Leader Spread',
-      regex: Regexes.ability({ id: '4BC6', source: 'Ramuh', capture: false }),
-      regexDe: Regexes.ability({ id: '4BC6', source: 'Ramuh', capture: false }),
-      regexFr: Regexes.ability({ id: '4BC6', source: 'Ramuh', capture: false }),
-      regexJa: Regexes.ability({ id: '4BC6', source: 'ラムウ', capture: false }),
-      regexKo: Regexes.ability({ id: '4BC6', source: '라무', capture: false }),
-      regexCn: Regexes.ability({ id: '4BC6', source: '拉姆', capture: false }),
+      regex: Regexes.startsUsing({ id: '4BC6', source: 'Ramuh', capture: false }),
+      regexDe: Regexes.startsUsing({ id: '4BC6', source: 'Ramuh', capture: false }),
+      regexFr: Regexes.startsUsing({ id: '4BC6', source: 'Ramuh', capture: false }),
+      regexJa: Regexes.startsUsing({ id: '4BC6', source: 'ラムウ', capture: false }),
+      regexKo: Regexes.startsUsing({ id: '4BC6', source: '라무', capture: false }),
+      regexCn: Regexes.startsUsing({ id: '4BC6', source: '拉姆', capture: false }),
       condition: function(data) {
         return !data.furysBoltActive;
       },
+      delaySeconds: 3,
       response: Responses.move('alarm'),
     },
     {
@@ -258,6 +259,23 @@
         fr: 'Position pour les nuages',
         ko: '번개 구름 위치 잡기',
         cn: '雷云站位',
+      },
+    },
+    {
+      // Hated of Levin debuff
+      id: 'E5S Stormcloud Cleanse',
+      regex: Regexes.headMarker({ id: '00D2' }),
+      condition: Conditions.targetIsYou(),
+      infoText: {
+        en: 'Cleanse In Cloud',
+      },
+    },
+    {
+      id: 'E5S Stormcloud Drop',
+      regex: Regexes.headMarker({ id: '006E' }),
+      condition: Conditions.targetIsYou(),
+      alertText: {
+        en: 'Drop Cloud Away',
       },
     },
     {
@@ -342,6 +360,8 @@
         'Hated of Levin': 'Fluch des Blitzes',
         'Electrified': 'Stromleiter',
         'Damage Down': 'Schaden -',
+        'Surge Protection': 'Überspannungsschutz',
+        'Fury\'s Bolt': 'Wütender Blitz',
       },
     },
     {

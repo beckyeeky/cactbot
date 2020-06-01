@@ -70,6 +70,16 @@
   top: -3px;
 }
 
+.text.icon {
+  text-align: center;
+  width: 30px;
+}
+
+#label-time > div,
+#label-weather-container > div > div {
+  display: inline-block;
+}
+
 .nm {
   position: absolute;
   font-size: 12px;
@@ -77,6 +87,12 @@
 }
 
 .nm-name {
+  display: block;
+  text-align: center;
+  min-width: 100px;
+}
+
+.nm-progress {
   display: block;
   text-align: center;
   min-width: 100px;
@@ -109,14 +125,35 @@
   }
 }
 
+@keyframes pulse2 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.1);
+  }
+}
+
 .nm-pop .nm-name {
   color: #8686ff;
-  font-size: 18;
+  font-size: 18px;
   animation: pulse 1s infinite alternate;
+}
+
+.bunny.nm-pop .nm-name {
+  color: #66f;
+  font-size: 14px;
+  animation: pulse2 1s infinite alternate;
 }
 
 .nm-pop .nm-time {
   display: none;
+}
+
+.nm-pop .nm-progress {
+  color: #8686ff;
+  font-size: 12px;
 }
 
 .nm-pop .nm-icon {
@@ -141,6 +178,15 @@
   font-weight: normal;
   padding: 5px;
   border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+#label-weather-container {
+  padding-top: 5px;
+}
+
+#label-time {
+  padding-bottom: 5px;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
 }
 
 .aspect-ratio-anemos #label-container {

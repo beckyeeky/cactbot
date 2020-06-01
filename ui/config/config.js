@@ -6,8 +6,9 @@ let gConfig = null;
 // Text in the butter bar, to prompt the user to reload after a config change.
 let kReloadText = {
   en: 'To apply configuration changes, reload cactbot overlays.',
-  de: 'Um die Änderungen zu aktivieren, aktualisiere bitte die Cacbot Overlays.',
-  fr: 'Afin d\'appliquer les modifications, il faut recharger l\'overlay cacbot.',
+  de: 'Um die Änderungen zu aktivieren, aktualisiere bitte die Cactbot Overlays.',
+  fr: 'Afin d\'appliquer les modifications, il faut recharger l\'overlay Cactbot.',
+  ja: '設定を有効にする為、Cactbotオーバーレイを再読み込みしてください',
   cn: '要应用配置更改，请重新加载cactbot悬浮窗。',
   ko: '변경사항을 적용하려면, 오버레이를 새로고침 하십시오.',
 };
@@ -17,6 +18,7 @@ let kReloadButtonText = {
   en: 'Reload',
   de: 'Aktualisieren',
   fr: 'Recharger',
+  ja: '再読み込み',
   cn: '重新加载',
   ko: '새로고침',
 };
@@ -26,6 +28,7 @@ let kDirectoryChooseButtonText = {
   en: 'Choose Directory',
   de: 'Wähle ein Verzeichnis',
   fr: 'Choix du répertoire',
+  ja: 'ディレクトリを選択',
   cn: '选择目录',
   ko: '디렉터리 선택',
 };
@@ -35,6 +38,7 @@ let kDirectoryDefaultText = {
   en: '(Default)',
   de: '(Standard)',
   fr: '(Défaut)',
+  ja: '(初期設定)',
   cn: '(默认)',
   ko: '(기본)',
 };
@@ -51,7 +55,9 @@ class CactbotConfigurator {
       'jobs': [],
     };
     this.configOptions = configOptions;
-    this.lang = configOptions.Language || 'en';
+    // If the user has set a display language, use that.
+    // Otherwise, use the operating system language as a default for the config tool.
+    this.lang = configOptions.DisplayLanguage || configOptions.ShortLocale;
     this.savedConfig = savedConfig || {};
     this.developerOptions = this.getOption('general', 'ShowDeveloperOptions', false);
 
@@ -87,7 +93,7 @@ class CactbotConfigurator {
     document.getElementById('butter-margin').classList.remove('hidden');
   }
 
-  // Helper translate function.  Takes in an object with locale keys
+  // Helper translate function.  Takes in an object with language keys
   // and returns a single entry based on available translations.
   translate(textObj) {
     if (textObj === null || typeof textObj !== 'object' || !textObj['en'])

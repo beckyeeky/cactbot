@@ -286,12 +286,7 @@
       regexJa: Regexes.startsUsing({ source: 'シヴァ', id: '4DDD', capture: false }),
       regexCn: Regexes.startsUsing({ source: '希瓦', id: '4DDD', capture: false }),
       regexKo: Regexes.startsUsing({ source: '시바', id: '4DDD', capture: false }),
-      alertText: {
-        en: 'Back Then Front',
-        de: 'Nach Hinten, danach nach Vorne',
-        fr: 'Derrière puis devant',
-        ko: '뒤로 => 앞으로',
-      },
+      response: Responses.getBackThenFront('alert'),
     },
     {
       id: 'E8N Twin Silence',
@@ -301,12 +296,7 @@
       regexJa: Regexes.startsUsing({ source: 'シヴァ', id: '4DDE', capture: false }),
       regexCn: Regexes.startsUsing({ source: '希瓦', id: '4DDE', capture: false }),
       regexKo: Regexes.startsUsing({ source: '시바', id: '4DDE', capture: false }),
-      alertText: {
-        en: 'Front Then Back',
-        de: 'Nach Vorne, danach nach Hinten',
-        fr: 'Devant puis derrière',
-        ko: '앞으로 => 뒤로',
-      },
+      response: Responses.getFrontThenBack('alert'),
     },
     {
       id: 'E8N Spiteful Dance',
@@ -392,6 +382,7 @@
     },
     {
       'locale': 'fr',
+      'missingTranslations': true,
       'replaceSync': {
         'luminous aether': 'éther de lumière',
         'holy light': 'lumière sacrée',
@@ -433,13 +424,6 @@
         'Biting Frost': 'Taillade de givre',
         'Axe Kick': 'Jambe pourfendeuse',
         'Absolute Zero': 'Zéro absolu',
-
-        // FIXME
-        'Twin Silence/Stillness': 'Twin Silence/Stillness',
-        'Spiteful/Embittered Dance': 'Spiteful/Embittered Dance',
-        'Reflected Kick/Frost': 'Reflected Kick/Frost',
-        'Reflected Frost': 'Reflected Frost',
-        'Kick/Frost': 'Kick/Frost',
       },
       '~effectNames': {
         'Thin Ice': 'Verglas',
@@ -454,6 +438,7 @@
     },
     {
       'locale': 'ja',
+      'missingTranslations': true,
       'replaceSync': {
         'luminous aether': 'ライト・エーテル',
         'holy light': '聖なる光',
@@ -496,13 +481,6 @@
         'Biting Frost': 'フロストスラッシュ',
         'Axe Kick': 'アクスキック',
         'Absolute Zero': '絶対零度',
-
-        // FIXME
-        'Twin Silence/Stillness': 'Twin Silence/Stillness',
-        'Spiteful/Embittered Dance': 'Spiteful/Embittered Dance',
-        'Reflected Kick/Frost': 'Reflected Kick/Frost',
-        'Reflected Frost': 'Reflected Frost',
-        'Kick/Frost': 'Kick/Frost',
       },
       '~effectNames': {
         'Thin Ice': '氷床',

@@ -5,6 +5,7 @@
   zoneRegex: {
     en: /^The Minstrel's Ballad: Shinryu's Domain$/,
     cn: /^神龙梦幻歼灭战$/,
+    ko: /^극 신룡 토벌전$/,
   },
   timelineFile: 'shinryu-ex.txt',
   triggers: [
@@ -83,12 +84,14 @@
             en: 'Akh Morn on YOU',
             de: 'Akh Morn auf DIR',
             cn: '死亡轮回点名',
+            ko: '아크몬 대상자',
           };
         } else if (data.role == 'tank') {
           return {
-            en: 'Akh Morn on ' + matches.target,
-            de: 'Akh Morn auf ' + matches.target,
-            cn: '死亡轮回点名',
+            en: 'Akh Morn on ' + data.ShortName(matches.target),
+            de: 'Akh Morn auf ' + data.ShortName(matches.target),
+            cn: '死亡轮回点' + data.ShortName(matches.target),
+            ko: '"' + data.ShortName(matches.target) + '" 아크몬',
           };
         }
       },
@@ -100,12 +103,14 @@
           en: 'Akh Rhai: spread and move',
           de: 'Akh Rhai: Verteilen und bewegen',
           cn: '天光轮回：散开和移动',
+          ko: '아크 라이: 산개, 이동',
         };
       },
       tts: {
         en: 'akh morn',
         de: 'akh morn',
         cn: '死亡轮回',
+        ko: '아크몬',
       },
     },
     {
@@ -120,11 +125,13 @@
         en: 'Ice: Stack and Stop',
         de: 'Eis: Stack und Stehenbleiben',
         cn: '冰地面：站一起和停止移动',
+        ko: '얼음: 집합하고 이동하지 않기',
       },
       tts: {
         en: 'stop',
         de: 'stopp',
         cn: '停止',
+        ko: '이동하지 않기',
       },
     },
     {
@@ -139,6 +146,7 @@
         en: 'Out of middle',
         de: 'Raus aus der Mitte',
         cn: '离开中间',
+        ko: '중앙 피하기',
       },
     },
     {
@@ -154,11 +162,13 @@
         en: 'Get in water',
         de: 'In\'s Wasser',
         cn: '进水圈',
+        ko: '물 장판에 들어가기',
       },
       tts: {
         en: 'water',
         de: 'wasser',
         cn: '进水圈',
+        ko: '물 장판',
       },
     },
     {
@@ -178,12 +188,14 @@
             en: 'stop to get frozen',
             de: 'Stopp! Einfrieren lassen',
             cn: '停下，冰地面',
+            ko: '멈춰서 얼기',
           };
         }
         return {
           en: 'Stack in water',
           de: 'In Wasser stacken',
           cn: '在水圈攻击',
+          ko: '물 장판에 모이기',
         };
       },
       tts: function(data) {
@@ -192,12 +204,14 @@
             en: 'stop to get frozen',
             de: 'Stopp! Einfrieren lassen',
             cn: '停下，冰地面',
+            ko: '멈춰서 얼기',
           };
         }
         return {
           en: 'water',
           de: 'Wasser',
           cn: '水圈',
+          ko: '물 장판',
         };
       },
     },
@@ -214,6 +228,7 @@
         en: 'out of water',
         de: 'Raus aus dem Wasser',
         cn: '离开水圈',
+        ko: '물 장판 밖으로',
       },
     },
     {
@@ -231,12 +246,14 @@
             en: 'bait bolt, keep moving',
             de: 'Blitz ködern, weiterbewegen',
             cn: '闪电，保持移动',
+            ko: '번개 공격 산개, 계속 움직이기',
           };
         }
         return {
           en: 'Spread out, no water',
           de: 'Verteilen und nicht in\'s Wasser',
           cn: '散开，离开水圈',
+          ko: '산개, 물장판 X',
         };
       },
       tts: function(data) {
@@ -245,12 +262,14 @@
             en: 'bait bolt, keep moving',
             de: 'Blitz ködern, weiterbewegen',
             cn: '闪电，保持移动',
+            ko: '번개 공격 산개, 계속 움직이기',
           };
         }
         return {
           en: 'levinbolt',
           de: 'Blitz',
           cn: '离开闪电',
+          ko: '우레',
         };
       },
     },
@@ -269,6 +288,7 @@
             en: 'move away',
             de: 'wegbewegen',
             cn: '散开',
+            ko: '떨어지기',
           };
         }
       },
@@ -278,6 +298,7 @@
             en: 'move away',
             de: 'weckbewegen',
             cn: '散开',
+            ko: '떨어지기',
           };
         }
       },
@@ -294,6 +315,7 @@
         en: 'icicle, lean west',
         de: 'Eiszapfen, nach westen',
         cn: '冰柱，去左边',
+        ko: '고드름, 왼쪽 먼저',
       },
     },
     {
@@ -308,6 +330,7 @@
         en: 'icicle, lean east',
         de: 'Eiszapfen, nach Osten',
         cn: '冰柱，去右边',
+        ko: '고드름, 오른쪽 먼저',
       },
     },
     {
@@ -324,11 +347,13 @@
         en: 'Knockback, look for water',
         de: 'Rückstoß, nach Wasser schauen',
         cn: '击退，找水圈',
+        ko: '넉백, 물기둥 확인',
       },
       tts: {
         en: 'knockback',
         de: 'Rückstoß',
         cn: '击退',
+        ko: '넉백',
       },
     },
     {
@@ -346,11 +371,13 @@
         en: 'no more heals needed',
         de: 'keine Heilung mehr nötig',
         cn: '不需要更多奶了',
+        ko: '힐 그만',
       },
       tts: {
         en: 'stop healing',
         de: 'keine Heilung mehr',
         cn: '停奶',
+        ko: '힐 그만',
       },
     },
     {
@@ -366,11 +393,13 @@
         en: 'Tail: Switch targets',
         de: 'Schweif: Zielwechsel',
         cn: '打尾巴',
+        ko: '꼬리 공격',
       },
       tts: {
         en: 'tail',
         de: 'schweif',
         cn: '尾巴',
+        ko: '꼬리',
       },
     },
     {
@@ -390,11 +419,13 @@
         en: 'Heart: Switch targets',
         de: 'Herz: Ziel wechseln',
         cn: '打核心',
+        ko: '심핵 공격',
       },
       tts: {
         en: 'heart',
         de: 'herz',
         cn: '核心',
+        ko: '심핵',
       },
     },
     {
@@ -410,11 +441,13 @@
         en: 'avoid divebomb',
         de: 'Divebomb ausweichen',
         cn: '前方顺劈',
+        ko: '급강하 폭격 피하기',
       },
       tts: {
         en: 'divebombs',
         de: 'sturzflug',
         cn: '顺劈',
+        ko: '급강하 폭격',
       },
     },
     {
@@ -431,21 +464,24 @@
             en: 'Death Sentence on YOU',
             de: 'Todesurteil auf DIR',
             cn: '死刑点名',
+            ko: '사형 선고 대상자',
           };
         } else if (data.role == 'healer') {
           return {
-            en: 'Death Sentence on ' + matches.target,
-            de: 'Todesurteil auf ' + matches.target,
-            cn: '死刑点名'+ matches.target,
+            en: 'Death Sentence on ' + data.ShortName(matches.target),
+            de: 'Todesurteil auf ' + data.ShortName(matches.target),
+            cn: '死刑点名' + data.ShortName(matches.target),
+            ko: '"' + data.ShortName(matches.target) + '" 사형 선고',
           };
         }
       },
       infoText: function(data, matches) {
         if (matches.target != data.me && data.role == 'tank') {
           return {
-            en: 'Death Sentence on ' + matches.target,
-            de: 'Todesurteil auf ' + matches.target,
-            cn: '死刑点名'+ matches.target,
+            en: 'Death Sentence on ' + data.ShortName(matches.target),
+            de: 'Todesurteil auf ' + data.ShortName(matches.target),
+            cn: '死刑点名' + data.ShortName(matches.target),
+            ko: '"' + data.ShortName(matches.target) + '" 사형 선고',
           };
         }
       },
@@ -455,6 +491,7 @@
             en: 'Death Sentence',
             de: 'Todesurteil',
             cn: '死刑',
+            ko: '사형 선고',
           };
         }
       },
@@ -491,11 +528,13 @@
         en: 'front cleave',
         de: 'Frontalcleave',
         cn: '离开正面',
+        ko: '범위 밖으로',
       },
       tts: {
         en: 'cleave',
         de: 'klief',
         cn: '顺劈',
+        ko: '범위 공격',
       },
     },
     {
@@ -513,11 +552,13 @@
         en: 'kill left first',
         de: 'linken Flügel zuerst',
         cn: '击杀左翼',
+        ko: '왼쪽 날개 먼저',
       },
       tts: {
         en: 'left first',
         de: 'links zuerst',
         cn: '击杀左翼',
+        ko: '왼쪽 먼저',
       },
       run: function(data) {
         data.finalWing = true;
@@ -538,11 +579,13 @@
         en: 'kill right first',
         de: 'rechten Flügel zuerst',
         cn: '击杀右翼',
+        ko: '오른쪽 날개 먼저',
       },
       tts: {
         en: 'right first',
         de: 'rechts zuerst',
         cn: '击杀右翼',
+        ko: '오른쪽 날개',
       },
       run: function(data) {
         data.finalWing = true;
@@ -561,12 +604,14 @@
             en: 'break tethers then stack',
             de: 'Kette zerreissen, dann stack',
             cn: '拉断锁链然后攻击',
+            ko: '선 끊고 모이기',
           };
         }
         return {
           en: 'break tethers',
           de: 'Ketten zerreissen',
           cn: '拉断锁链',
+          ko: '선 끊기',
         };
       },
       tts: function(data) {
@@ -575,12 +620,14 @@
             en: 'break tethers then stack',
             de: 'Kette zerreissen, dann stack',
             cn: '拉断锁链然后攻击',
+            ko: '선 끊고 모이기',
           };
         }
         return {
           en: 'break tethers',
           de: 'Ketten zerreissen',
           cn: '拉断锁链',
+          ko: '선 끊기',
         };
       },
     },
@@ -594,11 +641,13 @@
         en: 'tail marker on you',
         de: 'Schweifmarker auf dir',
         cn: '龙尾点名',
+        ko: '꼬리 징 대상자',
       },
       tts: {
         en: 'tail marker',
         de: 'schweif marker',
         cn: '龙尾点名',
+        ko: '꼬리 징',
       },
     },
     {
@@ -615,6 +664,7 @@
             en: 'earthshaker on you',
             de: 'Erdstoss auf dir',
             cn: '大地动摇点名',
+            ko: '어스 대상자',
           };
         }
       },
@@ -624,6 +674,7 @@
             en: 'avoid earthshakers',
             de: 'Stöße ausweichen',
             cn: '远离大地动摇',
+            ko: '어스 피하기',
           };
         }
       },
@@ -633,12 +684,14 @@
             en: 'avoid shakers',
             de: 'Stöße ausweichen',
             cn: '离开点名',
+            ko: '어스 피하기',
           };
         }
         return {
           en: 'earthshaker',
           de: 'erdstoß',
           cn: '大地动摇',
+          ko: '어스 징',
         };
       },
       run: function(data) {
@@ -666,6 +719,7 @@
         'Shinryu': 'Shinryu',
         'Tail': 'Schwanz',
         'The Worm\'s Heart': 'Shinryus Herz',
+        'Icicle': 'Eiszapfen',
       },
       'replaceText': {
         'Aerial Blast': 'Windschlag',
@@ -737,6 +791,7 @@
     },
     {
       'locale': 'fr',
+      'missingTranslations': true,
       'replaceSync': {
         'Cocoon': 'cocon de lumière',
         'Ginryu': 'ginryu',
@@ -753,10 +808,8 @@
         'Akh Morn': 'Akh Morn',
         'Akh Rhai': 'Akh Rhai',
         'Atomic Ray': 'Rayon atomique',
-        'Benighting / Wormwail': 'Benighting / Wormwail', // FIXME
         'Benighting Breath': 'Souffle enténébrant',
         'Blazing Trail': 'Trace embrasée',
-        'Cocoon Markers': 'Cocoon Markers', // FIXME
         'Dark Matter': 'Matière sombre',
         'Death Sentence': 'Peine de mort',
         'Diamond Dust': 'Poussière de diamant',
@@ -765,7 +818,6 @@
         'Earth Breath': 'Souffle de terre',
         'Earthen Fury': 'Fureur tellurique',
         'Fireball': 'Boule de feu',
-        'First Wing': 'First Wing', // FIXME
         'Gyre Charge': 'Gyrocharge',
         'Hellfire': 'Flammes de l\'enfer',
         'Hypernova': 'Hypernova',
@@ -774,21 +826,15 @@
         'Judgment Bolt': 'Éclair du jugement',
         'Levinbolt': 'Fulguration',
         'Meteor Impact': 'Impact de météore',
-        'Phase': 'Phase', // FIXME
         'Protostar': 'Proto-étoile',
-        'Reiyu Adds': 'Reiyu Adds', // FIXME
-        'Second Wing': 'Second Wing', // FIXME
         'Shatter': 'Éclatement',
         'Spiked Tail': 'Queue barbelée',
         'Spikesicle': 'Stalactopointe',
         'Summon Icicle': 'Appel de stalactite',
         'Super Cyclone': 'Super cyclone',
-        'TAP BUTTON OR ELSE': 'TAP BUTTON OR ELSE', // FIXME
-        'Tail Marker': 'Tail Marker', // FIXME
         'Tail Slap': 'Gifle caudale',
         'Tail Spit': 'Broche caudale',
         'Tera Slash': 'TéraTaillade',
-        'Tethers': 'Tethers', // FIXME
         'Tidal Wave': 'Raz-de-marée',
         'Touchdown': 'Atterrissage',
       },
@@ -810,13 +856,13 @@
         'Rehabilitation': 'Recouvrement',
         'Sludge': 'Emboué',
         'Stun': 'Étourdissement',
-        'Tethers': 'Tethers', // FIXME
         'The Worm\'s Curse': 'Malédiction du dragon',
         'Thin Ice': 'Verglas',
       },
     },
     {
       'locale': 'ja',
+      'missingTranslations': true,
       'replaceSync': {
         'Cocoon': '光の繭',
         'Ginryu': '銀龍',
@@ -833,10 +879,8 @@
         'Akh Morn': 'アク・モーン',
         'Akh Rhai': 'アク・ラーイ',
         'Atomic Ray': 'アトミックレイ',
-        'Benighting / Wormwail': 'Benighting / Wormwail', // FIXME
         'Benighting Breath': 'ダークネスブレス',
         'Blazing Trail': 'ブレイジングトレイル',
-        'Cocoon Markers': 'Cocoon Markers', // FIXME
         'Dark Matter': 'ダークマター',
         'Death Sentence': 'デスセンテンス',
         'Diamond Dust': 'ダイアモンドダスト',
@@ -845,7 +889,6 @@
         'Earth Breath': 'アースブレス',
         'Earthen Fury': '大地の怒り',
         'Fireball': 'ファイアボール',
-        'First Wing': 'First Wing', // FIXME
         'Gyre Charge': 'ジャイヤチャージ',
         'Hellfire': '地獄の火炎',
         'Hypernova': 'スーパーノヴァ',
@@ -854,21 +897,15 @@
         'Judgment Bolt': '裁きの雷',
         'Levinbolt': '稲妻',
         'Meteor Impact': 'メテオインパクト',
-        'Phase': 'Phase', // FIXME
         'Protostar': 'プロトスター',
-        'Reiyu Adds': 'Reiyu Adds', // FIXME
-        'Second Wing': 'Second Wing', // FIXME
         'Shatter': '破砕',
         'Spiked Tail': 'スパイクテール',
         'Spikesicle': 'アイシクルスパイク',
         'Summon Icicle': 'サモン・アイシクル',
         'Super Cyclone': 'スーパーサイクロン',
-        'TAP BUTTON OR ELSE': 'TAP BUTTON OR ELSE', // FIXME
-        'Tail Marker': 'Tail Marker', // FIXME
         'Tail Slap': 'テールスラップ',
         'Tail Spit': 'テールスピット',
         'Tera Slash': 'テラスラッシュ',
-        'Tethers': 'Tethers', // FIXME
         'Tidal Wave': 'タイダルウェイブ',
         'Touchdown': 'タッチダウン',
       },
@@ -890,7 +927,6 @@
         'Rehabilitation': '徐々にＨＰ回復',
         'Sludge': '汚泥',
         'Stun': 'スタン',
-        'Tethers': 'Tethers', // FIXME
         'The Worm\'s Curse': '龍の呪言',
         'Thin Ice': '氷床',
       },
@@ -984,19 +1020,24 @@
         'Left Wing': '왼쪽 날개',
         'Right Wing': '오른쪽 날개',
         'Shinryu': '신룡',
-        'Tail': '신룡의 꼬리',
+        'Tail(?! )': '신룡의 꼬리',
         'The Worm\'s Heart': '신룡의 심핵',
       },
       'replaceText': {
+        'T\\/H': '탱/힐',
+        'healer[s]*': '힐러',
+        'dps': '딜러',
+        'tank': '탱커',
+        'Rhai': '아크 라이',
         'Aerial Blast': '대기 폭발',
         'Aetherial Ray': '에테르 광선',
         'Akh Morn': '아크 몬',
         'Akh Rhai': '아크 라이',
         'Atomic Ray': '원자 파동',
-        'Benighting / Wormwail': 'Benighting / Wormwail', // FIXME
+        'Benighting / Wormwail': '어둠의 숨결 / 신룡의 포효',
         'Benighting Breath': '어둠의 숨결',
         'Blazing Trail': '작열지옥',
-        'Cocoon Markers': 'Cocoon Markers', // FIXME
+        'Cocoon Markers': '빛의 고체 징',
         'Dark Matter': '암흑물질',
         'Death Sentence': '사형 선고',
         'Diamond Dust': '다이아몬드 더스트',
@@ -1005,7 +1046,7 @@
         'Earth Breath': '대지의 숨결',
         'Earthen Fury': '대지의 분노',
         'Fireball': '화염구',
-        'First Wing': 'First Wing', // FIXME
+        'First Wing': '첫번째 날개',
         'Gyre Charge': '회전 돌진',
         'Hellfire': '지옥의 화염',
         'Hypernova': '초신성',
@@ -1014,21 +1055,21 @@
         'Judgment Bolt': '심판의 벼락',
         'Levinbolt': '우레',
         'Meteor Impact': '운석 낙하',
-        'Phase': 'Phase', // FIXME
+        'Phase': '페이즈',
         'Protostar': '원시별',
-        'Reiyu Adds': 'Reiyu Adds', // FIXME
-        'Second Wing': 'Second Wing', // FIXME
+        'Reiyu Adds': '영룡 쫄',
+        'Second Wing': '두번째 날개',
         'Shatter': '파쇄',
         'Spiked Tail': '독가시 꼬리',
         'Spikesicle': '고드름 돌진',
         'Summon Icicle': '고드름 소환',
         'Super Cyclone': '대형 돌개바람',
-        'TAP BUTTON OR ELSE': 'TAP BUTTON OR ELSE', // FIXME
-        'Tail Marker': 'Tail Marker', // FIXME
+        'TAP BUTTON OR ELSE': '긴 급 조 작',
+        'Tail Marker': '꼬리 징',
         'Tail Slap': '꼬리치기',
         'Tail Spit': '꼬리 찌르기',
         'Tera Slash': '테라 슬래시',
-        'Tethers': 'Tethers', // FIXME
+        'Tethers': '선',
         'Tidal Wave': '해일',
         'Touchdown': '착지',
       },
@@ -1050,7 +1091,7 @@
         'Rehabilitation': '서서히 HP 회복',
         'Sludge': '진흙탕',
         'Stun': '기절',
-        'Tethers': 'Tethers', // FIXME
+        'Tethers': '선',
         'The Worm\'s Curse': '용의 저주',
         'Thin Ice': '얼음 바닥',
       },

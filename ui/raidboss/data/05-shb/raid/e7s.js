@@ -405,6 +405,7 @@
           return {
             infoText: {
               en: 'Avoid ' + data.ShortName(matches.target),
+              de: 'Vermeide ' + data.ShortName(matches.target),
             },
           };
         }
@@ -431,7 +432,7 @@
       alertText: function(data) {
         data.colorMap = data.colorMap || [];
         let colorTrans = data.colorMap[data.color] || {};
-        let color = colorTrans[data.lang];
+        let color = colorTrans[data.displayLang];
         if (!color)
           return;
         return {
@@ -485,15 +486,21 @@
         if (data.role == 'tank') {
           return {
             en: 'Go South',
+            de: 'Geh nach Süden',
+            ko: '남쪽',
           };
         }
         if (data.color == 'light') {
           return {
             en: 'Go Northwest',
+            de: 'Geh nach Nordwesten',
+            ko: '북서쪽',
           };
         }
         return {
           en: 'Go Northeast',
+          de: 'Geh nach Nordosten',
+          ko: '북동쪽',
         };
       },
     },
@@ -506,7 +513,7 @@
       alertText: function(data) {
         data.colorMap = data.colorMap || [];
         let colorTrans = data.colorMap[data.color] || {};
-        let color = colorTrans[data.lang];
+        let color = colorTrans[data.displayLang];
         if (!color)
           return;
         return {
