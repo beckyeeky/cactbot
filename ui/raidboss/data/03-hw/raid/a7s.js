@@ -40,15 +40,18 @@
 //     green tether / purple prey
 
 [{
-  zoneRegex: {
-    en: /^Alexander - The Arm Of The Son \(Savage\)$/,
-    cn: /^亚历山大零式机神城 \(律动之章3\)$/,
-  },
+  zoneId: ZoneId.AlexanderTheArmOfTheSonSavage,
+  timelineNeedsFixing: true,
   timelineFile: 'a7s.txt',
   triggers: [
     {
       id: 'A7S Phase Counter',
       netRegex: NetRegexes.addedCombatant({ name: 'Shanoa', capture: false }),
+      netRegexDe: NetRegexes.addedCombatant({ name: 'Schwarz(?:e|er|es|en) Katze', capture: false }),
+      netRegexFr: NetRegexes.addedCombatant({ name: 'Chat-Noir', capture: false }),
+      netRegexJa: NetRegexes.addedCombatant({ name: 'シャノア', capture: false }),
+      netRegexKo: NetRegexes.addedCombatant({ name: '샤노아', capture: false }),
+      netRegexCn: NetRegexes.addedCombatant({ name: '夏诺雅', capture: false }),
       run: function(data) {
         data.phase = data.phase || 0;
         data.phase++;
@@ -61,6 +64,11 @@
         if (matches.target === data.me) {
           return {
             en: 'Sizzlebeam on YOU',
+            de: 'Gobpartikelstrahl auf DIR',
+            fr: 'Gobrayon sur VOUS',
+            ja: '自分にゴブ式波動砲',
+            cn: '波动炮点名',
+            ko: '고블린식 파동포 대상자',
           };
         }
       },
@@ -68,6 +76,11 @@
         if (matches.target !== data.me) {
           return {
             en: 'Sizzlebeam on ' + data.ShortName(matches.target),
+            de: 'Gobpartikelstrahl auf ' + data.ShortName(matches.target),
+            fr: 'Gobrayon sur ' + data.ShortName(matches.target),
+            ja: data.ShortName(matches.target) + 'にゴブ式波動砲',
+            cn: '波动炮点' + data.ShortName(matches.target),
+            ko: '"' + data.ShortName(matches.target) + '" 고블린식 파동포',
           };
         }
       },
@@ -75,23 +88,48 @@
     {
       id: 'A7S Sizzlespark',
       netRegex: NetRegexes.startsUsing({ source: 'Quickthinx Allthoughts', id: '16F8', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ source: 'Denkfix', id: '16F8', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ source: 'Quickthinx Le Cerveau', id: '16F8', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ source: '万能のクイックシンクス', id: '16F8', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '만능의 퀵싱크스', id: '16F8', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ source: '万事通 奎克辛克斯', id: '16F8', capture: false }),
       condition: Conditions.caresAboutAOE(),
       response: Responses.aoe('info'),
     },
     {
       id: 'A7S Bomb Tether',
       netRegex: NetRegexes.tether({ source: 'Bomb', id: '001F' }),
+      netRegexDe: NetRegexes.tether({ source: 'Bombe', id: '001F' }),
+      netRegexFr: NetRegexes.tether({ source: 'Bombe', id: '001F' }),
+      netRegexJa: NetRegexes.tether({ source: '爆弾', id: '001F' }),
+      netRegexKo: NetRegexes.tether({ source: '폭탄', id: '001F' }),
+      netRegexCn: NetRegexes.tether({ source: '炸弹', id: '001F' }),
       condition: Conditions.targetIsYou(),
-      infoText: {
-        en: 'Bomb Spread',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Bomb Spread',
+          de: 'Bomben verteilen',
+          fr: 'Bombe, dispersez-vous',
+          ja: '爆弾、散開',
+          cn: '炸弹，散开',
+          ko: '폭탄 뿌리기',
+        },
       },
     },
     {
       id: 'A7S Jail Prey',
       netRegex: NetRegexes.headMarker({ id: '0029' }),
       condition: Conditions.targetIsYou(),
-      alertText: {
-        en: 'Jail Prey',
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Jail Prey',
+          de: 'Gefängnis Markierung',
+          fr: 'Marquage prison',
+          ja: '隔離部屋',
+          ko: '감옥 징 대상자',
+        },
       },
     },
     {
@@ -99,15 +137,33 @@
       // This does not include the initial tether, unfortunately.
       // This is another case of "added combatant with initial tether".
       netRegex: NetRegexes.tether({ source: 'Boomtype Magitek Gobwalker G-VII', id: '0011' }),
+      netRegexDe: NetRegexes.tether({ source: 'Gobumm-Stampfer Vii', id: '0011' }),
+      netRegexFr: NetRegexes.tether({ source: 'Gobblindé Magitek G-Vii Boumbardier', id: '0011' }),
+      netRegexJa: NetRegexes.tether({ source: 'Vii号ゴブリウォーカーB型', id: '0011' }),
+      netRegexKo: NetRegexes.tether({ source: 'Vii호 고블린워커 B형', id: '0011' }),
+      netRegexCn: NetRegexes.tether({ source: '爆破型7号哥布林战车', id: '0011' }),
       condition: Conditions.targetIsYou(),
       suppressSeconds: 10,
-      infoText: {
-        en: 'Jail Tether',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Jail Tether',
+          de: 'Gefängnis Verbindung',
+          fr: 'Lien prison',
+          ja: '隔離部屋線',
+          cn: '监狱连线',
+          ko: '감옥 줄 대상자',
+        },
       },
     },
     {
       id: 'A7S Kugelblitz',
       netRegex: NetRegexes.startsUsing({ source: 'Sturm Doll', id: '16FE' }),
+      netRegexDe: NetRegexes.startsUsing({ source: 'Sturmpuppe', id: '16FE' }),
+      netRegexFr: NetRegexes.startsUsing({ source: 'Poupée Sturm', id: '16FE' }),
+      netRegexJa: NetRegexes.startsUsing({ source: 'シュツルムドール', id: '16FE' }),
+      netRegexKo: NetRegexes.startsUsing({ source: '인형 폭기병', id: '16FE' }),
+      netRegexCn: NetRegexes.startsUsing({ source: '风暴人偶', id: '16FE' }),
       condition: function(data) {
         return data.CanStun();
       },
@@ -116,6 +172,11 @@
     {
       id: 'A7S Zoomdoom Clear',
       netRegex: NetRegexes.startsUsing({ source: 'Quickthinx Allthoughts', id: '16F4', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ source: 'Denkfix', id: '16F4', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ source: 'Quickthinx Le Cerveau', id: '16F4', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ source: '万能のクイックシンクス', id: '16F4', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '만능의 퀵싱크스', id: '16F4', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ source: '万事通 奎克辛克斯', id: '16F4', capture: false }),
       run: function(data) {
         delete data.grabbed;
         delete data.stickyloom;
@@ -124,6 +185,11 @@
     {
       id: 'A7S Gobbie Grab',
       netRegex: NetRegexes.ability({ source: 'Quickthinx Allthoughts', id: '15C0' }),
+      netRegexDe: NetRegexes.ability({ source: 'Denkfix', id: '15C0' }),
+      netRegexFr: NetRegexes.ability({ source: 'Quickthinx Le Cerveau', id: '15C0' }),
+      netRegexJa: NetRegexes.ability({ source: '万能のクイックシンクス', id: '15C0' }),
+      netRegexKo: NetRegexes.ability({ source: '만능의 퀵싱크스', id: '15C0' }),
+      netRegexCn: NetRegexes.ability({ source: '万事通 奎克辛克斯', id: '15C0' }),
       run: function(data, matches) {
         data.grabbed = data.grabbed || [];
         data.grabbed.push(matches.target);
@@ -132,6 +198,11 @@
     {
       id: 'A7S Stickyloom',
       netRegex: NetRegexes.ability({ source: 'Boomtype Magitek Gobwalker G-VII', id: '16F2' }),
+      netRegexDe: NetRegexes.ability({ source: 'Gobumm-Stampfer Vii', id: '16F2' }),
+      netRegexFr: NetRegexes.ability({ source: 'Gobblindé Magitek G-Vii Boumbardier', id: '16F2' }),
+      netRegexJa: NetRegexes.ability({ source: 'Vii号ゴブリウォーカーB型', id: '16F2' }),
+      netRegexKo: NetRegexes.ability({ source: 'Vii호 고블린워커 B형', id: '16F2' }),
+      netRegexCn: NetRegexes.ability({ source: '爆破型7号哥布林战车', id: '16F2' }),
       run: function(data, matches) {
         data.stickyloom = matches.target;
       },
@@ -139,29 +210,216 @@
     {
       id: 'A7S Padlock',
       netRegex: NetRegexes.addedCombatant({ name: 'Padlock', capture: false }),
+      netRegexDe: NetRegexes.addedCombatant({ name: 'Vorhängeschloss', capture: false }),
+      netRegexFr: NetRegexes.addedCombatant({ name: 'Cadenas', capture: false }),
+      netRegexJa: NetRegexes.addedCombatant({ name: '錠前', capture: false }),
+      netRegexKo: NetRegexes.addedCombatant({ name: '자물쇠', capture: false }),
+      netRegexCn: NetRegexes.addedCombatant({ name: '牢门的锁', capture: false }),
       condition: function(data) {
         if (!data.grabbed)
           return false;
         // If you're not in a jail, kill the padlock.
         return !data.grabbed.includes(data.me) && data.stickyloom !== data.me;
       },
-      infoText: {
-        en: 'Break Padlock',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Break Padlock',
+          de: 'Schloss zerstören',
+          fr: 'Cassez le cadenas',
+          ja: '錠前を破れ',
+          cn: '打破锁',
+          ko: '자물쇠 부수기',
+        },
       },
     },
     {
       id: 'A7S True Heart',
       netRegex: NetRegexes.ability({ source: 'Shanoa', id: '15EC', capture: false }),
-      alertText: {
-        en: 'Kill Heart',
+      netRegexDe: NetRegexes.ability({ source: 'Schwarz(?:e|er|es|en) Katze', id: '15EC', capture: false }),
+      netRegexFr: NetRegexes.ability({ source: 'Chat-Noir', id: '15EC', capture: false }),
+      netRegexJa: NetRegexes.ability({ source: 'シャノア', id: '15EC', capture: false }),
+      netRegexKo: NetRegexes.ability({ source: '샤노아', id: '15EC', capture: false }),
+      netRegexCn: NetRegexes.ability({ source: '夏诺雅', id: '15EC', capture: false }),
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Kill Heart',
+          de: 'Herz besiegen',
+          fr: 'Tuez le cœur',
+          ja: '真心を倒す',
+          cn: '击杀真心',
+          ko: '진심 없애기',
+        },
       },
     },
     {
       id: 'A7S Searing Wind',
       netRegex: NetRegexes.gainsEffect({ effectId: '178' }),
       condition: Conditions.targetIsYou(),
-      alarmText: {
-        en: 'Searing Wind on YOU',
+      alarmText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Searing Wind on YOU',
+          de: 'Versengen auf DIR',
+          fr: 'Fournaise sur VOUS',
+          ja: '自分に灼熱',
+          cn: '热风点名',
+          ko: '뜨거운 바람 대상자',
+        },
+      },
+    },
+  ],
+  timelineReplace: [
+    {
+      'locale': 'de',
+      'missingTranslations': true,
+      'replaceSync': {
+        'Bomb': 'Bombe',
+        'Boomtype Magitek Gobwalker G-VII': 'Gobumm-Stampfer VII',
+        'Padlock': 'Vorhängeschloss',
+        'Quickthinx Allthoughts': 'Denkfix',
+        'Shanoa': 'Schwarz(?:e|er|es|en) Katze',
+        'Sturm Doll': 'Sturmpuppe',
+      },
+      'replaceText': {
+        'Big Doll': 'Große Puppe',
+        'Bomb(?!(s|en))': 'Bombe',
+        'Bombs': 'Bomben',
+        '(?<![Big|Small] )Doll': 'Puppe',
+        'Flamethrower': 'Flammenwerfer',
+        'Hammertime': 'Hammertime',
+        'Jails': 'Gefängnisse',
+        'Get Prey': 'Markierung hohlen',
+        'Get Tether': 'Verbindung hohlen',
+        'Kill Heart': 'Herz besiegen',
+        'Resync': 'Resync',
+        'Sizzlebeam': 'Gobpartikelstrahl',
+        'Sizzlespark': 'Brutzelblitz',
+        'Small Doll(?!s)': 'kleine Puppe',
+        'Small Dolls': 'kleine Puppen',
+        'Stun Heart': 'Herz unterbrechen',
+        'Uplander Doom': 'Knallregen',
+        'Zoomdoom': 'Gobrakete',
+      },
+    },
+    {
+      'locale': 'fr',
+      'missingTranslations': true,
+      'replaceSync': {
+        'Bomb': 'bombe',
+        'Boomtype Magitek Gobwalker G-VII': 'gobblindé magitek G-VII Boumbardier',
+        'electrocution gallery': 'square d\'exécution publique',
+        'Padlock': 'cadenas',
+        'Quickthinx Allthoughts': 'Quickthinx le Cerveau',
+        'Shanoa': 'Chat-noir',
+        'Sturm Doll': 'poupée sturm',
+      },
+      'replaceText': {
+        'Bomb': 'Bombe',
+        'Flamethrower': 'Lance-flammes',
+        'Sizzlebeam': 'Gobrayon',
+        'Sizzlespark': 'Gobétincelle',
+        'Uplander Doom': 'Fusillade',
+        'Zoomdoom': 'Gobroquette',
+      },
+    },
+    {
+      'locale': 'ja',
+      'missingTranslations': true,
+      'replaceSync': {
+        'Bomb': '爆弾',
+        'Boomtype Magitek Gobwalker G-VII': 'VII号ゴブリウォーカーB型',
+        'Electrocution gallery': '公開処刑広場',
+        'Frostbite': '凍傷',
+        'Padlock': '錠前',
+        'Pyretic': 'ヒート',
+        'Quickthinx Allthoughts': '万能のクイックシンクス',
+        'Shanoa': 'シャノア',
+        'Sturm Doll': 'シュツルムドール',
+      },
+      'replaceText': {
+        'Big Doll': '大きいドール',
+        'Bomb(?!s)': '爆弾',
+        'Bombs': '爆弾',
+        '(?<![Big|Small] )Doll': 'ドール',
+        'Flamethrower': 'フレイムスロアー',
+        'Hammertime': 'オシオキ',
+        'Jails': '隔離部屋',
+        'Get Prey': 'マーキングを取る',
+        'Get Tether': '線を取る',
+        'Kill Heart': '真心を倒す',
+        'Resync': 'シンク',
+        'Sizzlebeam': 'ゴブ式波動砲',
+        'Sizzlespark': 'ゴブリスパーク',
+        'Small Doll(?!s)': '小さいドール',
+        'Small Dolls': '小さいドール',
+        'Stun Heart': 'スタン: 真心',
+        'Uplander Doom': '一斉射撃',
+        'Zoomdoom': 'ゴブロケット',
+      },
+    },
+    {
+      'locale': 'cn',
+      'missingTranslations': true,
+      'replaceSync': {
+        'Bomb': '炸弹',
+        'Boomtype Magitek Gobwalker G-VII': '爆破型7号哥布林战车',
+        'Padlock': '牢门的锁',
+        'Quickthinx Allthoughts': '万事通 奎克辛克斯',
+        'Shanoa': '夏诺雅',
+        'Sturm Doll': '风暴人偶',
+      },
+      'replaceText': {
+        'Big Doll': '大人偶',
+        'Bomb(?!(s|en))': '炸弹',
+        'Bombs': '炸弹',
+        '(?<![Big|Small] )Doll': '人偶',
+        'Flamethrower': '火焰喷射器',
+        'Hammertime': '惩戒',
+        'Jails': '监狱',
+        'Get Prey': '监狱点名',
+        'Get Tether': '监狱连线',
+        'Kill Heart': '击杀真心',
+        'Resync': '重新同步',
+        'Sizzlebeam': '哥布式波动炮',
+        'Sizzlespark': '哥布林火花',
+        'Small Doll(?!s)': '小人偶',
+        'Small Dolls': '小人偶',
+        'Stun Heart': '击晕真心',
+        'Uplander Doom': '齐射',
+        'Zoomdoom': '哥布火箭',
+      },
+    },
+    {
+      'locale': 'ko',
+      'missingTranslations': true,
+      'replaceSync': {
+        'Bomb': '폭탄',
+        'Boomtype Magitek Gobwalker G-VII': 'VII호 고블린워커 B형',
+        'Padlock': '자물쇠',
+        'Quickthinx Allthoughts': '만능의 퀵싱크스',
+        'Shanoa': '샤노아',
+        'Sturm Doll': '인형 폭기병',
+      },
+      'replaceText': {
+        'Big Doll': '큰 인형',
+        'Bomb(?!s)': '폭탄',
+        'Bombs': '폭탄',
+        '(?<![Big|Small] )Doll': '인형',
+        'Flamethrower': '화염 방사',
+        'Get Prey': '인형뽑기',
+        'Get Tether': '밧줄',
+        'Hammertime': '장판',
+        'Jails': '감옥',
+        'Kill Heart': '진심 없애기',
+        'Small Doll(?!s)': '작은 인형',
+        'Small Dolls': '작은 인형',
+        'Sizzlebeam': '고블린식 파동포',
+        'Sizzlespark': '고블린 불꽃',
+        'Stun Heart': '진심 기절시키기',
+        'Uplander Doom': '일제 사격',
+        'Zoomdoom': '고블린 로켓',
       },
     },
   ],

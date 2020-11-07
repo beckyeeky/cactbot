@@ -1,20 +1,17 @@
 'use strict';
 
 [{
-  zoneRegex: {
-    en: /^The Binding Coil Of Bahamut - Turn \(5\)$/,
-    cn: /^巴哈姆特大迷宫 \(邂逅之章5\)$/,
-  },
+  zoneId: ZoneId.TheBindingCoilOfBahamutTurn5,
   timelineFile: 't5.txt',
   triggers: [
     {
       id: 'T5 Death Sentence',
-      regex: Regexes.startsUsing({ source: 'Twintania', id: '5B2' }),
-      regexDe: Regexes.startsUsing({ source: 'Twintania', id: '5B2' }),
-      regexFr: Regexes.startsUsing({ source: 'Gémellia', id: '5B2' }),
-      regexJa: Regexes.startsUsing({ source: 'ツインタニア', id: '5B2' }),
-      regexCn: Regexes.startsUsing({ source: '双塔尼亚', id: '5B2' }),
-      regexKo: Regexes.startsUsing({ source: '트윈타니아', id: '5B2' }),
+      netRegex: NetRegexes.startsUsing({ source: 'Twintania', id: '5B2' }),
+      netRegexDe: NetRegexes.startsUsing({ source: 'Twintania', id: '5B2' }),
+      netRegexFr: NetRegexes.startsUsing({ source: 'Gémellia', id: '5B2' }),
+      netRegexJa: NetRegexes.startsUsing({ source: 'ツインタニア', id: '5B2' }),
+      netRegexCn: NetRegexes.startsUsing({ source: '双塔尼亚', id: '5B2' }),
+      netRegexKo: NetRegexes.startsUsing({ source: '트윈타니아', id: '5B2' }),
       condition: function(data, matches) {
         return data.me == matches.target || data.role == 'healer' || data.job == 'BLU';
       },
@@ -22,37 +19,47 @@
     },
     {
       id: 'T5 Death Sentence Warning',
-      regex: Regexes.startsUsing({ source: 'Twintania', id: '5B2', capture: false }),
-      regexDe: Regexes.startsUsing({ source: 'Twintania', id: '5B2', capture: false }),
-      regexFr: Regexes.startsUsing({ source: 'Gémellia', id: '5B2', capture: false }),
-      regexJa: Regexes.startsUsing({ source: 'ツインタニア', id: '5B2', capture: false }),
-      regexCn: Regexes.startsUsing({ source: '双塔尼亚', id: '5B2', capture: false }),
-      regexKo: Regexes.startsUsing({ source: '트윈타니아', id: '5B2', capture: false }),
+      netRegex: NetRegexes.startsUsing({ source: 'Twintania', id: '5B2', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ source: 'Twintania', id: '5B2', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ source: 'Gémellia', id: '5B2', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ source: 'ツインタニア', id: '5B2', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ source: '双塔尼亚', id: '5B2', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '트윈타니아', id: '5B2', capture: false }),
       condition: function(data) {
         return data.role == 'tank' || data.role == 'healer' || data.job == 'BLU';
       },
       delaySeconds: 30,
       suppressSeconds: 5,
-      infoText: {
-        en: 'Death Sentence Soon',
-        de: 'Todesurteil bald',
-        fr: 'Peine de mort bientôt',
-        cn: '死刑',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Death Sentence Soon',
+          de: 'Todesurteil bald',
+          fr: 'Peine de mort bientôt',
+          ja: 'まもなくデスセンテンス',
+          cn: '死刑',
+          ko: '사형선고',
+        },
       },
     },
     {
       id: 'T5 Liquid Hell',
-      regex: Regexes.startsUsing({ source: 'The Scourge Of Meracydia', id: '4DB', capture: false }),
-      regexDe: Regexes.startsUsing({ source: 'Fackel Von Meracydia', id: '4DB', capture: false }),
-      regexFr: Regexes.startsUsing({ source: 'Fléau De Méracydia', id: '4DB', capture: false }),
-      regexJa: Regexes.startsUsing({ source: 'メラシディアン・ワイバーン', id: '4DB', capture: false }),
-      regexCn: Regexes.startsUsing({ source: '美拉西迪亚祸龙', id: '4DB', capture: false }),
-      regexKo: Regexes.startsUsing({ source: '메라시디아 와이번', id: '4DB', capture: false }),
-      infoText: {
-        en: 'Liquid Hell',
-        de: 'Höllenschmelze',
-        fr: 'Enfer liquide',
-        cn: '液体地狱',
+      netRegex: NetRegexes.startsUsing({ source: 'The Scourge Of Meracydia', id: '4DB', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ source: 'Fackel Von Meracydia', id: '4DB', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ source: 'Fléau De Méracydia', id: '4DB', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ source: 'メラシディアン・ワイバーン', id: '4DB', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ source: '美拉西迪亚祸龙', id: '4DB', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '메라시디아 와이번', id: '4DB', capture: false }),
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Liquid Hell',
+          de: 'Höllenschmelze',
+          fr: 'Enfer liquide',
+          ja: 'ヘルリキッド',
+          cn: '液体地狱',
+          ko: '지옥의 늪',
+        },
       },
     },
     {
@@ -67,19 +74,21 @@
     },
     {
       id: 'T5 Fireball',
-      regex: Regexes.ability({ source: 'Twintania', id: '5AC' }),
-      regexDe: Regexes.ability({ source: 'Twintania', id: '5AC' }),
-      regexFr: Regexes.ability({ source: 'Gémellia', id: '5AC' }),
-      regexJa: Regexes.ability({ source: 'ツインタニア', id: '5AC' }),
-      regexCn: Regexes.ability({ source: '双塔尼亚', id: '5AC' }),
-      regexKo: Regexes.ability({ source: '트윈타니아', id: '5AC' }),
+      netRegex: NetRegexes.ability({ source: 'Twintania', id: '5AC' }),
+      netRegexDe: NetRegexes.ability({ source: 'Twintania', id: '5AC' }),
+      netRegexFr: NetRegexes.ability({ source: 'Gémellia', id: '5AC' }),
+      netRegexJa: NetRegexes.ability({ source: 'ツインタニア', id: '5AC' }),
+      netRegexCn: NetRegexes.ability({ source: '双塔尼亚', id: '5AC' }),
+      netRegexKo: NetRegexes.ability({ source: '트윈타니아', id: '5AC' }),
       alertText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Fireball on YOU',
             de: 'Feuerball auf DIR',
             fr: 'Boule de feu sur VOUS',
+            ja: '自分にファイアボール',
             cn: '火球点名',
+            ko: '나에게 화염구',
           };
         }
       },
@@ -89,26 +98,30 @@
             en: 'Fireball on ' + data.ShortName(matches.target),
             de: 'Feuerball auf ' + data.ShortName(matches.target),
             fr: 'Boule de feu sur ' + data.ShortName(matches.target),
+            ja: data.ShortName(matches.target) + 'にファイアボール',
             cn: '火球点' + data.ShortName(matches.target),
+            ko: '"' + data.ShortName(matches.target) + '" 쉐어징',
           };
         }
       },
     },
     {
       id: 'T5 Conflagration',
-      regex: Regexes.ability({ source: 'Twintania', id: '5AB' }),
-      regexDe: Regexes.ability({ source: 'Twintania', id: '5AB' }),
-      regexFr: Regexes.ability({ source: 'Gémellia', id: '5AB' }),
-      regexJa: Regexes.ability({ source: 'ツインタニア', id: '5AB' }),
-      regexCn: Regexes.ability({ source: '双塔尼亚', id: '5AB' }),
-      regexKo: Regexes.ability({ source: '트윈타니아', id: '5AB' }),
+      netRegex: NetRegexes.ability({ source: 'Twintania', id: '5AB' }),
+      netRegexDe: NetRegexes.ability({ source: 'Twintania', id: '5AB' }),
+      netRegexFr: NetRegexes.ability({ source: 'Gémellia', id: '5AB' }),
+      netRegexJa: NetRegexes.ability({ source: 'ツインタニア', id: '5AB' }),
+      netRegexCn: NetRegexes.ability({ source: '双塔尼亚', id: '5AB' }),
+      netRegexKo: NetRegexes.ability({ source: '트윈타니아', id: '5AB' }),
       alarmText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Conflag on YOU',
             de: 'Feuersturm auf DIR',
             fr: 'Tempête de feu sur VOUS',
+            ja: '自分にファイアストーム',
             cn: '火焰流点名',
+            ko: '불보라 보스밑으로',
           };
         }
       },
@@ -118,7 +131,9 @@
             en: 'Conflag on ' + data.ShortName(matches.target),
             de: 'Feuersturm auf ' + data.ShortName(matches.target),
             fr: 'Tempête de feu sur ' + data.ShortName(matches.target),
+            ja: data.ShortName(matches.target) + 'にファイアストーム',
             cn: '火焰流点' + data.ShortName(matches.target),
+            ko: '불보라' + data.ShortName(matches.target),
           };
         }
       },
@@ -135,75 +150,94 @@
     },
     {
       id: 'T5 Divebomb',
-      regex: Regexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
-      regexDe: Regexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
-      regexFr: Regexes.ability({ source: 'Gémellia', id: '5B0', capture: false }),
-      regexJa: Regexes.ability({ source: 'ツインタニア', id: '5B0', capture: false }),
-      regexCn: Regexes.ability({ source: '双塔尼亚', id: '5B0', capture: false }),
-      regexKo: Regexes.ability({ source: '트윈타니아', id: '5B0', capture: false }),
-      alertText: {
-        en: 'DIVEBOMB',
-        de: 'STURZBOMBE',
-        fr: 'BOMBE PLONGEANTE',
-        cn: '俯冲',
+      netRegex: NetRegexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
+      netRegexDe: NetRegexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
+      netRegexFr: NetRegexes.ability({ source: 'Gémellia', id: '5B0', capture: false }),
+      netRegexJa: NetRegexes.ability({ source: 'ツインタニア', id: '5B0', capture: false }),
+      netRegexCn: NetRegexes.ability({ source: '双塔尼亚', id: '5B0', capture: false }),
+      netRegexKo: NetRegexes.ability({ source: '트윈타니아', id: '5B0', capture: false }),
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'DIVEBOMB',
+          de: 'STURZBOMBE',
+          fr: 'BOMBE PLONGEANTE',
+          ja: 'ダイブボム',
+          cn: '俯冲',
+          ko: '급강하',
+        },
       },
     },
     {
       id: 'T5 Divebomb Set Two',
-      regex: Regexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
-      regexDe: Regexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
-      regexFr: Regexes.ability({ source: 'Gémellia', id: '5B0', capture: false }),
-      regexJa: Regexes.ability({ source: 'ツインタニア', id: '5B0', capture: false }),
-      regexCn: Regexes.ability({ source: '双塔尼亚', id: '5B0', capture: false }),
-      regexKo: Regexes.ability({ source: '트윈타니아', id: '5B0', capture: false }),
+      netRegex: NetRegexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
+      netRegexDe: NetRegexes.ability({ source: 'Twintania', id: '5B0', capture: false }),
+      netRegexFr: NetRegexes.ability({ source: 'Gémellia', id: '5B0', capture: false }),
+      netRegexJa: NetRegexes.ability({ source: 'ツインタニア', id: '5B0', capture: false }),
+      netRegexCn: NetRegexes.ability({ source: '双塔尼亚', id: '5B0', capture: false }),
+      netRegexKo: NetRegexes.ability({ source: '트윈타니아', id: '5B0', capture: false }),
       delaySeconds: 60,
       suppressSeconds: 5000,
-      infoText: {
-        en: 'Divebombs Soon',
-        de: 'Sturzbombe bald',
-        fr: 'Bombe plongeante bientôt',
-        cn: '即将俯冲',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Divebombs Soon',
+          de: 'Sturzbombe bald',
+          fr: 'Bombe plongeante bientôt',
+          ja: 'まもなくダイブボム',
+          cn: '即将俯冲',
+          ko: '급강하 준비',
+        },
       },
     },
     {
       // Unwoven Will
       id: 'T5 Dreadknight',
-      regex: Regexes.ability({ source: 'Twintania', id: '4E3' }),
-      regexDe: Regexes.ability({ source: 'Twintania', id: '4E3' }),
-      regexFr: Regexes.ability({ source: 'Gémellia', id: '4E3' }),
-      regexJa: Regexes.ability({ source: 'ツインタニア', id: '4E3' }),
-      regexCn: Regexes.ability({ source: '双塔尼亚', id: '4E3' }),
-      regexKo: Regexes.ability({ source: '트윈타니아', id: '4E3' }),
+      netRegex: NetRegexes.ability({ source: 'Twintania', id: '4E3' }),
+      netRegexDe: NetRegexes.ability({ source: 'Twintania', id: '4E3' }),
+      netRegexFr: NetRegexes.ability({ source: 'Gémellia', id: '4E3' }),
+      netRegexJa: NetRegexes.ability({ source: 'ツインタニア', id: '4E3' }),
+      netRegexCn: NetRegexes.ability({ source: '双塔尼亚', id: '4E3' }),
+      netRegexKo: NetRegexes.ability({ source: '트윈타니아', id: '4E3' }),
       infoText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Knight on YOU',
             de: 'Furchtritter auf DIR',
             fr: 'Chevalier sur VOUS',
+            ja: '自分にナイト',
             cn: '骑士点名',
+            ko: '드레드 대상자',
           };
         }
         return {
           en: 'Knight on ' + data.ShortName(matches.target),
           de: 'Furchtritter auf ' + data.ShortName(matches.target),
           fr: 'Chevalier sur ' + data.ShortName(matches.target),
+          ja: data.ShortName(matches.target) + 'にナイト',
           cn: '骑士点' + data.ShortName(matches.target),
+          ko: '드래드 대상' + data.ShortName(matches.target),
         };
       },
     },
     {
       id: 'T5 Twister',
-      regex: Regexes.startsUsing({ source: 'Twintania', id: '4E1', capture: false }),
-      regexDe: Regexes.startsUsing({ source: 'Twintania', id: '4E1', capture: false }),
-      regexFr: Regexes.startsUsing({ source: 'Gémellia', id: '4E1', capture: false }),
-      regexJa: Regexes.startsUsing({ source: 'ツインタニア', id: '4E1', capture: false }),
-      regexCn: Regexes.startsUsing({ source: '双塔尼亚', id: '4E1', capture: false }),
-      regexKo: Regexes.startsUsing({ source: '트윈타니아', id: '4E1', capture: false }),
-      alertText: {
-        en: 'Twister!',
-        de: 'Wirbelsturm!',
-        fr: 'Tornade !',
-        cn: '风风风！',
+      netRegex: NetRegexes.startsUsing({ source: 'Twintania', id: '4E1', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ source: 'Twintania', id: '4E1', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ source: 'Gémellia', id: '4E1', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ source: 'ツインタニア', id: '4E1', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ source: '双塔尼亚', id: '4E1', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '트윈타니아', id: '4E1', capture: false }),
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Twister!',
+          de: 'Wirbelsturm!',
+          fr: 'Tornade !',
+          ja: 'ツイスター!',
+          cn: '风风风！',
+          ko: '회오리',
+        },
       },
     },
     {
@@ -218,19 +252,21 @@
     },
     {
       id: 'T5 Hatch',
-      regex: Regexes.ability({ source: 'Twintania', id: '5AD' }),
-      regexDe: Regexes.ability({ source: 'Twintania', id: '5AD' }),
-      regexFr: Regexes.ability({ source: 'Gémellia', id: '5AD' }),
-      regexJa: Regexes.ability({ source: 'ツインタニア', id: '5AD' }),
-      regexCn: Regexes.ability({ source: '双塔尼亚', id: '5AD' }),
-      regexKo: Regexes.ability({ source: '트윈타니아', id: '5AD' }),
+      netRegex: NetRegexes.ability({ source: 'Twintania', id: '5AD' }),
+      netRegexDe: NetRegexes.ability({ source: 'Twintania', id: '5AD' }),
+      netRegexFr: NetRegexes.ability({ source: 'Gémellia', id: '5AD' }),
+      netRegexJa: NetRegexes.ability({ source: 'ツインタニア', id: '5AD' }),
+      netRegexCn: NetRegexes.ability({ source: '双塔尼亚', id: '5AD' }),
+      netRegexKo: NetRegexes.ability({ source: '트윈타니아', id: '5AD' }),
       alertText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Hatch on YOU',
             de: 'Austritt auf DIR',
             fr: 'Éclosion sur VOUS',
+            ja: '自分に魔力爆散',
             cn: '黑球点名',
+            ko: '나에게 마력방출',
           };
         }
       },
@@ -240,7 +276,9 @@
             en: 'Hatch on ' + data.ShortName(matches.target),
             de: 'Austritt auf ' + data.ShortName(matches.target),
             fr: 'Éclosion sur ' + data.ShortName(matches.target),
+            ja: data.ShortName(matches.target) + 'に魔力爆散',
             cn: '黑球点' + data.ShortName(matches.target),
+            ko: '마력방출' + data.ShortName(matches.target),
           };
         }
       },
@@ -273,7 +311,7 @@
       'locale': 'fr',
       'replaceSync': {
         'The Right Hand of Bahamut': 'la Serre droite de Bahamut',
-        'The Scourge Of Meracydia': 'Fléau de Méracydia',
+        'The Scourge Of Meracydia': 'Fléau De Méracydia',
         'Twintania': 'Gémellia',
       },
       'replaceText': {

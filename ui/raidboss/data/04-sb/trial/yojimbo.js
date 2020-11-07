@@ -1,29 +1,30 @@
 'use strict';
 
 [{
-  zoneRegex: {
-    en: /^Kugane Ohashi$/,
-    cn: /^保镖歼灭战$/,
-    ko: /^진 요우진보 토벌전$/,
-  },
+  zoneId: ZoneId.KuganeOhashi,
   timelineFile: 'yojimbo.txt',
   triggers: [
     {
       id: 'Yojimbo Giga Jump',
-      regex: Regexes.headMarker({ id: '0057' }),
+      netRegex: NetRegexes.headMarker({ id: '0057' }),
       condition: function(data, matches) {
         return matches.target == data.me;
       },
-      alertText: {
-        en: 'Run Marker Away',
-        de: 'Mit Marker weglaufen',
-        cn: '远离点名',
-        ko: '징 멀리 떨어뜨리기',
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Run Marker Away',
+          de: 'Mit Marker weglaufen',
+          fr: 'Fuyez avec le marqueur',
+          ja: 'マークから離れ',
+          cn: '远离点名',
+          ko: '징 멀리 떨어뜨리기',
+        },
       },
     },
     {
       id: 'Yojimbo Dorito',
-      regex: Regexes.headMarker({ id: '0037' }),
+      netRegex: NetRegexes.headMarker({ id: '0037' }),
       condition: function(data, matches) {
         return matches.target == data.me;
       },
@@ -31,20 +32,25 @@
     },
     {
       id: 'Yojimbo Gekko',
-      regex: Regexes.headMarker({ id: '0090' }),
+      netRegex: NetRegexes.headMarker({ id: '0090' }),
       condition: function(data, matches) {
         return matches.target == data.me;
       },
-      infoText: {
-        en: 'Gekko Marker',
-        de: 'Gekko Marker',
-        cn: '月光点名',
-        ko: '월광 징',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Gekko Marker',
+          de: 'Gekko Marker',
+          fr: 'Marqueur Gekkô',
+          ja: '月光マーキング',
+          cn: '月光点名',
+          ko: '월광 징',
+        },
       },
     },
     {
       id: 'Yojimbo Enchain',
-      regex: Regexes.headMarker({ id: '0005' }),
+      netRegex: NetRegexes.headMarker({ id: '0005' }),
       condition: function(data, matches) {
         return matches.target == data.me;
       },
@@ -54,7 +60,6 @@
   timelineReplace: [
     {
       'locale': 'de',
-      'missingTranslations': true,
       'replaceSync': {
         'Electrogenetic Force': 'Elektro-Kraft',
         'Embodiment': 'Gilgamesch-Doppelgänger',
@@ -63,6 +68,8 @@
         'Yojimbo': 'Yojinbo',
       },
       'replaceText': {
+        'A Giant Me': 'Dann wirf mal \'nen Blick hinter uns!',
+        'Ame-no-Murakumo': 'Ame no Murakumo',
         'Bitter End': 'Klingenschimmer',
         'Dragon Night': 'Drachennacht',
         'Dragon\'s Lair': 'Drachenhort',
@@ -71,6 +78,7 @@
         'Epic Stormsplitter': 'Fließende Welt',
         'Gekko': 'Gekko',
         'Giga Jump': 'Giga-Sprung',
+        'Hell\'s Gate': 'Höllentor',
         'Inoshikacho': 'Ino-shika-cho',
         'Kasha': 'Kasha',
         'Masamune': 'Masamune',
@@ -84,7 +92,6 @@
     },
     {
       'locale': 'fr',
-      'missingTranslations': true,
       'replaceSync': {
         'Electrogenetic Force': 'Force électrogénétique',
         'Embodiment': 'double de Gilgamesh',
@@ -93,6 +100,8 @@
         'Yojimbo': 'Yojimbo',
       },
       'replaceText': {
+        'A Giant Me': 'J\'ai toujours eu la folie des grandeurs',
+        'Ame-no-Murakumo': 'Ame no Murakumo',
         'Bitter End': 'Éradication',
         'Dragon Night': 'Nuit du dragon',
         'Dragon\'s Lair': 'Fléau du dragon',
@@ -101,6 +110,7 @@
         'Epic Stormsplitter': 'Monde flottant',
         'Gekko': 'Gekkô',
         'Giga Jump': 'Giga saut',
+        'Hell\'s Gate': 'Portes de l\'enfer',
         'Inoshikacho': 'Ino-shika-cho',
         'Kasha': 'Kasha',
         'Masamune': 'Masamune',
@@ -114,7 +124,6 @@
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
         'Electrogenetic Force': '電撃',
         'Embodiment': 'ギルガメッシュの分身',
@@ -123,6 +132,8 @@
         'Yojimbo': 'ヨウジンボウ',
       },
       'replaceText': {
+        'A Giant Me': '巨身の術',
+        'Ame-no-Murakumo': 'アメノムラクモ',
         'Bitter End': 'ヒット・ジ・エンド',
         'Dragon Night': '竜星撃',
         'Dragon\'s Lair': '雲蒸竜変',
@@ -131,6 +142,7 @@
         'Epic Stormsplitter': '我流海嵐斬',
         'Gekko': '月光',
         'Giga Jump': 'ギガジャンプ',
+        'Hell\'s Gate': '獄門',
         'Inoshikacho': '猪鹿蝶',
         'Kasha': '花車',
         'Masamune': 'マサムネ',
@@ -153,7 +165,7 @@
       },
       'replaceText': {
         'A Giant Me': '巨大化之术',
-        'Ame-no-Murakamo': '天之丛云',
+        'Ame-no-Murakumo': '天之丛云',
         'Bitter End': '命尽于此',
         'Dragon Night': '龙星击',
         'Dragon\'s Lair': '云蒸龙变',
@@ -162,7 +174,7 @@
         'Epic Stormsplitter': '我流破浪斩',
         'Gekko': '月光',
         'Giga Jump': '十亿跳跃',
-        'Hell\'s Gate': '地狱之门',
+        'Hell\'s Gate': '狱门',
         'Inoshikacho': '猪鹿蝶',
         'Kasha': '花车',
         'Masamune': '正宗',
@@ -185,7 +197,7 @@
       },
       'replaceText': {
         'A Giant Me': '거대 길가메시',
-        'Ame-no-Murakamo': '아메노무라쿠모',
+        'Ame-no-Murakumo': '아메노무라쿠모',
         'Bitter End': '끝장타',
         'Dragon Night': '용성격',
         'Dragon\'s Lair': '운증용변',

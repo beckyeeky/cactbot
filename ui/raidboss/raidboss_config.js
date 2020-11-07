@@ -1,105 +1,9 @@
 'use strict';
 
-let kPrefixToCategory = {
-  '00-misc': {
-    en: 'General Triggers',
-    de: 'General Trigger',
-    fr: 'Général',
-    ja: '汎用',
-    cn: '通用触发器',
-    ko: '공용 트리거',
-  },
-  '02-arr': {
-    en: 'A Realm Reborn (ARR 2.x)',
-    de: 'A Realm Reborn (ARR 2.x)',
-    fr: 'A Realm Reborn (ARR 2.x)',
-    ja: '新生エオルゼア (2.x)',
-    cn: '重生之境 (2.x)',
-    ko: '신생 에오르제아 (2.x)',
-  },
-  '03-hw': {
-    en: 'Heavensward (HW 3.x)',
-    de: 'Heavensward (HW 3.x)',
-    fr: 'Heavensward (HW 3.x)',
-    ja: '蒼天のイシュガルド (3.x)',
-    cn: '苍穹之禁城 (3.x)',
-    ko: '창천의 이슈가르드 (3.x)',
-  },
-  '04-sb': {
-    en: 'Stormblood (SB 4.x)',
-    de: 'Stormblood (SB 4.x)',
-    fr: 'Stormblood (SB 4.x)',
-    ja: '紅蓮のリベレーター (4.x)',
-    cn: '红莲之狂潮 (4.x)',
-    ko: '홍련의 해방자 (4.x)',
-  },
-  '05-shb': {
-    en: 'Shadowbringers (ShB 5.x)',
-    de: 'Shadowbringers (ShB 5.x)',
-    fr: 'Shadowbringers (ShB 5.x)',
-    ja: '漆黒のヴィランズ',
-    cn: '暗影之逆焰 (5.x)',
-    ko: '칠흑의 반역자 (5.x)',
-  },
-};
-
-let kDirectoryToCategory = {
-  alliance: {
-    en: 'Alliance Raid',
-    de: 'Allianz-Raid',
-    fr: 'Raid en Alliance',
-    ja: 'アライアンスレイド',
-    cn: '团队任务',
-    ko: '연합 레이드',
-  },
-  dungeon: {
-    en: 'Dungeon',
-    de: 'Dungeon',
-    fr: 'Donjon',
-    ja: 'ダンジョン',
-    cn: '迷宫挑战',
-    ko: '던전',
-  },
-  eureka: {
-    en: 'Eureka',
-    de: 'Eureka',
-    fr: 'Eurêka',
-    ja: '禁断の地エウレカ',
-    cn: '禁地优雷卡',
-    ko: '에우레카',
-  },
-  raid: {
-    en: 'Raid',
-    de: 'Raid',
-    fr: 'Raid',
-    ja: 'レイド',
-    cn: '大型任务',
-    ko: '레이드',
-  },
-  pvp: {
-    en: 'PVP',
-    de: 'PvP',
-    fr: 'JcJ',
-    ja: 'PvP',
-    cn: 'PvP',
-    ko: 'PvP',
-  },
-  trial: {
-    en: 'Trial',
-    de: 'Prüfung',
-    fr: 'Défi',
-    ja: '討伐・討滅戦',
-    cn: '讨伐歼灭战',
-    ko: '토벌전',
-  },
-  ultimate: {
-    en: 'Ultimate',
-    de: 'Fatale Raids',
-    fr: 'Raid fatal',
-    ja: '絶シリーズ',
-    cn: '绝境战',
-    ko: '절 난이도',
-  },
+const kOptionKeys = {
+  output: 'Output',
+  duration: 'Duration',
+  outputStrings: 'OutputStrings',
 };
 
 // No sound only option, because that's silly.
@@ -182,6 +86,10 @@ let kDetailKeys = {
   'triggerNetRegex': {
     label: {
       en: 'netregex',
+      de: 'netregex',
+      fr: 'netregex',
+      ja: 'ネット正規表現',
+      cn: '网络日志正则表达式',
     },
     cls: 'regex-text',
     debugOnly: true,
@@ -209,6 +117,18 @@ let kDetailKeys = {
     },
     cls: 'condition-text',
     debugOnly: true,
+  },
+  'duration': {
+    label: {
+      en: 'duration (sec)',
+      de: 'Dauer (Sekunden)',
+      fr: 'Durée (secondes)',
+      ja: '存続時間 (秒)',
+      cn: '持续时间 (秒)',
+      ko: '지속 시간 (초)',
+    },
+    cls: 'duration-text',
+    generatedManually: true,
   },
   'preRun': {
     label: {
@@ -291,6 +211,22 @@ let kDetailKeys = {
   },
 };
 
+const kMiscTranslations = {
+  // Shows up for un-set values.
+  valueDefault: {
+    en: '(default)',
+    de: '(Standard)',
+    fr: '(Défaut)',
+    ko: '(기본값)',
+  },
+};
+
+const validDurationOrUndefined = (val) => {
+  val = parseFloat(val);
+  if (!isNaN(val) && val >= 0)
+    return val;
+  return undefined;
+};
 
 // This is used both for top level Options and for PerTriggerAutoConfig settings.
 // Unfortunately due to poor decisions in the past, PerTriggerOptions has different
@@ -323,22 +259,25 @@ function setOptionsFromOutputValue(options, value) {
   }
 }
 
-// TODO: maybe we should also sort all the filenames properly too?
-// TODO: maybe each set of triggers should have a translated zone name
-// instead of this extremely hacky filename to english function?
-function fileNameToTitle(filename) {
-  // Strip directory and extension.
-  let file = filename.replace(/^.*\//, '').replace('.js', '');
-  // Remove non-name characters (probably).
-  let name = file.replace(/[_-]/g, ' ');
-  // Capitalize the first letter of every word.
-  let capitalized = name.replace(/(?:^| )\w/g, (c) => c.toUpperCase());
+// Helper for doing nothing during trigger eval, but still recording any
+// calls to `output.responseOutputStrings = x;` via callback.
+class DoNothingFuncProxy {
+  constructor(outputStringsCallback) {
+    return new Proxy(this, {
+      set(target, property, value) {
+        if (property === 'responseOutputStrings') {
+          outputStringsCallback(value);
+          return true;
+        }
 
-  // Fully capitalize acronyms like e4n.
-  if (capitalized.match(/^\w[0-9]+\w$/))
-    capitalized = capitalized.toUpperCase();
+        // Ignore other property setting here.
+      },
 
-  return capitalized;
+      get(target, name) {
+        return () => {};
+      },
+    });
+  }
 }
 
 class RaidbossConfigurator {
@@ -353,15 +292,12 @@ class RaidbossConfigurator {
   }
 
   buildUI(container, raidbossFiles) {
-    let group = 'raidboss';
-    let files = this.processRaidbossFiles(raidbossFiles);
+    const fileMap = this.processRaidbossFiles(raidbossFiles);
 
     let expansionDivs = {};
 
-    for (let k in files) {
-      let info = files[k];
-      let expansion = this.base.translate(kPrefixToCategory[info.prefix]);
-      let type = this.base.translate(kDirectoryToCategory[info.type]);
+    for (const [key, info] of Object.entries(fileMap)) {
+      const expansion = info.prefix;
 
       if (Object.keys(info.triggers).length == 0)
         continue;
@@ -392,7 +328,7 @@ class RaidbossConfigurator {
         triggerContainer.classList.toggle('collapsed');
       };
 
-      let parts = [fileNameToTitle(info.filename), type, expansion];
+      let parts = [info.title, info.type, expansion];
       for (let i = 0; i < parts.length; ++i) {
         if (!parts[i])
           continue;
@@ -437,7 +373,9 @@ class RaidbossConfigurator {
         triggerDetails.appendChild(this.buildTriggerOptions(trig, triggerDiv));
 
         // Append some details about the trigger so it's more obvious what it is.
-        for (let detailKey in kDetailKeys) {
+        for (const detailKey in kDetailKeys) {
+          if (kDetailKeys[detailKey].generatedManually)
+            continue;
           if (!this.base.developerOptions && kDetailKeys[detailKey].debugOnly)
             continue;
           if (!trig[detailKey] && !trig.output[detailKey])
@@ -463,16 +401,71 @@ class RaidbossConfigurator {
 
           triggerDetails.appendChild(detail);
         }
+
+        // Add duration manually with an input to override.
+        {
+          const detailKey = 'duration';
+          const optionKey = kOptionKeys.duration;
+
+          let label = document.createElement('div');
+          label.innerText = this.base.translate(kDetailKeys[detailKey].label);
+          label.classList.add('trigger-label');
+          triggerDetails.appendChild(label);
+
+          let div = document.createElement('div');
+          div.classList.add('option-input-container', 'trigger-duration');
+
+          let input = document.createElement('input');
+          div.appendChild(input);
+          input.type = 'text';
+          input.step = 'any';
+          input.placeholder = this.base.translate(kMiscTranslations.valueDefault);
+          input.value = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, '');
+          let setFunc = () => {
+            let val = validDurationOrUndefined(input.value) || '';
+            this.base.setOption('raidboss', 'triggers', trig.id, optionKey, val);
+          };
+          input.onchange = setFunc;
+          input.oninput = setFunc;
+
+          triggerDetails.appendChild(div);
+        }
+
+        // Add output strings manually
+        const outputStrings = trig.outputStrings || {};
+
+        for (const key in outputStrings) {
+          const optionKey = kOptionKeys.outputStrings;
+          let template = this.base.translate(outputStrings[key]);
+
+          let label = document.createElement('div');
+          label.innerText = key;
+          label.classList.add('trigger-outputstring-label');
+          triggerDetails.appendChild(label);
+
+          let div = document.createElement('div');
+          div.classList.add('option-input-container', 'trigger-outputstring');
+
+          let input = document.createElement('input');
+          div.appendChild(input);
+          input.type = 'text';
+          input.placeholder = template;
+          input.value = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, key, '');
+          let setFunc = () => this.base.setOption('raidboss', 'triggers', trig.id, optionKey, key, input.value);
+          input.onchange = setFunc;
+          input.oninput = setFunc;
+
+          triggerDetails.appendChild(div);
+        }
       }
     }
   }
 
   // This duplicates the raidboss function of the same name.
-  valueOrFunction(f, data, matches) {
-    let result = (typeof f == 'function') ? f(data, matches) : f;
+  valueOrFunction(f, data, matches, output) {
+    let result = (typeof f === 'function') ? f(data, matches, output) : f;
     if (result !== Object(result))
       return result;
-    // TODO: somehow use the option for alert language here??
     if (result[this.alertsLang])
       return this.valueOrFunction(result[this.alertsLang]);
     if (result[this.timelineLang])
@@ -483,6 +476,13 @@ class RaidbossConfigurator {
   }
 
   processTrigger(trig) {
+    // TODO: with some hackiness (e.g. regexes?) we could figure out which
+    // output string came from which alert type (alarm, alert, info, tts).
+    trig.output = new DoNothingFuncProxy((outputStrings) => {
+      trig.outputStrings = trig.outputStrings || {};
+      Object.assign(trig.outputStrings, outputStrings);
+    });
+
     let kBaseFakeData = {
       party: new PartyTracker(),
       lang: this.base.lang,
@@ -564,12 +564,12 @@ class RaidbossConfigurator {
     // This could get much more complicated if we wanted it to.
     let evalTrigger = (trig, key, idx) => {
       try {
-        let result = this.valueOrFunction(trig[key], kFakeData[idx], kFakeMatches);
+        let result = this.valueOrFunction(trig[key], kFakeData[idx], kFakeMatches, trig.output);
         if (!result)
           return false;
 
         // Super hack:
-        if (result.indexOf('undefined') >= 0 || result.indexOf('NaN') >= 0)
+        if (result.includes('undefined') || result.includes('NaN'))
           return false;
 
         output[key] = result;
@@ -589,24 +589,33 @@ class RaidbossConfigurator {
         try {
           // Can't use ValueOrFunction here as r returns a non-localizable object.
           // FIXME: this hackily replicates some raidboss logic too.
-          let response = (typeof r == 'function') ? r(kFakeData[d], kFakeMatches) : r;
+          let response = r;
+          while (typeof response === 'function')
+            response = response(kFakeData[d], kFakeMatches, trig.output);
           if (!response)
             continue;
-          for (let i = 0; i < keys.length; ++i)
-            evalTrigger(response, keys[i], d);
+
+          if (!trig.outputStrings) {
+            for (const key of keys)
+              evalTrigger(response, key, d);
+          }
+          break;
         } catch (e) {
           continue;
         }
       }
     }
 
-    for (let i = 0; i < keys.length; ++i) {
-      let key = keys[i];
-      if (!trig[key])
-        continue;
-      for (let d = 0; d < kFakeData.length; ++d) {
-        if (evalTrigger(trig, key, d))
-          break;
+    // Only evaluate fields if there are not outputStrings.
+    // outputStrings will indicate more clearly what the trigger says.
+    if (!trig.outputStrings) {
+      for (const key of keys) {
+        if (!trig[key])
+          continue;
+        for (let d = 0; d < kFakeData.length; ++d) {
+          if (evalTrigger(trig, key, d))
+            break;
+        }
       }
     }
 
@@ -620,15 +629,8 @@ class RaidbossConfigurator {
       if (!langSpecificRegex)
         return;
       let baseRegex = Regexes.parse(langSpecificRegex);
-      // FIXME: the current \y{Name} is extremely verbose due to some unicode characters.
-      // It would be nice to replace it with something much simpler like `.*?`, as Regexes does.
-      // However, this doesn't work for all regexes yet until they are converted over.
-      // Once everything using \y{Name} is using Regexes, then get rid of this hack by making
-      // \y{Name} be `.*?` itself (or something much simpler along those lines).
-
       if (!baseRegex)
         return;
-      baseRegex = baseRegex.source.replace(/\\y\{Name}/g, '.*?');
       return Regexes.parse(baseRegex);
     };
 
@@ -642,56 +644,25 @@ class RaidbossConfigurator {
     return trig;
   }
 
-  processRaidbossFiles(raidbossFiles) {
-    let map = {};
-    for (let filename in raidbossFiles) {
-      if (!filename.endsWith('.js'))
-        continue;
-
-      let prefix = '00-misc';
-      for (let str in kPrefixToCategory) {
-        if (!filename.startsWith(str))
-          continue;
-        prefix = str;
-        break;
-      }
-
-      let type = 'general';
-      for (let str in kDirectoryToCategory) {
-        if (filename.indexOf('/' + str + '/') == -1)
-          continue;
-        type = str;
-        break;
-      }
-
-      // TODO: maybe raidboss should expose a bunch of its
-      let json;
-      try {
-        json = eval(raidbossFiles[filename]);
-      } catch (exception) {
-        console.log('Error parsing JSON from ' + filename + ': ' + exception);
-        continue;
-      }
-
+  processRaidbossFiles(files) {
+    let map = this.base.processFiles(files);
+    for (let [key, item] of Object.entries(map)) {
       // TODO: maybe each trigger set needs a zone name, and we should
       // use that instead of the filename???
       let rawTriggers = {
         trigger: [],
         timeline: [],
       };
-      for (let i = 0; i < json.length; ++i) {
-        let triggerSet = json[i];
+      for (const triggerSet of item.json) {
         if (triggerSet.triggers)
           rawTriggers.trigger.push(...triggerSet.triggers);
         if (triggerSet.timelineTriggers)
           rawTriggers.timeline.push(...triggerSet.timelineTriggers);
       }
 
-      let triggers = {};
-      for (let key in rawTriggers) {
-        let triggerList = rawTriggers[key];
-        for (let i = 0; i < triggerList.length; ++i) {
-          let trig = triggerList[i];
+      item.triggers = {};
+      for (const key in rawTriggers) {
+        for (const trig of rawTriggers[key]) {
           if (!trig.id) {
             // TODO: add testing that all triggers have a globally unique id.
             // console.error('missing trigger id in ' + filename + ': ' + JSON.stringify(trig));
@@ -699,25 +670,15 @@ class RaidbossConfigurator {
           }
 
           trig.isTimelineTrigger = key === 'timeline';
-          triggers[trig.id] = this.processTrigger(trig);
+          item.triggers[trig.id] = this.processTrigger(trig);
         }
       }
-
-      let fileKey = filename.replace(/\//g, '-').replace(/.js$/, '');
-      map[fileKey] = {
-        filename: filename,
-        fileKey: fileKey,
-        prefix: prefix,
-        type: type,
-        json: json,
-        triggers: triggers,
-      };
     }
     return map;
   }
 
   buildTriggerOptions(trig, labelDiv) {
-    let kField = 'Output';
+    let optionKey = kOptionKeys.output;
     let div = document.createElement('div');
     div.classList.add('trigger-options');
 
@@ -731,7 +692,7 @@ class RaidbossConfigurator {
     let input = document.createElement('select');
     div.appendChild(input);
 
-    let selectValue = this.base.getOption('raidboss', 'triggers', trig.id, kField, 'default');
+    let selectValue = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, 'default');
 
     for (let key in kTriggerOptions) {
       // Hide debug only options unless they are selected.
@@ -750,9 +711,9 @@ class RaidbossConfigurator {
       input.onchange = () => {
         updateLabel(input);
         let value = input.value;
-        if (value.indexOf('default') >= 0)
+        if (value.includes('default'))
           value = 'default';
-        this.base.setOption('raidboss', 'triggers', trig.id, kField, input.value);
+        this.base.setOption('raidboss', 'triggers', trig.id, optionKey, input.value);
       };
     }
 
@@ -760,7 +721,37 @@ class RaidbossConfigurator {
   }
 }
 
-UserConfig.registerOptions('raidboss', {
+// Raidboss needs to do some extra processing of user files.
+const userFileHandler = (name, files, options) => {
+  eval(files[name]);
+
+  if (!options.Triggers)
+    return;
+
+  for (const set of options.Triggers) {
+    // Annotate triggers with where they came from.
+    set.filename = `user/${name}`;
+
+    // Convert set.timelineFile to set.timeline.
+    if (set.timelineFile) {
+      let dir = name.substring(0, name.lastIndexOf('/'));
+      dir = dir ? `$(dir)/` : '';
+
+      const timelineFile = `${dir}${set.timelineFile}`;
+      delete set.timelineFile;
+
+      if (!(timelineFile in files)) {
+        console.log(`ERROR: '${name}' specifies non-existent timeline file '${timelineFile}'.`);
+        continue;
+      }
+
+      // set.timeline is processed recursively.
+      set.timeline = [set.timeline, files[timelineFile]];
+    }
+  }
+};
+
+const templateOptions = {
   buildExtraUI: (base, container) => {
     let raidbossUrl = new URL('../raidboss/raidboss.html', location.href);
     callOverlayHandler({
@@ -774,25 +765,40 @@ UserConfig.registerOptions('raidboss', {
     });
   },
   processExtraOptions: (options, savedConfig) => {
-    options['PerTriggerAutoConfig'] = options['PerTriggerAutoConfig'] || {};
-    let triggers = savedConfig.triggers;
+    // raidboss will look up this.options.PerTriggerAutoConfig to find these values.
+    const optionName = 'PerTriggerAutoConfig';
+
+    options[optionName] = options[optionName] || {};
+    const triggers = savedConfig.triggers;
     if (!triggers)
       return;
 
-    let perTrigger = options['PerTriggerAutoConfig'];
+    const perTrigger = options[optionName];
 
-    let outputObjs = {};
-    let keys = Object.keys(kTriggerOptions);
-    for (let i = 0; i < keys.length; ++i) {
-      outputObjs[keys[i]] = {};
-      setOptionsFromOutputValue(outputObjs[keys[i]], keys[i]);
+    const outputObjs = {};
+    const keys = Object.keys(kTriggerOptions);
+    for (const key of keys) {
+      outputObjs[key] = {};
+      setOptionsFromOutputValue(outputObjs[key], key);
     }
 
-    for (let id in triggers) {
-      let output = triggers[id]['Output'];
-      if (!output)
-        continue;
-      perTrigger[id] = outputObjs[output];
+    for (const id in triggers) {
+      const autoConfig = {};
+
+      const output = triggers[id][kOptionKeys.output];
+      if (output)
+        Object.assign(autoConfig, outputObjs[output]);
+
+      const duration = validDurationOrUndefined(triggers[id][kOptionKeys.duration]);
+      if (duration)
+        autoConfig[kOptionKeys.duration] = duration;
+
+      const outputStrings = triggers[id][kOptionKeys.outputStrings];
+      if (outputStrings)
+        autoConfig[kOptionKeys.outputStrings] = outputStrings;
+
+      if (output || duration || outputStrings)
+        perTrigger[id] = autoConfig;
     }
   },
   options: [
@@ -1264,10 +1270,13 @@ UserConfig.registerOptions('raidboss', {
         de: 'e8s: aktiviere cactbot Uptime Knockback Strategie',
         fr: 'e8s : activer cactbot pour Uptime Knockback strat',
         ja: 'エデン零式共鳴編４層：cactbot「ヘヴンリーストライク (ノックバック)」ギミック',
-        cn: 'E8S: 启用cactbot的击退提示功能', // Temperory translation, may change when CN server get into 5.2 patch
+        cn: 'E8S: 启用cactbot的击退提示功能',
+        ko: '공명 영웅 4층: cactbot 정확한 타이밍 넉백방지 공략 활성화',
       },
       type: 'checkbox',
       default: false,
     },
   ],
-});
+};
+
+UserConfig.registerOptions('raidboss', templateOptions, userFileHandler);

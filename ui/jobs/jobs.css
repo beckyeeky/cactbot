@@ -8,6 +8,10 @@
   left: 100px; /* Space for some left buffs */
 }
 
+#jobs-container.hide {
+  display: none;
+}
+
 .big-buff {
   border: 1px solid black;
   width: 44px;
@@ -26,7 +30,13 @@
   left: 242px;
 }
 
-.rdm #right-side-icons {
+.rdm #right-side-icons,
+.brd #right-side-icons,
+.drg #right-side-icons,
+.whm #right-side-icons,
+.sch #right-side-icons,
+.smn #right-side-icons,
+.ast #right-side-icons {
   left: 278px;
 }
 
@@ -40,6 +50,10 @@
 
 .blu #right-side-icons {
   left: 204px;
+}
+
+.pld #right-side-icons {
+  left: 288px;
 }
 
 /* Relative to #bars */
@@ -77,6 +91,7 @@
 
 #mp-bar,
 #rdm-bar,
+#gnb-bar,
 #mnk-bar {
   margin-top: 1px;
 }
@@ -101,6 +116,9 @@
   height: 10px;
 }
 
+.whm #hp-bar,
+.sch #hp-bar,
+.ast #hp-bar,
 .drk #hp-bar,
 .pld #hp-bar,
 .blu #hp-bar {
@@ -120,9 +138,11 @@
   background: rgba(30, 30, 30, 0.7);
 }
 
+#gnb-bar,
+#brd-bar,
 #mnk-bar {
   position: relative;
-  width: 202px;
+  width: 201px;
   height: 7px;
   background: rgba(30, 30, 30, 0.7);
 }
@@ -146,6 +166,9 @@
   height: calc(100% - 4px);
 }
 
+#gnb-timers-combo,
+#gnb-timers-cartridgecombo,
+#brd-timers-repertoire,
 #mnk-timers-lightning,
 #mnk-timers-combo {
   display: block;
@@ -157,6 +180,12 @@
 
 /* Relative to #bars */
 #rdm-boxes,
+#brd-boxes,
+#sch-boxes,
+#whm-boxes,
+#smn-boxes,
+#drg-boxes,
+#ast-boxes,
 #war-boxes,
 #mnk-boxes,
 #pld-boxes,
@@ -170,6 +199,12 @@
 }
 
 #rdm-boxes > div,
+#brd-boxes > div,
+#sch-boxes > div,
+#drg-boxes > div,
+#whm-boxes > div,
+#smn-boxes > div,
+#ast-boxes > div,
 #war-boxes > div,
 #mnk-boxes > div,
 #pld-boxes > div,
@@ -198,6 +233,12 @@
   height: 35px;
 }
 
+#sch-boxes > div,
+#brd-boxes > div,
+#smn-boxes > div,
+#drg-boxes > div,
+#whm-boxes > div,
+#ast-boxes > div,
 #rdm-boxes > div {
   width: 28px;
   height: 28px;
@@ -209,6 +250,12 @@
 }
 
 #rdm-boxes .text,
+#brd-boxes .text,
+#sch-boxes .text,
+#smn-boxes .text,
+#drg-boxes .text,
+#whm-boxes .text,
+#ast-boxes .text,
 #war-boxes .text,
 #mnk-boxes .text,
 #pld-boxes .text,
@@ -225,6 +272,13 @@
   top: 7px;
 }
 
+#sch-boxes .text,
+#gnb-boxes .text,
+#smn-boxes .text,
+#drg-boxes .text,
+#brd-boxes .text,
+#whm-boxes .text,
+#ast-boxes .text,
 #rdm-boxes .text {
   top: 5px;
 }
@@ -269,36 +323,66 @@
   left: calc(152px / 2);
 }
 
-#rdm-procs-impact {
-  position: relative;
-  display: inline-block;
-  left: 142px;
-}
-
 /* Relative to #bars */
 #war-procs,
 #pld-procs,
 #mnk-procs,
 #ast-procs,
+#sch-procs,
+#whm-procs,
 #blu-procs,
 #drk-procs,
+#gnb-procs,
 #blm-procs {
   position: absolute;
   top: 146px;
   left: 10px;
 }
 
+#drg-procs,
+#brd-procs,
+#smn-procs {
+  position: absolute;
+  top: 146px;
+  left: 0;
+}
+
 #mnk-procs-dragonkick,
 #ast-procs-combust,
+#sch-procs-bio,
+#drg-procs-disembowel,
+#brd-procs-causticbite,
+#whm-procs-dia,
+#smn-procs-miasma,
 #blu-procs-offguard,
+#gnb-procs-gnashingfang,
 #blm-procs-fire {
   position: relative;
   display: inline-block;
   left: 0;
 }
 
+#drg-procs-highjump,
+#brd-procs-stormbite,
+#smn-procs-biosmn {
+  position: relative;
+  display: inline-block;
+  left: calc(152px / 3);
+}
+
+#drg-procs-lancecharge,
+#brd-procs-song,
+#smn-procs-energydrain {
+  position: relative;
+  display: inline-block;
+  left: calc(152px / 3 * 2);
+}
+
 #mnk-procs-twinsnakes,
-#ast-procs-benefic,
+#ast-procs-draw,
+#whm-procs-assize,
+#gnb-procs-nomercy,
+#sch-procs-aetherflow,
 #blu-procs-torment,
 #blm-dot-thunder {
   position: relative;
@@ -307,12 +391,38 @@
 }
 
 #mnk-procs-demolish,
-#ast-procs-helios,
+#ast-procs-luciddreaming,
+#sch-procs-luciddreaming,
+#gnb-procs-bloodfest,
+#whm-procs-lucid,
+#rdm-procs-lucid,
 #blm-procs-thunder,
 #blu-procs-lucid {
   position: relative;
   display: inline-block;
   left: 142px;
+}
+
+#drg-procs-dragonsight,
+#brd-procs-straightshotready,
+#smn-procs-trance {
+  position: relative;
+  display: inline-block;
+  left: 153px;
+}
+
+#smn-stacks {
+  display: flex;
+  margin-top: 1px;
+  width: 204px;
+  height: 12px;
+}
+
+#whm-stacks {
+  display: flex;
+  margin-top: 1px;
+  width: 206px;
+  height: 12px;
 }
 
 #blm-stacks {
@@ -340,11 +450,18 @@
   background-color: rgb(200, 50, 200);
 }
 
+#whm-stacks-bloodlily,
+#smn-stacks-ruin4 {
+  width: 100%;
+  height: 100%;
+}
+
 #blm-stacks-heart {
   width: 50%;
   height: 100%;
 }
 
+#whm-stacks-bloodlily > div,
 #blm-stacks-heart > div {
   background-color: rgba(174, 227, 235, 0.2);
   margin-right: 2px;
@@ -354,8 +471,25 @@
   height: 100%;
 }
 
+#smn-stacks-ruin4 > div {
+  background-color: rgba(174, 227, 235, 0.2);
+  margin-right: 2px;
+  display: inline-block;
+  border: 1px solid black;
+  width: calc(25% - 4px);
+  height: 100%;
+}
+
 #blm-stacks-heart > div.active {
   background-color: rgb(174, 227, 235);
+}
+
+#whm-stacks-bloodlily > div.active {
+  background-color: rgb(190, 43, 30);
+}
+
+#smn-stacks-ruin4 > div.active {
+  background-color: rgb(65, 0, 200);
 }
 
 .blm-umbral-timer {
@@ -423,11 +557,7 @@
 }
 
 .rdm-color-black-mana {
-  background-color: rgb(47, 176, 208);
-}
-
-.rdm-color-impact {
-  background-color: rgb(242, 114, 147);
+  background-color: rgb(47, 100, 208);
 }
 
 .rdm-color-white-mana.dim {
@@ -436,6 +566,10 @@
 
 .rdm-color-black-mana.dim {
   background-color: rgb(13, 76, 80);
+}
+
+.rdm-color-lucid {
+  background-color: rgb(227, 148, 210);
 }
 
 .war-color-beast {
@@ -466,6 +600,14 @@
   background-color: rgb(255, 255, 200);
 }
 
+.pld-color-atonement {
+  background-color: rgb(214, 237, 255);
+}
+
+.pld-color-atonement.any {
+  background-color: rgb(25, 156, 255);
+}
+
 .drk-color-blood {
   background-color: rgb(255, 0, 10);
 }
@@ -492,6 +634,42 @@
 
 .smn-color-aetherflow {
   background-color: rgb(255, 96, 207);
+}
+
+.smn-color-aetherflow.too-much-stacks {
+  background-color: rgb(240, 30, 30);
+}
+
+.smn-color-biosmn {
+  background-color: olivedrab;
+}
+
+.smn-color-miasma {
+  background-color: cornflowerblue;
+}
+
+.smn-color-energydrain {
+  background-color: brown;
+}
+
+.smn-color-trance {
+  background-color: rgb(60, 80, 200);
+}
+
+.smn-color-demisummon {
+  background-color: rgb(180, 200, 220);
+}
+
+.smn-color-demisummon.bahamutready {
+  background-color: rgb(64, 65, 163);
+}
+
+.smn-color-demisummon.firebirdready {
+  background-color: orange;
+}
+
+.smn-color-demisummon.last {
+  background-color: rgb(240, 30, 30);
 }
 
 .mnk-color-chakra {
@@ -538,6 +716,94 @@
   background-color: rgb(60, 80, 200);
 }
 
+.brd-color-causticbite {
+  background-color: rgb(182, 68, 235);
+}
+
+.brd-color-stormbite {
+  background-color: rgb(72, 117, 202);
+}
+
+.brd-color-straightshotready {
+  background-color: rgb(240, 130, 80);
+}
+
+.brd-color-song {
+  background-color: rgb(180, 200, 220);
+}
+
+.brd-color-song.minuet {
+  background-color: rgb(100, 150, 100);
+}
+
+.brd-color-song.minuet.full {
+  background-color: rgb(250, 150, 0);
+}
+
+.brd-color-song.ballad {
+  background-color: rgb(143, 90, 143);
+}
+
+.brd-color-song.paeon {
+  background-color: rgb(207, 205, 52);
+}
+
+.brd-color-soulvoice {
+  background-color: rgb(180, 200, 220);
+}
+
+.brd-color-soulvoice.high {
+  background-color: rgb(250, 100, 0);
+}
+
+.whm-color-dia {
+  background-color: rgb(120, 170, 250);
+}
+
+.whm-color-assize {
+  background-color: rgb(62, 224, 170);
+}
+
+.whm-color-lucid {
+  background-color: rgb(227, 148, 210);
+}
+
+.whm-color-lily {
+  background-color: rgb(60, 80, 200);
+}
+
+.whm-color-lilysecond {
+  background-color: rgb(120, 170, 250);
+}
+
+.whm-color-lilysecond.full {
+  background-color: rgb(240, 30, 30);
+}
+
+.sch-color-bio {
+  background-color: rgb(60, 80, 200);
+}
+
+.sch-color-aetherflow {
+  background-color: rgb(255, 96, 207);
+}
+
+.sch-color-aetherflow.too-much-stacks {
+  background-color: rgb(240, 30, 30);
+}
+
+.sch-color-fairygauge {
+  background-color: rgb(62, 224, 170);
+}
+
+.sch-color-fairygauge.bright {
+  background-color: rgb(120, 170, 250);
+}
+
+.sch-color-lucid {
+  background-color: rgb(227, 148, 210);
+}
+
 .ast-color-combust {
   background-color: rgb(120, 170, 250);
 }
@@ -548,6 +814,34 @@
 
 .ast-color-helios {
   background-color: rgb(175, 235, 215);
+}
+
+.ast-color-draw {
+  background-color: rgb(64, 65, 163);
+}
+
+.ast-color-card {
+  background-color: rgb(180, 200, 220);
+}
+
+.ast-color-card.range {
+  background-color: rgb(255, 96, 207);
+}
+
+.ast-color-card.melee {
+  background-color: rgb(120, 170, 250);
+}
+
+.ast-color-seal {
+  background-color: rgb(180, 200, 220);
+}
+
+.ast-color-seal.ready {
+  background-color: rgb(62, 224, 170);
+}
+
+.ast-color-lucid {
+  background-color: rgb(227, 148, 210);
 }
 
 .blu-color-offguard {
@@ -615,4 +909,80 @@
 
 .gnb-color-cartridge {
   background-color: rgb(115, 218, 255);
+}
+
+.gnb-color-cartridge.full {
+  background-color: rgb(250, 86, 45);
+}
+
+.gnb-color-combo {
+  background-color: rgb(180, 200, 220);
+}
+
+.gnb-color-gnashingfang {
+  background-color: rgb(216, 111, 12);
+}
+
+.gnb-color-nomercy {
+  background-color: rgba(232, 127, 127, 0.7);
+}
+
+.gnb-color-nomercy.active {
+  background-color: rgb(232, 127, 127);
+}
+
+.gnb-color-bloodfest {
+  background-color: rgb(9, 81, 98);
+}
+
+.drg-color-disembowel {
+  background-color: rgba(0, 255, 255, 0.7);
+}
+
+.drg-color-blood {
+  background-color: rgba(180, 200, 220);
+}
+
+.drg-color-blood.blood {
+  background-color: rgba(0, 89, 255, 0.5);
+}
+
+.drg-color-blood.life {
+  background-color: rgba(217, 51, 0);
+}
+
+.drg-color-eyes {
+  background-color: rgba(180, 200, 220);
+}
+
+.drg-color-eyes.zero {
+  background-color: rgba(0, 89, 255, 0.5);
+}
+
+.drg-color-eyes.one {
+  background-color: rgba(200, 50, 200, 0.7);
+}
+
+.drg-color-eyes.two {
+  background-color: rgba(217, 51, 0);
+}
+
+.drg-color-highjump {
+  background-color: rgb(35, 100, 255);
+}
+
+.drg-color-lancecharge {
+  background-color: rgb(100, 15, 15);
+}
+
+.drg-color-lancecharge.active {
+  background-color: rgb(217, 51, 0);
+}
+
+.drg-color-dragonsight {
+  background-color: rgb(187, 42, 42, 0.8);
+}
+
+.drg-color-dragonsight.active {
+  background-color: rgb(217, 51, 0);
 }

@@ -2,10 +2,7 @@
 
 // Byakko Extreme
 [{
-  zoneRegex: {
-    en: /^The Jade Stoa \(Extreme\)$/,
-    ko: /^극 백호 토벌전$/,
-  },
+  zoneId: ZoneId.TheJadeStoaExtreme,
   damageWarn: {
     // Popping Unrelenting Anguish bubbles
     'ByaEx Aratama': '27F6',
@@ -37,6 +34,9 @@
           text: {
             en: 'bubble collision',
             de: 'Blasen sind zusammengestoßen',
+            fr: 'collision de bulles',
+            ja: '衝突',
+            cn: '相撞',
             ko: '장판 겹쳐서 터짐',
           },
         };

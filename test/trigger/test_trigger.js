@@ -6,14 +6,13 @@
 // TODO: Remove ` ?` before each hex value once global prefix `^.{14} ` is added.
 // JavaScript doesn't allow for possessive operators in regular expressions.
 
-let assert = require('chai').assert;
-let Regexes = require('../../resources/regexes.js');
-let NetRegexes = require('../../resources/netregexes.js');
-let Conditions = require('../../resources/conditions.js');
-let responseModule = require('../../resources/responses.js');
-let Responses = responseModule.responses;
-let triggerFunctions = responseModule.triggerFunctions;
-let fs = require('fs');
+const { assert } = require('chai');
+const Regexes = require('../../resources/regexes.js');
+const NetRegexes = require('../../resources/netregexes.js');
+const Conditions = require('../../resources/conditions.js');
+const ZoneId = require('../../resources/zone_id.js');
+const { Responses, triggerFunctions, builtInResponseStr } = require('../../resources/responses.js');
+const fs = require('fs');
 
 let exitCode = 0;
 
@@ -37,14 +36,17 @@ const netRegexLanguages = [
   'netRegexKo',
 ];
 
+const errorFunc = (str) => {
+  console.error(str);
+  exitCode = 1;
+};
+
 let testValidTriggerRegexLanguage = function(file, contents) {
-  let unsupportedRegexLanguage = /(?:regex|triggerRegex)(?!:|Cn|De|Fr|Ko|Ja).*?:/g;
+  let unsupportedRegexLanguage = /(?:regex|triggerRegex)(?!:|Cn|De|Fr|Ko|Ja)\w*\s*:/g;
   let results = contents.match(unsupportedRegexLanguage);
   if (results && results.length > 0) {
-    for (const result of results) {
-      console.error(`${file}: invalid regex language '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: invalid regex language '${result}'`);
   }
 };
 
@@ -57,10 +59,8 @@ let testWellFormedNewCombatantTriggerRegex = function(file, contents) {
   let newCombatantRegex = createTriggerRegexString('(?! ?03:\\\\y{ObjectId}:)(.*:)?Added new combatant.*');
   let results = contents.match(newCombatantRegex);
   if (results) {
-    for (const result of results) {
-      console.error(`${file}: 'Added new combatant' regex should begin with '03:\\y{ObjectId}:', found '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: 'Added new combatant' regex should begin with '03:\\y{ObjectId}:', found '${result}'`);
   }
 };
 
@@ -68,10 +68,8 @@ let testWellFormedStartsUsingTriggerRegex = function(file, contents) {
   let startsUsingRegex = createTriggerRegexString('(?! ?14:)(.* )?starts using.*');
   let results = contents.match(startsUsingRegex);
   if (results) {
-    for (const result of results) {
-      console.error(`${file}: 'starts using' regex should begin with '14:', found '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: 'starts using' regex should begin with '14:', found '${result}'`);
   }
 };
 
@@ -81,10 +79,8 @@ let testWellFormedGainsEffectTriggerRegex = function(file, contents) {
   let gainsEffectRegex = createTriggerRegexString('(?! (?:1A:\\\\y{ObjectId}|00:332e):)(.* )?gains the effect of.*');
   let results = contents.match(gainsEffectRegex);
   if (results) {
-    for (const result of results) {
-      console.error(`${file}: 'gains the effect of' regex should begin with '1A:\\y{ObjectId}:', found '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: 'gains the effect of' regex should begin with '1A:\\y{ObjectId}:', found '${result}'`);
   }
 };
 
@@ -92,10 +88,8 @@ let testWellFormedLosesEffectTriggerRegex = function(file, contents) {
   let losesEffectRegex = createTriggerRegexString('(?! ?1E:\\\\y{ObjectId}:)(.* )?loses the effect of.*');
   let results = contents.match(losesEffectRegex);
   if (results) {
-    for (const result of results) {
-      console.error(`${file}: 'loses the effect of' regex should begin with '1E:\\y{ObjectId}:', found '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: 'loses the effect of' regex should begin with '1E:\\y{ObjectId}:', found '${result}'`);
   }
 };
 
@@ -104,10 +98,8 @@ let testBadCatchAllRegex = function(file, contents) {
   let badCatchAllRegex = createTriggerRegexString('.*:(\\.{3}(\\.{2,4})?|\\.{9,}):.*');
   let results = contents.match(badCatchAllRegex);
   if (results) {
-    for (const result of results) {
-      console.error(`${file}: Invalid number of '.' operators, found '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: Invalid number of '.' operators, found '${result}'`);
   }
 };
 
@@ -115,10 +107,8 @@ let testObjectIdRegex = function(file, contents) {
   let objectIdRegex = createTriggerRegexString('.*:\\.{8}:.*');
   let results = contents.match(objectIdRegex);
   if (results) {
-    for (const result of results) {
-      console.error(`${file}: ObjectId should be used in favor of literal '........', found '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: ObjectId should be used in favor of literal '........', found '${result}'`);
   }
 };
 
@@ -126,10 +116,8 @@ let testUnnecessaryGroupRegex = function(file, contents) {
   let unnecessaryGroupRegex = createTriggerRegexString('.*\\(\\?:.\\|.\\).*');
   let results = contents.match(unnecessaryGroupRegex);
   if (results) {
-    for (const result of results) {
-      console.error(`${file}: Match single character from set '[ab]' should be used in favor of group matching '(?:a|b)' for single characters, found '${result}'`);
-      exitCode = 1;
-    }
+    for (const result of results)
+      errorFunc(`${file}: Match single character from set '[ab]' should be used in favor of group matching '(?:a|b)' for single characters, found '${result}'`);
   }
 };
 
@@ -156,15 +144,38 @@ let testInvalidCapturingGroupRegex = function(file, contents) {
     let containsMatchesParam = false;
 
     let verifyTrigger = (trigger) => {
-      for (let j = 0; j < triggerFunctions.length; j++) {
-        let currentTriggerFunction = trigger[triggerFunctions[j]];
+      for (const func of triggerFunctions) {
+        let currentTriggerFunction = trigger[func];
         if (currentTriggerFunction === null)
           continue;
-        if (typeof currentTriggerFunction !== 'undefined') {
-          containsMatches |= currentTriggerFunction.toString().includes('matches');
-          containsMatchesParam |= getParamNames(currentTriggerFunction).includes('matches');
+        if (typeof currentTriggerFunction === 'undefined')
+          continue;
+        const funcStr = currentTriggerFunction.toString();
+
+        const containsOutput = /\boutput\.(\w*)\(/.test(funcStr);
+        const containsOutputParam = getParamNames(currentTriggerFunction).includes('output');
+        // TODO: should we error when there is an unused output param? that seems a bit much.
+        if (containsOutput && !containsOutputParam)
+          errorFunc(`${file}: Missing 'output' param for '${currentTrigger.id}'.`);
+
+
+        containsMatches |= funcStr.includes('matches');
+        containsMatchesParam |= getParamNames(currentTriggerFunction).includes('matches');
+
+        const builtInResponse = 'cactbot-builtin-response';
+        if (funcStr.includes(builtInResponse)) {
+          if (typeof currentTriggerFunction !== 'function') {
+            errorFunc(`${file}: '${currentTrigger.id} field '${func}' has ${builtinResponse} but is not a function.`);
+            continue;
+          }
+          if (func !== 'response') {
+            errorFunc(`${file}: '${currentTrigger.id} field '${func}' has ${builtinResponse} but is not a response.`);
+            continue;
+          }
+          // Built-in response functions can be safely called once.
+          currentTriggerFunction = currentTriggerFunction({}, {}, {});
         }
-        if (triggerFunctions[j] === 'response' && typeof currentTriggerFunction === 'object') {
+        if (func === 'response' && typeof currentTriggerFunction === 'object') {
           // Treat a response object as its own trigger and look at all the functions it returns.
           verifyTrigger(currentTriggerFunction);
         }
@@ -181,8 +192,7 @@ let testInvalidCapturingGroupRegex = function(file, contents) {
         let currentCaptures = new RegExp('(?:' + currentRegex.toString() + ')?').exec('').length - 1;
         // Ignore first pass
         if (captures !== -1 && captures !== currentCaptures) {
-          console.error(`${file}: Found inconsistent capturing groups between languages for trigger id '${currentTrigger.id}'.`);
-          exitCode = 1;
+          errorFunc(`${file}: Found inconsistent capturing groups between languages for trigger id '${currentTrigger.id}'.`);
           break;
         }
         captures = Math.max(captures, currentCaptures);
@@ -196,8 +206,7 @@ let testInvalidCapturingGroupRegex = function(file, contents) {
         let currentCaptures = new RegExp('(?:' + currentRegex.toString() + ')?').exec('').length - 1;
         // Ignore first pass
         if (captures !== -1 && captures !== currentCaptures) {
-          console.error(`${file}: Found inconsistent capturing groups between languages for trigger id '${currentTrigger.id}'.`);
-          exitCode = 1;
+          errorFunc(`${file}: Found inconsistent capturing groups between languages for trigger id '${currentTrigger.id}'.`);
           break;
         }
         captures = Math.max(captures, currentCaptures);
@@ -205,18 +214,13 @@ let testInvalidCapturingGroupRegex = function(file, contents) {
     }
 
     if (captures > 0) {
-      if (!containsMatches) {
-        console.error(`${file}: Found unnecessary regex capturing group for trigger id '${currentTrigger.id}'.`);
-        exitCode = 1;
-      } else if (!containsMatchesParam) {
-        console.error(`${file}: Missing matches param for '${currentTrigger.id}'.`);
-        exitCode = 1;
-      }
+      if (!containsMatches)
+        errorFunc(`${file}: Found unnecessary regex capturing group for trigger id '${currentTrigger.id}'.`);
+      else if (!containsMatchesParam)
+        errorFunc(`${file}: Missing matches param for '${currentTrigger.id}'.`);
     } else {
-      if (containsMatches) {
-        console.error(`${file}: Found 'matches' as a function parameter without regex capturing group for trigger id '${currentTrigger.id}'.`);
-        exitCode = 1;
-      }
+      if (containsMatches)
+        errorFunc(`${file}: Found 'matches' as a function parameter without regex capturing group for trigger id '${currentTrigger.id}'.`);
     }
   }
 };
@@ -233,8 +237,7 @@ let testInvalidTriggerKeys = function(file, contents) {
         continue;
       if (netRegexLanguages.includes(key))
         continue;
-      console.error(`${file}: Found unknown key '${key}' in trigger id '${currentTrigger.id}'.`);
-      exitCode = 1;
+      errorFunc(`${file}: Found unknown key '${key}' in trigger id '${currentTrigger.id}'.`);
     }
   }
 };
@@ -251,16 +254,14 @@ let testValidIds = function(file, contents) {
       continue;
     for (let trigger of set) {
       if (!trigger.id) {
-        console.error(`${file}: Missing id field in trigger ${trigger.regex}`);
-        exitCode = 1;
+        errorFunc(`${file}: Missing id field in trigger ${trigger.regex}`);
         continue;
       }
 
       // Triggers must be unique.
-      if (ids.has(trigger.id)) {
-        console.error(`${file}: duplicate id: '${trigger.id}`);
-        exitCode = 1;
-      }
+      if (ids.has(trigger.id))
+        errorFunc(`${file}: duplicate id: '${trigger.id}`);
+
       ids.add(trigger.id);
 
       // Only show one broken prefix per file.
@@ -280,8 +281,7 @@ let testValidIds = function(file, contents) {
           break;
       }
       if (idx == 0) {
-        console.error(`${file}: No common id prefix in '${prefix}' and '${trigger.id}'`);
-        exitCode = 1;
+        errorFunc(`${file}: No common id prefix in '${prefix}' and '${trigger.id}'`);
         brokenPrefixes = true;
         continue;
       }
@@ -295,10 +295,11 @@ let testValidIds = function(file, contents) {
   // as the prefix "O4" is not a full word (and have a space after it,
   // as "Prefix " does.  This is a bit rigid, but prevents many typos.
   if (ids.size > 1 && !brokenPrefixes && prefix && prefix.length > 0) {
-    if (prefix[prefix.length - 1] != ' ') {
-      console.error(`${file}: id prefix '${prefix}' is not a full word, must end in a space`);
-      exitCode = 1;
-    }
+    // if prefix includes more than one word, just remove latter letters.
+    if (prefix.includes(' '))
+      prefix = prefix.substr(0, prefix.lastIndexOf(' ') + 1);
+    if (prefix[prefix.length - 1] != ' ')
+      errorFunc(`${file}: id prefix '${prefix}' is not a full word, must end in a space`);
   }
 };
 
@@ -319,10 +320,8 @@ let testResponseHasNoFriends = function(file, contents) {
       if (!trigger.response)
         continue;
       for (let item of bannedItems) {
-        if (trigger[item]) {
-          console.error(`${file}: ${trigger.id} cannot have both 'response' and '${item}'`);
-          exitCode = 1;
-        }
+        if (trigger[item])
+          errorFunc(`${file}: ${trigger.id} cannot have both 'response' and '${item}'`);
       }
     }
   }
@@ -374,10 +373,9 @@ let testTriggerFieldsSorted = function(file, contents) {
         let thisIdx = keys.indexOf(field);
         if (thisIdx === -1)
           continue;
-        if (thisIdx <= lastIdx) {
-          console.error(`${file}: in ${trigger.id}, field '${keys[lastIdx]}' must precede '${keys[thisIdx]}'`);
-          exitCode = 1;
-        }
+        if (thisIdx <= lastIdx)
+          errorFunc(`${file}: in ${trigger.id}, field '${keys[lastIdx]}' must precede '${keys[thisIdx]}'`);
+
         lastIdx = thisIdx;
       }
     }
@@ -395,9 +393,161 @@ let testBadTimelineTriggerRegex = function(file, contents) {
       // regex is the only valid regular expression field on a timeline trigger.
       if (key === 'regex')
         continue;
-      if (regexLanguages.includes(key) || netRegexLanguages.includes(key)) {
-        console.error(`${file}: in ${trigger.id}, invalid field '${key}' in timelineTrigger`);
-        exitCode = 1;
+      if (regexLanguages.includes(key) || netRegexLanguages.includes(key))
+        errorFunc(`${file}: in ${trigger.id}, invalid field '${key}' in timelineTrigger`);
+    }
+  }
+};
+
+
+let testBadZoneId = function(file, contents) {
+  let json = eval(contents);
+  let triggerSet = json[0];
+
+  if (!('zoneId' in triggerSet))
+    errorFunc(`${file}: missing zone id`);
+  else if (typeof triggerSet.zoneId === 'undefined')
+    errorFunc(`${file}: unknown zone id`);
+
+  if ('zoneRegex' in triggerSet)
+    errorFunc(`${file}: use zoneId instead of zoneRegex`);
+};
+
+// responses_test.js will handle testing any response with builtInResponseStr.
+// triggers using `response:` otherwise cannot be tested, because we cannot
+// safely call the response function.
+const testOutputStrings = (file, contents) => {
+  const json = eval(contents);
+  const triggerSet = json[0];
+  for (const set of [triggerSet.triggers, triggerSet.timelineTriggers]) {
+    if (!set)
+      continue;
+    for (const trigger of set) {
+      let outputStrings = {};
+      let response = {};
+      if (trigger.response) {
+        // Triggers using responses should include the outputStrings in the
+        // response func itself, via `output.responseOutputStrings = {};`
+        if (trigger.outputStrings) {
+          errorFunc(`${file}: found both 'response' and 'outputStrings in '${trigger.id}'.`);
+          continue;
+        }
+        if (typeof trigger.response !== 'function')
+          continue;
+        const funcStr = trigger.response.toString();
+        if (!funcStr.includes(builtInResponseStr))
+          continue;
+        const output = { responseOutputStrings: undefined };
+        // Call the function to get the outputStrings.
+        response = trigger.response({}, {}, output);
+        outputStrings = output.responseOutputStrings;
+
+        if (typeof outputStrings !== 'object') {
+          errorFunc(`${file}: '${trigger.id}' built-in response did not set outputStrings.`);
+          continue;
+        }
+      } else {
+        if (trigger.outputStrings && typeof outputStrings !== 'object') {
+          errorFunc(`${file}: '${trigger.id}' outputStrings must be an object.`);
+          continue;
+        }
+        outputStrings = trigger.outputStrings;
+      }
+
+      // TODO: should we prevent `output['phrase with spaces']()` style constructions?
+      // TODO: should we restrict outputStrings keys to valid variable characters?
+
+      // TODO: share this with popup-text.js?
+      const paramRegex = /\${\s*([^}\s]+)\s*}/g;
+
+      // key => [] of params
+      const outputStringsParams = {};
+
+      // For each outputString, find and validate all of the parameters.
+      for (const key in outputStrings) {
+        let templateObj = outputStrings[key];
+        if (typeof templateObj !== 'object') {
+          errorFunc(`${file}: '${key}' in '${trigger.id}' outputStrings is not a translatable object`);
+          continue;
+        }
+
+        // All languages must have the same set of params.
+        for (const lang in templateObj) {
+          const template = templateObj[lang];
+          if (typeof template !== 'string') {
+            errorFunc(`${file}: '${key}' in '${trigger.id}' outputStrings for lang ${lang} is not a string`);
+            continue;
+          }
+
+          // Build params with a set for uniqueness, but store as an array later for ease of use.
+          const params = new Set();
+          template.replace(paramRegex, (fullMatch, key) => {
+            params.add(key);
+            return fullMatch;
+          });
+
+          // If this is not the first lang, validate it has the same params as previous languages.
+          if (key in outputStringsParams) {
+            // prevParams is an array, params is a set.
+            const prevParams = outputStringsParams[key];
+            let ok = false;
+            if (prevParams.length === params.size)
+              ok = prevParams.every((key) => params.has(key));
+
+            if (!ok) {
+              errorFunc(`${file}: '${key}' in '${trigger.id}' outputStrings has inconsistent params among languages`);
+              continue;
+            }
+          }
+          outputStringsParams[key] = [...params];
+
+          // Verify that there's no dangling ${
+          if (/\${/.test(template.replace(paramRegex, ''))) {
+            errorFunc(`${file}: '${key}' in '${trigger.id}' outputStrings has an open \${ without a closing }`);
+            continue;
+          }
+        }
+      }
+
+      const usedOutputStringEntries = new Set();
+
+      // Now, we have an optional |outputStrings| and an optional |response|.
+      // Verify that any function in |trigger| or |response| using |output|
+      // has a corresponding key in |outputStrings|.  But hackily.
+      const obj = Object.assign({}, trigger, response);
+      for (const field in obj) {
+        const func = obj[field];
+        if (typeof func !== 'function')
+          continue;
+        const funcStr = func.toString();
+        const keys = [];
+
+        // Validate that any calls to output.word() have a corresponding outputStrings entry.
+        funcStr.replace(/\boutput\.(\w*)\(/g, (fullMatch, key) => {
+          if (!outputStrings[key]) {
+            errorFunc(`${file}: missing key '${key}' in '${trigger.id}' outputStrings`);
+            return;
+          }
+          usedOutputStringEntries.add(key);
+          keys.push(key);
+          return fullMatch;
+        });
+
+        for (const key of keys) {
+          for (const param of outputStringsParams[key]) {
+            if (!funcStr.match(`\\b${param}\\s*:`))
+              errorFunc(`${file}: '${trigger.id}' does not define param '${param}' for outputStrings entry '${key}'`);
+          }
+        }
+      }
+
+      // Responses can have unused output strings in some cases, such as ones
+      // that work with and without matching.
+      if (!response) {
+        for (const key in outputStrings) {
+          if (!usedOutputStringEntries.has(key))
+            errorFunc(`${file}: '${trigger.id}' has unused outputStrings entry '${key}'`);
+        }
       }
     }
   }
@@ -421,10 +571,11 @@ let testTriggerFile = function(file) {
     testResponseHasNoFriends(file, contents);
     testTriggerFieldsSorted(file, contents);
     testBadTimelineTriggerRegex(file, contents);
+    testBadZoneId(file, contents);
+    testOutputStrings(file, contents);
   } catch (e) {
-    console.error(`Trigger error in ${file}.`);
+    errorFunc(`Trigger error in ${file}.`);
     console.error(e);
-    exitCode = 1;
   }
 };
 

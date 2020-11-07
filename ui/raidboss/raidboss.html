@@ -1,26 +1,20 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title></title>
+  <title>Cactbot Raidboss</title>
   <link rel="stylesheet" href="../../resources/defaults.css">
-  <link rel="stylesheet" href="../../resources/resize_handle.css">
   <script src="../../resources/common.js"></script>
+  <script src="../../resources/zone_id.js"></script>
   <script src="../../resources/party.js"></script>
   <script src="../../resources/regexes.js"></script>
   <script src="../../resources/netregexes.js"></script>
   <script src="../../resources/conditions.js"></script>
+  <script src="../../resources/player_override.js"></script>
   <script src="../../resources/responses.js"></script>
-  <script src="../../resources/resize_handle.js"></script>
   <script src="../../resources/timerbar.js"></script>
+  <script src="../../resources/translations.js"></script>
   <script src="../../resources/widgetlist.js"></script>
   <script src="../../resources/user_config.js"></script>
-  <script src="../../resources/lang.js"></script>
-  <script src="../../resources/lang/en.js"></script>
-  <script src="../../resources/lang/de.js"></script>
-  <script src="../../resources/lang/fr.js"></script>
-  <script src="../../resources/lang/ja.js"></script>
-  <script src="../../resources/lang/ko.js"></script>
-  <script src="../../resources/lang/cn.js"></script>
 
   <link rel="stylesheet" type="text/css" href="raidboss.css">
   <script src="common_replacement.js"></script>
@@ -45,22 +39,22 @@
     <div id="popup-text-alarm" class="text">
       <div class="holder"></div>
       <span class="resize-helper alarm-text">
-        <div>Instructions as follows:</div>
-        <div>This is debug text for resizing.</div>
+        <div id="instructions-0"></div>
+        <div id="instructions-1"></div>
       </span>
     </div>
     <div id="popup-text-alert" class="text">
       <div class="holder"></div>
       <span class="resize-helper alert-text">
-        <div>It goes away when you lock the overlay</div>
-        <div>along with the blue background.</div>
+        <div id="instructions-2"></div>
+        <div id="instructions-3"></div>
       </span>
     </div>
     <div id="popup-text-info" class="text">
       <div class="holder"></div>
       <span class="resize-helper info-text">
-        <div>Timelines and triggers will show up in supported zones.</div>
-        <div>Test raidboss with a /countdown in Summerford Farms.</div>
+        <div id="instructions-4"></div>
+        <div id="instructions-5"></div>
       </span>
     </div>
   </div>

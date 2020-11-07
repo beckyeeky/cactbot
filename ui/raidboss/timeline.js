@@ -1,5 +1,56 @@
 'use strict';
 
+const timelineInstructions = {
+  en: [
+    'These lines are',
+    'debug timeline entries.',
+    'If you lock the overlay,',
+    'they will disappear!',
+    'Real timelines automatically',
+    'appear when supported.',
+  ],
+  de: [
+    'Diese Zeilen sind',
+    'Timeline Debug-Einträge.',
+    'Wenn du das Overlay sperrst,',
+    'werden sie verschwinden!',
+    'Echte Timelines erscheinen automatisch,',
+    'wenn sie unterstützt werden.',
+  ],
+  fr: [
+    'Ces lignes sont',
+    'des timelines de test.',
+    'Si vous bloquez l\'overlay,',
+    'elles disparaîtront !',
+    'Les vraies Timelines',
+    'apparaîtront automatiquement.',
+  ],
+  ja: [
+    'こちらはデバッグ用の',
+    'タイムラインです。',
+    'オーバーレイをロックすれば、',
+    'デバッグ用テキストも消える',
+    'サポートするゾーンにはタイム',
+    'ラインを動的にロードする。',
+  ],
+  cn: [
+    '显示在此处的是',
+    '调试用时间轴。',
+    '将此悬浮窗锁定',
+    '则会立刻消失',
+    '真实的时间轴会根据',
+    '当前区域动态加载并显示',
+  ],
+  ko: [
+    '이 막대바는 디버그용',
+    '타임라인 입니다.',
+    '오버레이를 위치잠금하면,',
+    '이 막대바도 사라집니다.',
+    '지원되는 구역에서 타임라인이',
+    '자동으로 표시됩니다.',
+  ],
+};
+
 function computeBackgroundColorFrom(element, classList) {
   let div = document.createElement('div');
   let classes = classList.split('.');
@@ -12,7 +63,7 @@ function computeBackgroundColorFrom(element, classList) {
 }
 
 // This class reads the format of ACT Timeline plugin, described in
-// data/README.txt.
+// docs/TimelineGuide.md
 class Timeline {
   constructor(text, replacements, triggers, styles, options) {
     this.options = options;
@@ -38,14 +89,11 @@ class Timeline {
     this.Stop();
   }
 
-  GetReplacedHelper(text, replaceKey) {
+  GetReplacedHelper(text, replaceKey, replaceLang, isGlobal) {
     if (!this.replacements)
       return text;
 
     let orig = text;
-    let replaceLang = this.options.ParserLanguage || 'en';
-    if (replaceKey === 'replaceText')
-      replaceLang = this.options.TimelineLanguage || this.options.ParserLanguage || 'en';
     for (let r of this.replacements) {
       if (r.locale && r.locale != replaceLang)
         continue;
@@ -56,21 +104,32 @@ class Timeline {
         text = text.replace(Regexes.parse(key), r[replaceKey][key]);
     }
     // Common Replacements
-    for (let key in commonReplacement) {
-      let repl = commonReplacement[key][replaceLang];
+    for (let key in commonReplacement[replaceKey]) {
+      let repl = commonReplacement[replaceKey][key][replaceLang];
       if (!repl)
         continue;
-      text = text.replace(Regexes.parse(key), repl);
+      let regex = isGlobal ? Regexes.parseGlobal(key) : Regexes.parse(key);
+      text = text.replace(regex, repl);
     }
     return text;
   }
 
   GetReplacedText(text) {
-    return this.GetReplacedHelper(text, 'replaceText');
+    if (!this.replacements)
+      return text;
+
+    const replaceLang = this.options.TimelineLanguage || this.options.ParserLanguage || 'en';
+    const isGlobal = false;
+    return this.GetReplacedHelper(text, 'replaceText', replaceLang, isGlobal);
   }
 
   GetReplacedSync(sync) {
-    return this.GetReplacedHelper(sync, 'replaceSync');
+    if (!this.replacements)
+      return sync;
+
+    const replaceLang = this.options.ParserLanguage || 'en';
+    const isGlobal = true;
+    return this.GetReplacedHelper(sync, 'replaceSync', replaceLang, isGlobal);
   }
 
   GetMissingTranslationsToIgnore() {
@@ -93,6 +152,28 @@ class Timeline {
 
     let uniqueid = 1;
     let texts = {};
+    const regexes = {
+      comment: /^\s*#/,
+      commentLine: /#.*$/,
+      durationCommand: /(?:[^#]*?\s)?(duration\s+([0-9]+(?:\.[0-9]+)?))(\s.*)?$/,
+      ignore: /^hideall\s+\"([^"]+)\"$/,
+      jumpCommand: /(?:[^#]*?\s)?(jump\s+([0-9]+(?:\.[0-9]+)?))(?:\s.*)?$/,
+      line: /^(([0-9]+(?:\.[0-9]+)?)\s+"(.*?)")(\s+(.*))?/,
+      popupText: /^(info|alert|alarm)text\s+\"([^"]+)\"\s+before\s+(-?[0-9]+(?:\.[0-9]+)?)(?:\s+\"([^"]+)\")?$/,
+      soundAlert: /^define\s+soundalert\s+"[^"]*"\s+"[^"]*"$/,
+      speaker: /define speaker "[^"]*"(\s+"[^"]*")?\s+(-?[0-9]+(?:\.[0-9]+)?)\s+(-?[0-9]+(?:\.[0-9]+)?)/,
+      syncCommand: /(?:[^#]*?\s)?(sync\s*\/(.*)\/)(\s.*)?$/,
+      tts: /^alertall\s+"([^"]*)"\s+before\s+(-?[0-9]+(?:\.[0-9]+)?)\s+(sound|speak\s+"[^"]*")\s+"([^"]*)"$/,
+      windowCommand: /(?:[^#]*?\s)?(window\s+(?:([0-9]+(?:\.[0-9]+)?),)?([0-9]+(?:\.[0-9]+)?))(?:\s.*)?$/,
+    };
+
+    // Make all regexes case insensitive, and parse any special \y{} groups.
+    if (triggers) {
+      for (const trigger of triggers) {
+        if (trigger.regex)
+          trigger.regex = Regexes.parse(trigger.regex);
+      }
+    }
 
     let lines = text.split('\n');
     for (let i = 0; i < lines.length; ++i) {
@@ -100,17 +181,17 @@ class Timeline {
       let line = lines[i];
       line = line.trim();
       // Drop comments and empty lines.
-      if (!line || line.match(/^\s*#/))
+      if (!line || regexes.comment.test(line))
         continue;
       let originalLine = line;
 
-      let match = line.match(/^hideall\s+\"([^"]+)\"$/);
+      let match = line.match(regexes.ignore);
       if (match != null) {
         this.ignores[match[1]] = true;
         continue;
       }
 
-      match = line.match(/^alertall\s+"([^"]*)"\s+before\s+(-?[0-9]+(?:\.[0-9]+)?)\s+(sound|speak\s+"[^"]*")\s+"([^"]*)"$/);
+      match = line.match(regexes.tts);
       if (match != null) {
         // TODO: Support alert sounds?
         if (match[3] == 'sound')
@@ -123,14 +204,14 @@ class Timeline {
         });
         continue;
       }
-      match = line.match(/^define\s+soundalert\s+"[^"]*"\s+"[^"]*"$/);
+      match = line.match(regexes.soundAlert);
       if (match)
         continue;
-      match = line.match(/define speaker "[^"]*"(\s+"[^"]*")?\s+(-?[0-9]+(?:\.[0-9]+)?)\s+(-?[0-9]+(?:\.[0-9]+)?)/);
+      match = line.match(regexes.speaker);
       if (match)
         continue;
 
-      match = line.match(/^(info|alert|alarm)text\s+\"([^"]+)\"\s+before\s+(-?[0-9]+(?:\.[0-9]+)?)(?:\s+\"([^"]+)\")?$/);
+      match = line.match(regexes.popupText);
       if (match != null) {
         texts[match[2]] = texts[match[2]] || [];
         texts[match[2]].push({
@@ -141,7 +222,7 @@ class Timeline {
         continue;
       }
 
-      match = line.match(/^(([0-9]+(?:\.[0-9]+)?)\s+"(.*?)")(\s+(.*))?/);
+      match = line.match(regexes.line);
       if (match == null) {
         this.errors.push({
           lineNumber: lineNumber,
@@ -153,7 +234,7 @@ class Timeline {
       }
       line = line.replace(match[1], '').trim();
       // There can be # in the ability name, but probably not in the regex.
-      line = line.replace(/#.*$/, '').trim();
+      line = line.replace(regexes.commentLine, '').trim();
 
       let seconds = parseFloat(match[2]);
       let e = {
@@ -167,12 +248,12 @@ class Timeline {
         lineNumber: lineNumber,
       };
       if (line) {
-        let commandMatch = line.match(/(?:[^#]*?\s)?(duration\s+([0-9]+(?:\.[0-9]+)?))(\s.*)?$/);
+        let commandMatch = line.match(regexes.durationCommand);
         if (commandMatch) {
           line = line.replace(commandMatch[1], '').trim();
           e.duration = parseFloat(commandMatch[2]);
         }
-        commandMatch = line.match(/(?:[^#]*?\s)?(sync\s*\/(.*)\/)(\s.*)?$/);
+        commandMatch = line.match(regexes.syncCommand);
         if (commandMatch) {
           line = line.replace(commandMatch[1], '').trim();
           let sync = {
@@ -184,7 +265,7 @@ class Timeline {
             lineNumber: lineNumber,
           };
           if (commandMatch[3]) {
-            let argMatch = commandMatch[3].match(/(?:[^#]*?\s)?(window\s+(?:([0-9]+(?:\.[0-9]+)?),)?([0-9]+(?:\.[0-9]+)?))(?:\s.*)?$/);
+            let argMatch = commandMatch[3].match(regexes.windowCommand);
             if (argMatch) {
               line = line.replace(argMatch[1], '').trim();
               if (argMatch[2]) {
@@ -195,7 +276,7 @@ class Timeline {
                 sync.end = seconds + (parseFloat(argMatch[3]) / 2);
               }
             }
-            argMatch = commandMatch[3].match(/(?:[^#]*?\s)?(jump\s+([0-9]+(?:\.[0-9]+)?))(?:\s.*)?$/);
+            argMatch = commandMatch[3].match(regexes.jumpCommand);
             if (argMatch) {
               line = line.replace(argMatch[1], '').trim();
               sync.jump = parseFloat(argMatch[2]);
@@ -206,7 +287,7 @@ class Timeline {
         }
       }
       // If there's text left that isn't a comment then we didn't parse that text so report it.
-      if (line && !line.match(/^\s*#/)) {
+      if (line && !line.match(regexes.comment)) {
         console.log('Unknown content \'' + line + '\' in timeline: ' + originalLine);
         this.errors.push({
           lineNumber: lineNumber,
@@ -218,11 +299,27 @@ class Timeline {
       }
     }
 
-    for (let i = 0; i < this.events.length; ++i) {
-      let e = this.events[i];
+    // Validate that all timeline triggers match something.
+    if (triggers) {
+      for (const trigger of triggers) {
+        let found = false;
+        for (const event of this.events) {
+          if (trigger.regex && trigger.regex.test(event.name)) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          const text = `No match for timeline trigger ${trigger.regex} in ${trigger.id}`;
+          this.errors.push({ error: text });
+          console.error(`*** ERROR: ${text}`);
+        }
+      }
+    }
+
+    for (const e of this.events) {
       if (e.name in texts) {
-        for (let j = 0; j < texts[e.name].length; ++j) {
-          let matchedTextEvent = texts[e.name][j];
+        for (const matchedTextEvent of texts[e.name]) {
           let t = {
             type: matchedTextEvent.type,
             time: e.time - matchedTextEvent.secondsBefore,
@@ -235,8 +332,7 @@ class Timeline {
       // Rather than matching triggers at run time, pre-match all the triggers
       // against timeline text and insert them as text events to run.
       if (triggers) {
-        for (let t = 0; t < triggers.length; ++t) {
-          let trigger = triggers[t];
+        for (const trigger of triggers) {
           let m = e.name.match(trigger.regex);
           if (!m)
             continue;
@@ -251,8 +347,7 @@ class Timeline {
 
       if (styles) {
         for (const style of styles) {
-          const m = e.name.match(style.regex);
-          if (!m)
+          if (!style.regex.test(e.name))
             continue;
           Object.assign(e, { style: style.style });
         }
@@ -571,8 +666,8 @@ class TimelineUI {
   constructor(options) {
     this.options = options;
     this.init = false;
-
-    this.InitDebugUI();
+    this.lang = this.options.TimelineLanguage || this.options.ParserLanguage || 'en';
+    this.AddDebugInstructions();
   }
 
   Init() {
@@ -581,9 +676,9 @@ class TimelineUI {
     this.init = true;
 
     this.root = document.getElementById('timeline-container');
-    this.root.classList.add('lang-' + Options.TimelineLanguage || Options.ParserLanguage || 'en');
-    if (Options.Skin)
-      this.root.classList.add('skin-' + Options.Skin);
+    this.root.classList.add('lang-' + this.lang);
+    if (this.options.Skin)
+      this.root.classList.add('skin-' + this.options.Skin);
 
     this.barColor = computeBackgroundColorFrom(this.root, 'timeline-bar-color');
     this.barExpiresSoonColor = computeBackgroundColorFrom(this.root, 'timeline-bar-color.soon');
@@ -594,18 +689,15 @@ class TimelineUI {
     this.expireTimers = {};
   }
 
-  InitDebugUI() {
-    let timelineText = [
-      'These lines are',
-      'debug timeline entries.',
-      'If you lock the overlay,',
-      'they will disappear!',
-      'Real timelines automatically',
-      'appear when supported.',
-    ];
+  AddDebugInstructions() {
+    const lang = this.lang in timelineInstructions ? this.lang : 'en';
+    const instructions = timelineInstructions[lang];
 
     // Helper for positioning/resizing when locked.
     let helper = document.getElementById('timeline-resize-helper');
+    const rows = Math.max(6, this.options.MaxNumberOfTimerBars);
+    helper.style.gridTemplateRows = 'repeat(' + rows + ', 1fr)';
+
     for (let i = 0; i < this.options.MaxNumberOfTimerBars; ++i) {
       let helperBar = document.createElement('div');
       helperBar.classList.add('text');
@@ -613,14 +705,18 @@ class TimelineUI {
       helperBar.classList.add('timeline-bar-color');
       if (i < 1)
         helperBar.classList.add('soon');
-      if (i < timelineText.length)
-        helperBar.innerText = timelineText[i];
+      if (i < instructions.length)
+        helperBar.innerText = instructions[i];
       else
-        helperBar.innerText = 'Test bar ' + (i + 1);
+        helperBar.innerText = i + 1;
       helper.appendChild(helperBar);
     }
 
+    // For simplicity in code, always make debugElement valid,
+    // however it does not exist in the raid emulator.
     this.debugElement = document.getElementById('timeline-debug');
+    if (!this.debugElement)
+      this.debugElement = document.createElement('div');
   }
 
   SetPopupTextInterface(popupText) {
@@ -782,6 +878,10 @@ class TimelineController {
     this.dataFiles = {};
     // data files not sent yet.
     this.timelines = null;
+
+    // Used to suppress any Engage! if there's a wipe between /countdown and Engage!.
+    this.suppressNextEngage = false;
+    this.wipeRegex = Regexes.network6d({ command: '40000010' });
   }
 
   SetPopupTextInterface(popupText) {
@@ -789,6 +889,11 @@ class TimelineController {
   }
 
   SetInCombat(inCombat) {
+    // Wipe lines come before combat is false, but because OnLogEvent doesn't process
+    // lines when out of combat, suppress any engages that come before the next countdown
+    // just as a safety, especially for old ARR content where wipe lines don't happen.
+    if (!inCombat)
+      this.suppressNextEngage = true;
     if (!inCombat && this.activeTimeline)
       this.activeTimeline.Stop();
   }
@@ -796,8 +901,22 @@ class TimelineController {
   OnLogEvent(e) {
     if (!this.activeTimeline)
       return;
-    for (let i = 0; i < e.detail.logs.length; ++i)
-      this.activeTimeline.OnLogLine(e.detail.logs[i]);
+    for (const log of e.detail.logs) {
+      if (LocaleRegex.countdownStart[this.options.ParserLanguage].test(log)) {
+        // As you can't start a countdown while in combat, the next engage is real.
+        this.suppressNextEngage = false;
+      } else if (LocaleRegex.countdownEngage[this.options.ParserLanguage].test(log)) {
+        // If we see an engage after a wipe, but before combat has started otherwise
+        // (e.g. countdown > wipe > face pull > engage), don't process this engage line
+        if (this.suppressNextEngage)
+          continue;
+      } else if (this.wipeRegex.test(log)) {
+        // If we see a wipe, ignore the next engage.  If we see a countdown before that wipe,
+        // we will clear this.  Therefore, this will only apply to active countdowns.
+        this.suppressNextEngage = true;
+      }
+      this.activeTimeline.OnLogLine(log);
+    }
   }
 
   SetActiveTimeline(timelineFiles, timelines, replacements, triggers, styles) {
@@ -868,6 +987,13 @@ if (typeof require !== 'undefined') {
   var Regexes = require('../../resources/regexes.js');
   var NetRegexes = require('../../resources/netregexes.js');
 }
-if (typeof module !== 'undefined' && module.exports)
-  module.exports = Timeline;
 /* eslint-enable */
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    Timeline: Timeline,
+    TimelineUI: TimelineUI,
+    TimelineController: TimelineController,
+    TimelineLoader: TimelineLoader,
+  };
+}

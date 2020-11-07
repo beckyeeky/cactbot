@@ -2,9 +2,7 @@
 
 // O3 - Deltascape 3.0 Normal
 [{
-  zoneRegex: {
-    en: /^Deltascape \(V3\.0\)$/,
-  },
+  zoneId: ZoneId.DeltascapeV30,
   timelineFile: 'o3n.txt',
   timelineTriggers: [
     {
@@ -17,12 +15,12 @@
   triggers: [
     {
       id: 'O3N Phase Initialization',
-      regex: Regexes.ability({ id: '367', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.ability({ id: '367', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.ability({ id: '367', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.ability({ id: '367', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.ability({ id: '367', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.ability({ id: '367', source: '할리카르나소스', capture: false }),
+      netRegex: NetRegexes.ability({ id: '367', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.ability({ id: '367', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.ability({ id: '367', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.ability({ id: '367', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.ability({ id: '367', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '367', source: '할리카르나소스', capture: false }),
       condition: function(data) {
         return !data.phaseNumber;
       },
@@ -36,12 +34,12 @@
     },
     {
       id: 'O3N Phase Tracker',
-      regex: Regexes.startsUsing({ id: '2304', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2304', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2304', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2304', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2304', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2304', source: '할리카르나소스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2304', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2304', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2304', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2304', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2304', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2304', source: '할리카르나소스', capture: false }),
       run: function(data) {
         data.phaseNumber += 1;
       },
@@ -54,7 +52,7 @@
       //   (2) prey marker
       //   (3) prey marker
       id: 'O3N Spellblade Holy Standard',
-      regex: Regexes.headMarker({ id: ['0064', '0065'] }),
+      netRegex: NetRegexes.headMarker({ id: ['0064', '0065'] }),
       condition: function(data, matches) {
         // Cave phase has no stack markers.
         if (data.phaseNumber == 2)
@@ -92,7 +90,7 @@
           de: 'Stack auf ' + data.holyTargets[0],
           ja: data.holyTargets[0] + 'にスタック',
           cn: '靠近 ' + data.holyTargets[0] + '集合',
-          ko: '쉐어징 → ' + data.holyTargets[0],
+          ko: '"' + data.holyTargets[0] + '" 쉐어징',
         };
       },
       run: function(data) {
@@ -101,7 +99,7 @@
     },
     {
       id: 'O3N Spellblade Holy Cave',
-      regex: Regexes.headMarker({ id: '0065' }),
+      netRegex: NetRegexes.headMarker({ id: '0065' }),
       condition: function(data, matches) {
         return data.phaseNumber == 2 && data.me == matches.target;
       },
@@ -109,14 +107,14 @@
     },
     {
       id: 'O3N Spellblade Holy Mindjack',
-      regex: Regexes.headMarker({ id: '0064' }),
+      netRegex: NetRegexes.headMarker({ id: '0064' }),
       condition: function(data) {
         if (data.phaseNumber < 3)
           return false;
         data.holyCounter = data.holyCounter || 0;
         return (data.holyCounter % 2 == 0);
       },
-      response: Responses.stackOn(),
+      response: Responses.stackMarkerOn(),
       run: function(data) {
         data.holyCounter += 1;
         delete data.holyTargets;
@@ -124,73 +122,91 @@
     },
     {
       id: 'O3N The Queen\'s Waltz: Crystal Square',
-      regex: Regexes.startsUsing({ id: '2471', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2471', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2471', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2471', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2471', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2471', source: '할리카르나소스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2471', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2471', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2471', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2471', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2471', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2471', source: '할리카르나소스', capture: false }),
       infoText: {
         en: 'Get on crystal square',
         de: 'Kristallfeld',
+        ja: '青い床に',
+        cn: '站在蓝地板',
+        ko: '파란 장판으로',
       },
       tts: {
         en: 'blue square',
         de: 'blaues feld',
+        ja: '青い床',
+        cn: '蓝地板',
+        ko: '파란 장판',
       },
     },
     {
       id: 'O3N Great Dragon',
-      regex: Regexes.addedCombatant({ name: 'Great Dragon', capture: false }),
-      regexDe: Regexes.addedCombatant({ name: 'Riesendrache', capture: false }),
-      regexFr: Regexes.addedCombatant({ name: 'dragon suprême', capture: false }),
-      regexJa: Regexes.addedCombatant({ name: 'ドラゴングレイト', capture: false }),
-      regexCn: Regexes.addedCombatant({ name: '巨龙', capture: false }),
-      regexKo: Regexes.addedCombatant({ name: '거대 드래곤', capture: false }),
+      netRegex: NetRegexes.addedCombatant({ name: 'Great Dragon', capture: false }),
+      netRegexDe: NetRegexes.addedCombatant({ name: 'Riesendrache', capture: false }),
+      netRegexFr: NetRegexes.addedCombatant({ name: 'dragon suprême', capture: false }),
+      netRegexJa: NetRegexes.addedCombatant({ name: 'ドラゴングレイト', capture: false }),
+      netRegexCn: NetRegexes.addedCombatant({ name: '巨龙', capture: false }),
+      netRegexKo: NetRegexes.addedCombatant({ name: '거대 드래곤', capture: false }),
       condition: function(data) {
         return data.role == 'tank';
       },
-      infoText: {
-        en: 'Grab dragon',
-        de: 'Drachen nehmen',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Grab dragon',
+          de: 'Drachen nehmen',
+          ja: 'ドラゴンを取って',
+          cn: '拉住巨龙',
+          ko: '용 잡기',
+        },
       },
     },
     {
       id: 'O3N Game Counter Initialize',
-      regex: Regexes.startsUsing({ id: '2304', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2304', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2304', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2304', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2304', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2304', source: '할리카르나소스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2304', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2304', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2304', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2304', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2304', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2304', source: '할리카르나소스', capture: false }),
       run: function(data) {
         data.gameCount = data.gameCount || 1;
       },
     },
     {
       id: 'O3N Good Ribbit',
-      regex: Regexes.startsUsing({ id: '2466', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2466', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2466', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2466', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2466', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2466', source: '할리카르나소스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2466', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2466', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2466', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2466', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2466', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2466', source: '할리카르나소스', capture: false }),
       condition: function(data) {
         return data.phaseNumber == 3 && data.gameCount % 2 == 0;
       },
-      alertText: {
-        en: 'Get hit by Ribbit',
-        de: 'Lass dich von Quaaak treffen',
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Get hit by Ribbit',
+          de: 'Lass dich von Quaaak treffen',
+          ja: 'クルルルルを受け',
+          cn: 'BOSS正面吃呱呱',
+          ko: '개굴장판 맞기',
+        },
       },
     },
     {
       id: 'O3N Bad Ribbit',
-      regex: Regexes.startsUsing({ id: '2466', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2466', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2466', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2466', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2466', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2466', source: '할리카르나소스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2466', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2466', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2466', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2466', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2466', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2466', source: '할리카르나소스', capture: false }),
       condition: function(data) {
         return !(data.phaseNumber == 3 && data.gameCount % 2 == 0);
       },
@@ -198,12 +214,12 @@
     },
     {
       id: 'O3N The Game',
-      regex: Regexes.startsUsing({ id: '246D', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '246D', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '246D', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '246D', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '246D', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '246D', source: '할리카르나소스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '246D', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '246D', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '246D', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '246D', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '246D', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '246D', source: '할리카르나소스', capture: false }),
       // No point in checking whether the user has the frog debuff,
       // if they didn't get it, or got it when they shouldn't have, there's no fixing things.
       infoText: function(data) {
@@ -211,23 +227,39 @@
           return {
             en: 'Stand on frog tile',
             de: 'Auf Frosch-Fläche stehen',
+            ja: 'カエルパネルを踏む',
+            cn: '站在呱呱方块',
+            ko: '개구리 장판으로',
           };
         }
-        return {
-          // Maybe there's a cleaner way to do this than just enumerating roles?
-          'tank': {
+        // Maybe there's a cleaner way to do this than just enumerating roles?
+        if (data.role === 'tank') {
+          return {
             en: 'Stand on shield',
             de: 'Auf Schild-Fläche stehen',
-          },
-          'healer': {
+            ja: 'タンクパネルを踏む',
+            cn: '站在坦克方块',
+            ko: '방패 장판으로',
+          };
+        }
+        if (data.role === 'healer') {
+          return {
             en: 'Stand on cross',
             de: 'Auf Kreuz-Fläche stehen',
-          },
-          'dps': {
+            ja: 'ヒーラーパネルを踏む',
+            cn: '站在治疗方块',
+            ko: '십자가 장판으로',
+          };
+        }
+        if (data.role === 'dps') {
+          return {
             en: 'Stand on sword',
             de: 'Auf Schwert-Fläche stehen',
-          },
-        }[data.role];
+            ja: 'DPSパネルを踏む',
+            cn: '站在DPS方块',
+            ko: '검 장판으로',
+          };
+        }
       },
       run: function(data) {
         data.gameCount += 1;
@@ -235,54 +267,78 @@
     },
     {
       id: 'O3N Mindjack Forward',
-      regex: Regexes.startsUsing({ id: '2467', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2467', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2467', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2467', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2467', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2467', source: '할리카르나소스', capture: false }),
-      infoText: {
-        en: 'Mindjack: Forward',
-        de: 'Geistlenkung: Vorwärts',
+      netRegex: NetRegexes.startsUsing({ id: '2467', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2467', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2467', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2467', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2467', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2467', source: '할리카르나소스', capture: false }),
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Mindjack: Forward',
+          de: 'Geistlenkung: Vorwärts',
+          ja: 'マインドジャック: 前進',
+          cn: '精神控制：向前',
+          ko: '정신 장악: 앞쪽',
+        },
       },
     },
     {
       id: 'O3N Mindjack Backward',
-      regex: Regexes.startsUsing({ id: '2468', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2468', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2468', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2468', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2468', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2468', source: '할리카르나소스', capture: false }),
-      infoText: {
-        en: 'Mindjack: Back',
-        de: 'Geistlenkung: Zurück',
+      netRegex: NetRegexes.startsUsing({ id: '2468', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2468', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2468', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2468', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2468', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2468', source: '할리카르나소스', capture: false }),
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Mindjack: Back',
+          de: 'Geistlenkung: Zurück',
+          ja: 'マインドジャック: 後退',
+          cn: '精神控制：向后',
+          ko: '정신 장악: 뒤쪽',
+        },
       },
     },
     {
       id: 'O3N Mindjack Left',
-      regex: Regexes.startsUsing({ id: '2469', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2469', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2469', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2469', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2469', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2469', source: '할리카르나소스', capture: false }),
-      infoText: {
-        en: 'Mindjack: Left',
-        de: 'Geistlenkung: Links',
+      netRegex: NetRegexes.startsUsing({ id: '2469', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2469', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2469', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2469', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2469', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2469', source: '할리카르나소스', capture: false }),
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Mindjack: Left',
+          de: 'Geistlenkung: Links',
+          ja: 'マインドジャック: 左折',
+          cn: '精神控制：向左',
+          ko: '정신 장악: 왼쪽',
+        },
       },
     },
     {
       id: 'O3N Mindjack Right',
-      regex: Regexes.startsUsing({ id: '246A', source: 'Halicarnassus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '246A', source: 'Halikarnassos', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '246A', source: 'Halicarnasse', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '246A', source: 'ハリカルナッソス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '246A', source: '哈利卡纳苏斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '246A', source: '할리카르나소스', capture: false }),
-      infoText: {
-        en: 'Mindjack: Right',
-        de: 'Geistlenkung: Rechts',
+      netRegex: NetRegexes.startsUsing({ id: '246A', source: 'Halicarnassus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '246A', source: 'Halikarnassos', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '246A', source: 'Halicarnasse', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '246A', source: 'ハリカルナッソス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '246A', source: '哈利卡纳苏斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '246A', source: '할리카르나소스', capture: false }),
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Mindjack: Right',
+          de: 'Geistlenkung: Rechts',
+          ja: 'マインドジャック: 右折',
+          cn: '精神控制：向右',
+          ko: '정신 장악: 오른쪽',
+        },
       },
     },
   ],
@@ -320,12 +376,6 @@
         'Ultimum': 'Ende der Dimension',
         'Uplift': 'Erhöhung',
       },
-      '~effectNames': {
-        'Forced March': 'Zwangsmarsch',
-        'Out Of The Action': 'Außer Gefecht',
-        'Stun': 'Betäubung',
-        'Toad': 'Frosch',
-      },
     },
     {
       'locale': 'fr',
@@ -359,12 +409,6 @@
         'The Queen\'s Waltz': 'Danse de la reine',
         'Ultimum': 'Déclin dimensionnel',
         'Uplift': 'Exhaussement',
-      },
-      '~effectNames': {
-        'Forced March': 'Marche forcée',
-        'Out Of The Action': 'Actions bloquées',
-        'Stun': 'Étourdissement',
-        'Toad': 'Crapaud',
       },
     },
     {
@@ -400,12 +444,6 @@
         'Ultimum': '次元の終焉',
         'Uplift': '隆起',
       },
-      '~effectNames': {
-        'Forced March': '強制移動',
-        'Out Of The Action': 'アクション実行不可',
-        'Stun': 'スタン',
-        'Toad': 'トード',
-      },
     },
     {
       'locale': 'cn',
@@ -440,12 +478,6 @@
         'Ultimum': '次元终结',
         'Uplift': '隆起',
       },
-      '~effectNames': {
-        'Forced March': '强制移动',
-        'Out Of The Action': '无法发动技能',
-        'Stun': '眩晕',
-        'Toad': '蛙变',
-      },
     },
     {
       'locale': 'ko',
@@ -479,12 +511,6 @@
         'The Queen\'s Waltz': '여왕의 춤',
         'Ultimum': '차원의 종언',
         'Uplift': '융기',
-      },
-      '~effectNames': {
-        'Forced March': '강제 이동',
-        'Out Of The Action': '기술 실행 불가',
-        'Stun': '기절',
-        'Toad': '두꺼비',
       },
     },
   ],

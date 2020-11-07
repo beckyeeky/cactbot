@@ -10,7 +10,7 @@ UserConfig.registerOptions('general', {
         fr: 'Répertoire utilisateur de Cactbot',
         ja: 'Cactbot ユーザーディレクトリ',
         cn: 'Cactbot user目录',
-        ko: 'Cactbot 사용자 디렉터리',
+        ko: 'Cactbot 사용자 디렉토리',
       },
       type: 'directory',
       default: '',
@@ -40,6 +40,7 @@ UserConfig.registerOptions('general', {
       },
       type: 'checkbox',
       default: false,
+      debugOnly: true,
     },
     {
       id: 'DisplayLanguage',
@@ -92,11 +93,11 @@ UserConfig.registerOptions('general', {
         cn: {
           '使用最终幻想XIV解析插件设置的语言': 'default',
           '英语 (en)': 'en',
-          '汉语 (cn)': 'cn',
+          '中文 (cn)': 'cn',
           '德语 (de)': 'de',
           '法语 (fr)': 'fr',
           '日语 (ja)': 'ja',
-          '朝鲜语 (ko)': 'ko',
+          '韩语 (ko)': 'ko',
         },
         ko: {
           'FFXIV Plugin 언어 사용': 'default',

@@ -1,41 +1,39 @@
 'use strict';
 
 [{
-  zoneRegex: {
-    en: /^The Final Coil Of Bahamut - Turn \(1\)$/,
-    cn: /^巴哈姆特大迷宫 \(真源之章1\)$/,
-  },
+  zoneId: ZoneId.TheFinalCoilOfBahamutTurn1,
   timelineFile: 't10.txt',
   triggers: [
     {
       id: 'T10 Phase Change',
-      regex: Regexes.startsUsing({ id: 'B5D', source: 'Imdugud', capture: false }),
-      regexDe: Regexes.startsUsing({ id: 'B5D', source: 'Imdugud', capture: false }),
-      regexFr: Regexes.startsUsing({ id: 'B5D', source: 'Imdugud', capture: false }),
-      regexJa: Regexes.startsUsing({ id: 'B5D', source: 'イムドゥグド', capture: false }),
-      regexCn: Regexes.startsUsing({ id: 'B5D', source: '伊姆都古德', capture: false }),
-      regexKo: Regexes.startsUsing({ id: 'B5D', source: '임두구드', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: 'B5D', source: 'Imdugud', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: 'B5D', source: 'Imdugud', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: 'B5D', source: 'Imdugud', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: 'B5D', source: 'イムドゥグド', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: 'B5D', source: '伊姆都古德', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: 'B5D', source: '임두구드', capture: false }),
       sound: 'Long',
     },
     {
       id: 'T10 Heat Lightning',
-      regex: Regexes.startsUsing({ id: 'B5F', source: 'Imdugud', capture: false }),
-      regexDe: Regexes.startsUsing({ id: 'B5F', source: 'Imdugud', capture: false }),
-      regexFr: Regexes.startsUsing({ id: 'B5F', source: 'Imdugud', capture: false }),
-      regexJa: Regexes.startsUsing({ id: 'B5F', source: 'イムドゥグド', capture: false }),
-      regexCn: Regexes.startsUsing({ id: 'B5F', source: '伊姆都古德', capture: false }),
-      regexKo: Regexes.startsUsing({ id: 'B5F', source: '임두구드', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: 'B5F', source: 'Imdugud', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: 'B5F', source: 'Imdugud', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: 'B5F', source: 'Imdugud', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: 'B5F', source: 'イムドゥグド', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: 'B5F', source: '伊姆都古德', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: 'B5F', source: '임두구드', capture: false }),
       response: Responses.spread(),
     },
     {
       id: 'T10 Wild Charge',
-      regex: Regexes.headMarker({ id: '001F' }),
+      netRegex: NetRegexes.headMarker({ id: '001F' }),
       alarmText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Charge on YOU',
             de: 'Ansturm auf DIR',
             fr: 'Charge sur VOUS',
+            ja: '自分にワイルドチャージ',
             cn: '蓝球点名',
           };
         }
@@ -46,6 +44,7 @@
             en: 'Charge on ' + data.ShortName(matches.target),
             de: 'Ansturm auf ' + data.ShortName(matches.target),
             fr: 'Charge sur ' + data.ShortName(matches.target),
+            ja: data.ShortName(matches.target) + 'にワイルドチャージ',
             cn: '蓝球点' + data.ShortName(matches.target),
           };
         }
@@ -53,23 +52,24 @@
     },
     {
       id: 'T10 Prey',
-      regex: Regexes.headMarker({ id: '001E' }),
+      netRegex: NetRegexes.headMarker({ id: '001E' }),
       response: Responses.preyOn(),
     },
     {
       id: 'T10 Cyclonic Tether',
-      regex: Regexes.tether({ id: '0015', source: 'Imdugud' }),
-      regexDe: Regexes.tether({ id: '0015', source: 'Imdugud' }),
-      regexFr: Regexes.tether({ id: '0015', source: 'Imdugud' }),
-      regexJa: Regexes.tether({ id: '0015', source: 'イムドゥグド' }),
-      regexCn: Regexes.tether({ id: '0015', source: '伊姆都古德' }),
-      regexKo: Regexes.tether({ id: '0015', source: '임두구드' }),
+      netRegex: NetRegexes.tether({ id: '0015', source: 'Imdugud' }),
+      netRegexDe: NetRegexes.tether({ id: '0015', source: 'Imdugud' }),
+      netRegexFr: NetRegexes.tether({ id: '0015', source: 'Imdugud' }),
+      netRegexJa: NetRegexes.tether({ id: '0015', source: 'イムドゥグド' }),
+      netRegexCn: NetRegexes.tether({ id: '0015', source: '伊姆都古德' }),
+      netRegexKo: NetRegexes.tether({ id: '0015', source: '임두구드' }),
       alarmText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Cyclonic on YOU',
             de: 'Zyklon-Chaos auf DIR',
             fr: 'Chaos cyclonique sur VOUS',
+            ja: '自分にサイクロニックカオス',
             cn: '连线点名',
           };
         }
@@ -80,6 +80,7 @@
             en: 'Cyclonic on ' + data.ShortName(matches.target),
             de: 'Zyklon-Chaos auf ' + data.ShortName(matches.target),
             fr: 'Chaos cyclonique sur ' + data.ShortName(matches.target),
+            ja: data.ShortName(matches.target) + 'にサイクロニックカオス',
             cn: '连线点' + data.ShortName(matches.target),
           };
         }
@@ -129,9 +130,9 @@
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
         'Imdugud': 'イムドゥグド',
+        'The Alpha Concourse': '第I信徒区画',
       },
       'replaceText': {
         'Crackle Hiss': 'クラックルヒス',
@@ -140,32 +141,38 @@
         'Electric Burst': 'エレクトリックバースト',
         'Electrocharge': 'エレクトロチャージ',
         'Heat Lightning': 'ヒートライトニング',
+        'Random \\+ Charge': 'ランダム + チャージ',
+        '1x Son / 1x Daughter Adds': '雑魚: 1x サン / 1x ドーター',
+        '2x Son / 2x Daughter Adds': '雑魚: 2x サン / 2x ドーター',
         'Spike Flail': 'スパイクフレイル',
         'Wild Charge': 'ワイルドチャージ',
       },
     },
     {
       'locale': 'cn',
-      'missingTranslations': true,
       'replaceSync': {
         'Imdugud': '伊姆都古德',
+        'The Alpha Concourse': '第1信徒区间',
       },
       'replaceText': {
         'Crackle Hiss': '雷光电闪',
         'Critical Rip': '暴击撕裂',
         'Cyclonic Chaos': '龙卷雷暴',
+        'Daughter': '伊姆都古德之女',
         'Electric Burst': '电光爆发',
         'Electrocharge': '蓄电',
         'Heat Lightning': '惊电',
+        'Random \\+ Charge': '随机+冲锋',
+        'Son': '伊姆都古德之子',
         'Spike Flail': '刃尾横扫',
         'Wild Charge': '狂野冲锋',
       },
     },
     {
       'locale': 'ko',
-      'missingTranslations': true,
       'replaceSync': {
         'Imdugud': '임두구드',
+        'The Alpha Concourse': '제I신도 구역',
       },
       'replaceText': {
         'Crackle Hiss': '파직파직 번개',
@@ -176,6 +183,10 @@
         'Heat Lightning': '뜨거운 번개',
         'Spike Flail': '가시 매타작',
         'Wild Charge': '야성의 돌진',
+        'Daughter': '딸',
+        'Son': '아들',
+        'Adds': '쫄',
+        'Random \\+ Charge': '번개/혼돈 + 전하 충전',
       },
     },
   ],

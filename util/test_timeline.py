@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 from datetime import datetime
 from pathlib import Path
@@ -21,7 +23,11 @@ def load_timeline(timeline):
             entry = {}
             # Remove trailing comment, if any,
             # then split the line into sections
-            match = e_tools.clean_and_split_tl_line(line)
+
+            cleaned_line = e_tools.clean_tl_line(line)
+
+            match = e_tools.split_tl_line(cleaned_line)
+
             if not match:
                 continue
 
@@ -231,7 +237,9 @@ def test_match(event, entry):
             # Matching this format generically:
             # 00|2019-01-12T18:08:14.0000000-05:00|0839||The Realm of the Machinists will be sealed off in 15 seconds!|
             log_match = re.search(
-                "^00\|[^\|]*\|{}\|[^\|]*\|{}".format(entry["logid"], entry["line"]), event
+                "^00\|[^\|]*\|{}\|[^\|]*\|{}".format(entry["logid"], entry["line"]),
+                event,
+                re.IGNORECASE,
             )
             if log_match:
                 return True
@@ -516,7 +524,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-lf",
-        "--search_fights",
+        "--search-fights",
         nargs="?",
         const=-1,
         type=int,
@@ -537,8 +545,10 @@ if __name__ == "__main__":
     if args.search_fights and not args.file:
         raise parser.error("Automatic encounter listing requires an input file")
 
-    if args.search_fights > -1 and not args.timeline:
-        raise parser.error("You must specify a timeline file before testing against a specific encounter.")
+    if args.search_fights and args.search_fights > -1 and not args.timeline:
+        raise parser.error(
+            "You must specify a timeline file before testing against a specific encounter."
+        )
 
     if args.file and not ((args.start and args.end) or args.search_fights):
         raise parser.error("Log file input requires start and end timestamps")

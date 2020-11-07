@@ -1,8 +1,9 @@
 # cactbot (ffxiv raiding overlay)
 
-<img align="right" src="https://raw.githubusercontent.com/quisquous/cactbot/master/screenshots/cactbot-logo-320x320.png">
+<img align="right" src="https://raw.githubusercontent.com/quisquous/cactbot/main/screenshots/cactbot-logo-320x320.png">
 
-[![build status](https://travis-ci.org/quisquous/cactbot.svg?branch=master)](https://travis-ci.org/quisquous/cactbot)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/quisquous/cactbot/Test/main)](https://github.com/quisquous/cactbot/actions?query=workflow%3ATest+branch%3Amain)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/quisquous/cactbot?color=brightgreen&sort=semver)](https://github.com/quisquous/cactbot/releases/latest)
 
 1. [About](#about)
 1. [Installing](#installing)
@@ -143,14 +144,18 @@ Here's an example of how to set up the raidboss overlay module.
 Setting up other cactbot overlays works identically.
 
 1. Open ACT.
+1. Make sure you've restarted ACT after adding the cactbot plugin.
 1. Navigate to the `Plugins` tab of ACT and then the `OverlayPlugin.dll` tab inside it.
 1. Click the "New" button and then pick `Cactbot Raidboss` in the Preset list.
 
     ![new overlay plugin screenshot](screenshots/overlay_plugin_new.png)
 
 1. At this point, you should see some test UI appear on screen.
-cactbot provides default test UI and a blue background to help with resizing and placing overlays on screen.
+cactbot provides default test UI,
+a large dashed red border,
+and a blue background to help with resizing and placing overlays on screen.
 These all go away when the overlay is locked in the config panel for the overlay.
+You should always lock your overlay once you are done resizing and placing it.
 
     ![raidboss plugin unlocked](screenshots/overlay_plugin_new_raidboss_unlocked.png)
 
@@ -161,9 +166,9 @@ It will now appear in the list of overlays in the `Plugins` -> `OverlayPlugin.dl
 1. Drag and resize the overlay to the location that you want it in.
 
 1. In the `General` tab of the `Raidboss` overlay, click the `Lock Overlay` and `Enable Clickthrough` checkboxes.
-The test bars, debug text, and shaded blue background will disappear once the overlay has been locked.
+The test bars, debug text, dashed red border, and shaded blue background will disappear once the overlay has been locked.
 
-![raidboss plugin config](screenshots/overlay_plugin_new_raidboss_locked.png)
+    ![raidboss plugin config](screenshots/overlay_plugin_new_raidboss_locked.png)
 
 1. If you want to test the raidboss plugin, teleport to Summerford Farms, and do a `/countdown 5`.
 
@@ -173,15 +178,15 @@ Follow the same process but select a different cactbot preset.
 ## Building from source
 
 Follow all the steps above for installing cactbot first.
-To install dependencies there are 2 methods: **per script** and **manualy**
+To install dependencies there are 2 methods: **per script** and **manually**
 
-### Dependancies: Script Method
+### Dependencies: Script Method
 
 1. `curl` MUST be installed (this is used to download dependencies)
-1. Execute the `./tools/fetch_deps.py` script
+1. Execute the `./utils/fetch_deps.py` script
 1. Continue with **Steps to build**
 
-### Dependancies: Manual Method
+### Dependencies: Manual Method
 
 1. Please download the latest Zip file from <https://github.com/EQAditu/AdvancedCombatTracker/releases/>
 1. Extract the `Advanced Combat Tracker.exe` to `cactbot/plugin/ThirdParty/ACT/`
@@ -251,7 +256,7 @@ The module is designed to look and feel similar to the
 
 Fight timelines are provided in files designed for the [ACT Timeline](https://github.com/grindingcoil/act_timeline)
 plugin, [documented here](http://dtguilds.enjin.com/forum/m/37032836/viewthread/26353492-act-timeline-plugin)
-with [some extensions](ui/raidboss/data/README.txt).
+with [some extensions](docs/TimelineGuide.md).
 
 There are three levels of text alerts, in order of escalating importance: `info`, `alert`, and `alarm`.
 Text messages will be in one of these, and more important levels are larger and more eye grabbing colors.  Text-to-speech can be configured if you prefer that over on screen text.
@@ -263,6 +268,30 @@ In this screenshot, the raidboss module is highlighted, with the timeline circle
 text alerts circled in yellow, with an `alert`-level text message visible.
 
 ![raidboss screenshot](screenshots/Raidboss.png)
+
+### raidboss emulator
+
+If you are writing triggers or timelines and want to test them, you can use the raidboss emulator:
+**ui/raidboss/raidemulator.html**.
+
+This currently can only be loaded in a browser and not as an overlay.
+This will work in current version of Chrome,
+and should work in other browsers as well but this is less tested.
+
+Instructions:
+
+1. Start ACT.
+1. Make sure the WS Server is started via Plugins -> OverlayPlugin WSServer -> Stream/Local Overlay.
+1. Select `Cactbot Raidboss (Combined Alerts and Timelines)` from the URL Generator list.
+1. Edit the url to say `raidemulator.html` instead of `raidboss.html`.
+1. Copy and paste this edited url into Chrome.
+1. Drag and drop a [network log](/docs/FAQ-Troubleshooting.md#how-to-find-a-network-log) onto the page.
+1. Select the zone and encounter, and then click `Load Encounter`.
+
+If the emulator is not working, check the console log in the inspector for errors.
+No buttons will work until it is connected to ACT via websocket.
+
+![raidboss emulator screenshot](screenshots/raidboss_emulator.png)
 
 ### [oopsyraidsy](ui/oopsyraidsy) module
 
@@ -393,8 +422,7 @@ To use this module,
 point cactbot at **ui/test/test.html** or use the `Cactbot Test` preset.
 
 This module is just an onscreen test of cactbot variables and is not meant to be used while playing.
-It can be useful to try out to make sure everything is working as expected or to use to help debug
-[writing your own module](docs/AdvancedCactbot.md#writing-a-cactbot-ui-module).
+It can be useful to try out to make sure everything is working as expected or to use to help debug overlay issues.
 
 ![test screenshot](screenshots/test.png)
 
@@ -438,14 +466,18 @@ and can override anything from the control panel.
 However, this can also be confusing when the control panel doesn't adjust something
 properly that a `cactbot/user/` file is overriding silently.
 
-See [this documentation](docs/AdvancedCactbot.md#user-folder-config-overrides)
+See [this documentation](docs/CactbotCustomization.md#user-folder-config-overrides)
 for more details about user javascript and css files.
 
 ## Supported Languages
 
-cactbot is tested and works with the English, German and French versions of Final Fantasy XIV.
+cactbot is tested and works with the current
+international (English, German, French, Japanese) version,
+the current Chinese version,
+and the current Korean version.
+Some translations are still a work in progress.
 
-Unicode characters are supported thoughout, through the use of the helpers in the
+Unicode characters are supported throughout, through the use of the helpers in the
 [resources/regexes.js](resources/regexes.js) file. However [timelines](ui/raidboss/data/timelines)
 and log event [triggers](ui/raidboss/data/triggers) may be incorrect if names that appear in the
 ACT log events are different.

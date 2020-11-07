@@ -159,6 +159,35 @@ These are guidelines that cactbot tries to follow for timelines.
 * comment out syncs from any abilities that are within 7 seconds of each other
 (This preserves the ability ID for future maintainers.)
 
+### Trigger Filenames
+
+The general goal of filenames is to be consistent
+with what the community calls these fights.
+Trials get called by the name of the boss,
+raids get abbreviated and numbered,
+dungeons are called by their zone.
+
+For filenames, use underscores to separate words.
+For trials like `nm` (normal mode), `hm` (hard mode), and `ex` (extreme mode),
+separate with a hyphen.
+Dungeons with hard in the name can spell out "Hard" as a full word.
+Articles like `The` can be dropped.
+Raids are numbered through the tier,
+e.g. `t1` through `t13` and `a1s` through `a12s`.
+Savage fights should have an `s` suffix
+while normal fights have an 'n' suffix.
+(However, this does not apply to coil raids.)
+
+Examples:
+
+* The Grand Cosmos: `grand_cosmos`
+* Titan Extreme: `titan-ex`
+* Ruby Weapon Extreme: `ruby_weapon-ex`
+* The Great Gubal Library (Hard): `great_gubal_library_hard`
+* Sigmascape V2.0 (Savage): `o6s`
+* Alexander - The Arm of the Father: `a3n`
+* The Final Coil of Bahamut: `t13`
+
 ## Timeline Triggers
 
 Trigger files in cactbot support adding timeline triggers.
@@ -170,11 +199,11 @@ This is done by adding a `timelineTriggers` section to the triggers file.
 
 Examples:
 
-* [Orbonne Monastery](https://github.com/quisquous/cactbot/blob/master/ui/raidboss/data/04-sb/alliance/orbonne_monastery.js)
-* [T9](https://github.com/quisquous/cactbot/blob/master/ui/raidboss/data/02-arr/raid/t9.js)
-* [O12 normal](https://github.com/quisquous/cactbot/blob/master/ui/raidboss/data/04-sb/raid/o12n.js)
+* [Orbonne Monastery](https://github.com/quisquous/cactbot/blob/main/ui/raidboss/data/04-sb/alliance/orbonne_monastery.js)
+* [T9](https://github.com/quisquous/cactbot/blob/main/ui/raidboss/data/02-arr/raid/t9.js)
+* [O12 normal](https://github.com/quisquous/cactbot/blob/main/ui/raidboss/data/04-sb/raid/o12n.js)
 
-These triggers have the [same syntax](https://github.com/quisquous/cactbot/blob/master/ui/raidboss/data/README.txt) as normal triggers.
+These triggers have the [same syntax](https://github.com/quisquous/cactbot/blob/main/ui/raidboss/data/README.txt) as normal triggers.
 They still allow you to use functions if you want to return something.
 You can use a [condition](https://github.com/quisquous/cactbot/blob/5a7011c662d65f44c12c2fbff255484f2d31b8ef/ui/raidboss/data/02-arr/raid/t9.js#L10) to have it only trigger for a particular job or role.
 
@@ -245,7 +274,7 @@ Good guidelines for getting good logs are:
 ### Software prerequisites
 
 * [Python 3](https://www.python.org/downloads/release/python-373/)
-* A copy of cactbot's [source code](https://github.com/quisquous/cactbot/archive/master.zip)
+* A copy of cactbot's [source code](https://github.com/quisquous/cactbot/archive/main.zip)
 
 You should do a system-wide installation of Python 3 if you can,
 as this will put Python into your Windows PATH so that you can easily run it from the command line.
@@ -272,7 +301,7 @@ An initial triggers file should look like the following:
 'use strict';
 
 [{
-  zoneRegex: /Cape Westwind/,
+  zoneId: ZoneId.CapeWestwind,
   timelineFile: 'cape_westwind.txt',
   triggers: [
   ],

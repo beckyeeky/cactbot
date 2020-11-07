@@ -1,10 +1,7 @@
 'use strict';
 
 [{
-  zoneRegex: {
-    en: /^The Second Coil Of Bahamut - Turn \(4\)$/,
-    cn: /^巴哈姆特大迷宫 \(入侵之章4\)$/,
-  },
+  zoneId: ZoneId.TheSecondCoilOfBahamutTurn4,
   timelineFile: 't9.txt',
   timelineTriggers: [
     {
@@ -20,59 +17,60 @@
       id: 'T9 Dalamud Dive',
       regex: /Dalamud Dive/,
       beforeSeconds: 5,
-      infoText: {
-        en: 'Dive on Main Tank',
-        de: 'Sturz auf den Main Tank',
-        fr: 'Plongeon sur le Main Tank',
-        cn: '凶鸟跳点MT',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Dive on Main Tank',
+          de: 'Sturz auf den Main Tank',
+          fr: 'Plongeon sur le Main Tank',
+          ja: 'MTに飛んでくる',
+          cn: '凶鸟跳点MT',
+          ko: '광역 탱버',
+        },
       },
     },
     {
       id: 'T9 Super Nova',
       regex: /Super Nova x3/,
       beforeSeconds: 4,
-      infoText: {
-        en: 'Bait Super Novas Outside',
-        de: 'Köder Supernova draußen',
-        fr: 'Attirez les Supernovas à l\'extérieur',
-        cn: '人群外放黑洞',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Bait Super Novas Outside',
+          de: 'Köder Supernova draußen',
+          fr: 'Attirez les Supernovas à l\'extérieur',
+          ja: 'スーパーノヴァを外に設置',
+          cn: '人群外放黑洞',
+          ko: '초신성 외곽으로 유도',
+        },
       },
     },
   ],
   triggers: [
     {
       id: 'T9 Raven Blight You',
-      regex: Regexes.gainsEffect({ effect: 'Raven Blight' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Pestschwinge' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Bile De Rapace' }),
-      regexJa: Regexes.gainsEffect({ effect: '凶鳥毒気' }),
-      regexCn: Regexes.gainsEffect({ effect: '凶鸟毒气' }),
-      regexKo: Regexes.gainsEffect({ effect: '흉조의 독' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      netRegex: NetRegexes.gainsEffect({ effectId: '1CA' }),
+      condition: Conditions.targetIsYou(),
       delaySeconds: function(data, matches) {
         return matches.duration - 5;
       },
       durationSeconds: 5,
-      alarmText: {
-        en: 'Blight on YOU',
-        de: 'Pestschwinge auf DIR',
-        fr: 'Bile de rapace sur VOUS',
-        cn: '毒气点名',
+      alarmText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Blight on YOU',
+          de: 'Pestschwinge auf DIR',
+          fr: 'Bile de rapace sur VOUS',
+          ja: '自分に凶鳥毒気',
+          cn: '毒气点名',
+          ko: '5초후 디버프 폭발',
+        },
       },
     },
     {
       id: 'T9 Raven Blight Not You',
-      regex: Regexes.gainsEffect({ effect: 'Raven Blight' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Pestschwinge' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Bile De Rapace' }),
-      regexJa: Regexes.gainsEffect({ effect: '凶鳥毒気' }),
-      regexCn: Regexes.gainsEffect({ effect: '凶鸟毒气' }),
-      regexKo: Regexes.gainsEffect({ effect: '흉조의 독' }),
-      condition: function(data, matches) {
-        return data.me != matches.target;
-      },
+      netRegex: NetRegexes.gainsEffect({ effectId: '1CA' }),
+      condition: Conditions.targetIsNotYou(),
       delaySeconds: function(data, matches) {
         return matches.duration - 5;
       },
@@ -82,43 +80,45 @@
           en: 'Blight on ' + data.ShortName(matches.target),
           de: 'Pestschwinge auf ' + data.ShortName(matches.target),
           fr: 'Bile de rapace sur ' + data.ShortName(matches.target),
+          ja: data.ShortName(matches.target) + 'に凶鳥毒気',
           cn: '毒气点' + data.ShortName(matches.target),
+          ko: '광역폭발 디버프 ' + data.ShortName(matches.target),
         };
       },
     },
     {
       id: 'T9 Meteor',
-      regex: Regexes.headMarker({ id: '000[7A9]' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      netRegex: NetRegexes.headMarker({ id: '000[7A9]' }),
+      condition: Conditions.targetIsYou(),
       response: Responses.meteorOnYou(),
     },
     {
       id: 'T9 Meteor Stream',
-      regex: Regexes.headMarker({ id: '0008' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      netRegex: NetRegexes.headMarker({ id: '0008' }),
+      condition: Conditions.targetIsYou(),
       response: Responses.spread(),
     },
     {
       id: 'T9 Stack',
-      regex: Regexes.headMarker({ id: '000F' }),
+      netRegex: NetRegexes.headMarker({ id: '000F' }),
       alertText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Thermo on YOU',
             de: 'Thermo auf DIR',
             fr: 'Thermo sur VOUS',
+            ja: '自分に頭割り',
             cn: '分摊点名',
+            ko: '쉐어징 대상자',
           };
         }
         return {
           en: 'Stack on ' + data.ShortName(matches.target),
           de: 'Sammeln auf ' + data.ShortName(matches.target),
           fr: 'Packez-vous sur ' + data.ShortName(matches.target),
+          ja: data.ShortName(matches.target) + 'と頭割り',
           cn: '靠近' + data.ShortName(matches.target) + '分摊',
+          ko: '"' + data.ShortName(matches.target) + '" 쉐어징',
         };
       },
     },
@@ -134,84 +134,92 @@
     },
     {
       id: 'T9 Earthshock',
-      regex: Regexes.startsUsing({ id: '7F5', source: 'Dalamud Spawn', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '7F5', source: 'Dalamud-Golem', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '7F5', source: 'Golem De Dalamud', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '7F5', source: 'ダラガブゴーレム', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '7F5', source: '卫月巨像', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '7F5', source: '달라가브 골렘', capture: false }),
-      condition: function(data) {
-        return data.CanSilence();
-      },
-      alertText: {
-        en: 'Silence Blue Golem',
-        de: 'Blauen Golem verstummen',
-        fr: 'Interrompez le Golem bleu',
-        cn: '沉默蓝色小怪',
+      netRegex: NetRegexes.startsUsing({ id: '7F5', source: 'Dalamud Spawn', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '7F5', source: 'Dalamud-Golem', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '7F5', source: 'Golem De Dalamud', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '7F5', source: 'ダラガブゴーレム', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '7F5', source: '卫月巨像', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '7F5', source: '달라가브 골렘', capture: false }),
+      condition: (data) => data.CanSilence(),
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Silence Blue Golem',
+          de: 'Blauen Golem verstummen',
+          fr: 'Interrompez le Golem bleu',
+          ja: '沈黙：青ゴーレム',
+          cn: '沉默蓝色小怪',
+          ko: '파란골렘 기술끊기',
+        },
       },
     },
     {
       id: 'T9 Heavensfall',
-      regex: Regexes.startsUsing({ id: '83B', source: 'Nael Deus Darnus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '83B', source: 'Nael Deus Darnus', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '83B', source: 'Nael Deus Darnus', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '83B', source: 'ネール・デウス・ダーナス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '83B', source: '奈尔·神·达纳斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '83B', source: '넬 데우스 다르누스', capture: false }),
-      alertText: {
-        en: 'Heavensfall',
-        de: 'Himmelssturz',
-        fr: 'Destruction universelle',
-        cn: '击退AOE',
+      netRegex: NetRegexes.startsUsing({ id: '83B', source: 'Nael Deus Darnus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '83B', source: 'Nael Deus Darnus', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '83B', source: 'Nael Deus Darnus', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '83B', source: 'ネール・デウス・ダーナス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '83B', source: '奈尔·神·达纳斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '83B', source: '넬 데우스 다르누스', capture: false }),
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Heavensfall',
+          de: 'Himmelssturz',
+          fr: 'Destruction universelle',
+          ja: '天地崩壊',
+          cn: '击退AOE',
+          ko: '천지붕괴',
+        },
       },
     },
     {
       id: 'T9 Garotte Twist Gain',
-      regex: Regexes.gainsEffect({ effect: 'Garrote Twist' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Leicht Fixierbar' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Sangle Accélérée' }),
-      regexJa: Regexes.gainsEffect({ effect: '拘束加速' }),
-      regexCn: Regexes.gainsEffect({ effect: '拘束加速' }),
-      regexKo: Regexes.gainsEffect({ effect: '구속 가속' }),
+      netRegex: NetRegexes.gainsEffect({ effectId: '1CE' }),
       condition: function(data, matches) {
         return data.me == matches.target && !data.garotte;
       },
-      infoText: {
-        en: 'Garotte on YOU',
-        de: 'Leicht fixierbar auf DIR',
-        fr: 'Sangle accélérée sur VOUS',
-        cn: '连坐点名',
-      },
+      infoText: (data, _, output) => output.text(),
       run: function(data) {
         data.garotte = true;
+      },
+      outputStrings: {
+        text: {
+          en: 'Garotte on YOU',
+          de: 'Leicht fixierbar auf DIR',
+          fr: 'Sangle accélérée sur VOUS',
+          ja: '自分に拘束加速',
+          cn: '连坐点名',
+          ko: '구속 가속',
+        },
       },
     },
     {
       id: 'T9 Ghost Death',
-      regex: Regexes.ability({ id: '7FA', source: 'The Ghost Of Meracydia', capture: false }),
-      regexDe: Regexes.ability({ id: '7FA', source: 'Geist Von Meracydia', capture: false }),
-      regexFr: Regexes.ability({ id: '7FA', source: 'Fantôme Méracydien', capture: false }),
-      regexJa: Regexes.ability({ id: '7FA', source: 'メラシディアン・ゴースト', capture: false }),
-      regexCn: Regexes.ability({ id: '7FA', source: '美拉西迪亚幽龙', capture: false }),
-      regexKo: Regexes.ability({ id: '7FA', source: '메라시디아의 유령', capture: false }),
+      netRegex: NetRegexes.ability({ id: '7FA', source: 'The Ghost Of Meracydia', capture: false }),
+      netRegexDe: NetRegexes.ability({ id: '7FA', source: 'Geist Von Meracydia', capture: false }),
+      netRegexFr: NetRegexes.ability({ id: '7FA', source: 'Fantôme Méracydien', capture: false }),
+      netRegexJa: NetRegexes.ability({ id: '7FA', source: 'メラシディアン・ゴースト', capture: false }),
+      netRegexCn: NetRegexes.ability({ id: '7FA', source: '美拉西迪亚幽龙', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '7FA', source: '메라시디아의 유령', capture: false }),
       condition: function(data) {
         return data.garotte;
       },
-      alarmText: {
-        en: 'Cleanse Garotte',
-        de: 'reinige Leicht fixierbar',
-        fr: 'Dissipez Sangle accélérée',
-        cn: '踩白圈',
+      alarmText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Cleanse Garotte',
+          de: 'reinige Leicht fixierbar',
+          fr: 'Dissipez Sangle accélérée',
+          ja: '白い床に乗る',
+          cn: '踩白圈',
+          ko: '흰색 장판 밟기',
+        },
       },
     },
     {
       id: 'T9 Garotte Twist Lose',
-      regex: Regexes.losesEffect({ effect: 'Garrote Twist' }),
-      regexDe: Regexes.losesEffect({ effect: 'Leicht Fixierbar' }),
-      regexFr: Regexes.losesEffect({ effect: 'Sangle Accélérée' }),
-      regexJa: Regexes.losesEffect({ effect: '拘束加速' }),
-      regexCn: Regexes.losesEffect({ effect: '拘束加速' }),
-      regexKo: Regexes.losesEffect({ effect: '구속 가속' }),
+      netRegex: NetRegexes.losesEffect({ effectId: '1CE' }),
       condition: function(data, matches) {
         return data.me == matches.target && data.garotte;
       },
@@ -221,12 +229,12 @@
     },
     {
       id: 'T9 Final Phase',
-      regex: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
       condition: function(data) {
         return !data.seenFinalPhase;
       },
@@ -237,12 +245,12 @@
     },
     {
       id: 'T9 Dragon Locations',
-      regex: Regexes.addedCombatantFull({ name: ['Firehorn', 'Iceclaw', 'Thunderwing'] }),
-      regexDe: Regexes.addedCombatantFull({ name: ['Feuerhorn', 'Eisklaue', 'Donnerschwinge'] }),
-      regexFr: Regexes.addedCombatantFull({ name: ['Corne-De-Feu', 'Griffe-De-Glace', 'Aile-De-Foudre'] }),
-      regexJa: Regexes.addedCombatantFull({ name: ['ファイアホーン', 'アイスクロウ', 'サンダーウィング'] }),
-      regexCn: Regexes.addedCombatantFull({ name: ['火角', '冰爪', '雷翼'] }),
-      regexKo: Regexes.addedCombatantFull({ name: ['화염뿔', '얼음발톱', '번개날개'] }),
+      netRegex: NetRegexes.addedCombatantFull({ name: ['Firehorn', 'Iceclaw', 'Thunderwing'] }),
+      netRegexDe: NetRegexes.addedCombatantFull({ name: ['Feuerhorn', 'Eisklaue', 'Donnerschwinge'] }),
+      netRegexFr: NetRegexes.addedCombatantFull({ name: ['Corne-De-Feu', 'Griffe-De-Glace', 'Aile-De-Foudre'] }),
+      netRegexJa: NetRegexes.addedCombatantFull({ name: ['ファイアホーン', 'アイスクロウ', 'サンダーウィング'] }),
+      netRegexCn: NetRegexes.addedCombatantFull({ name: ['火角', '冰爪', '雷翼'] }),
+      netRegexKo: NetRegexes.addedCombatantFull({ name: ['화염뿔', '얼음발톱', '번개날개'] }),
       run: function(data, matches) {
         // Lowercase all of the names here for case insensitive matching.
         let allNames = {
@@ -277,12 +285,12 @@
     },
     {
       id: 'T9 Final Phase Reset',
-      regex: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
       run: function(data) {
         data.tetherCount = 0;
         data.naelDiveMarkerCount = 0;
@@ -315,12 +323,12 @@
     },
     {
       id: 'T9 Dragon Marks',
-      regex: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '7E6', source: 'Nael Deus Darnus', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
       durationSeconds: 12,
       infoText: function(data) {
         return {
@@ -329,17 +337,18 @@
           fr: 'Marque : ' + data.naelMarks.join(', '),
           ja: 'マーカー: ' + data.naelMarks.join(', '),
           cn: '标记： ' + data.naelMarks.join(', '),
+          ko: '카탈징: ' + data.naelMarks.join(', '),
         };
       },
     },
     {
       id: 'T9 Tether',
-      regex: Regexes.tether({ id: '0005', source: 'Firehorn' }),
-      regexDe: Regexes.tether({ id: '0005', source: 'Feuerhorn' }),
-      regexFr: Regexes.tether({ id: '0005', source: 'Corne-De-Feu' }),
-      regexJa: Regexes.tether({ id: '0005', source: 'ファイアホーン' }),
-      regexCn: Regexes.tether({ id: '0005', source: '火角' }),
-      regexKo: Regexes.tether({ id: '0005', source: '화염뿔' }),
+      netRegex: NetRegexes.tether({ id: '0005', source: 'Firehorn' }),
+      netRegexDe: NetRegexes.tether({ id: '0005', source: 'Feuerhorn' }),
+      netRegexFr: NetRegexes.tether({ id: '0005', source: 'Corne-De-Feu' }),
+      netRegexJa: NetRegexes.tether({ id: '0005', source: 'ファイアホーン' }),
+      netRegexCn: NetRegexes.tether({ id: '0005', source: '火角' }),
+      netRegexKo: NetRegexes.tether({ id: '0005', source: '화염뿔' }),
       preRun: function(data) {
         data.tetherCount = data.tetherCount || 0;
         data.tetherCount++;
@@ -352,7 +361,9 @@
             en: data.tetherDir + ' (on YOU)',
             de: data.tetherDir + ' (auf DIR)',
             fr: data.tetherDir + ' (sur VOUS)',
+            ja: data.tetherDir + ' (自分)',
             cn: data.tetherDir + ' (点名)',
+            ko: data.tetherDir + ' (대상자)',
           };
         }
       },
@@ -362,33 +373,37 @@
             en: data.tetherDir + ' (on ' + data.ShortName(matches.target) + ')',
             de: data.tetherDir + ' (auf ' + data.ShortName(matches.target) + ')',
             fr: data.tetherDir + ' (sur ' + data.ShortName(matches.target) + ')',
+            ja: data.tetherDir + ' (' + data.ShortName(matches.target) + 'に)',
             cn: data.tetherDir + ' (点 ' + data.ShortName(matches.target) + ')',
+            ko: data.tetherDir + ' (on ' + data.ShortName(matches.target) + ')',
           };
         }
       },
     },
     {
       id: 'T9 Thunder',
-      regex: Regexes.ability({ source: 'Thunderwing', id: '7FD' }),
-      regexDe: Regexes.ability({ source: 'Donnerschwinge', id: '7FD' }),
-      regexFr: Regexes.ability({ source: 'Aile-De-Foudre', id: '7FD' }),
-      regexJa: Regexes.ability({ source: 'サンダーウィング', id: '7FD' }),
-      regexCn: Regexes.ability({ source: '雷翼', id: '7FD' }),
-      regexKo: Regexes.ability({ source: '번개날개', id: '7FD' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
-      alarmText: {
-        en: 'Thunder on YOU',
-        de: 'Blitz auf DIR',
-        fr: 'Foudre sur VOUS',
-        ja: '自分にサンダー',
-        cn: '雷点名',
+      netRegex: NetRegexes.ability({ source: 'Thunderwing', id: '7FD' }),
+      netRegexDe: NetRegexes.ability({ source: 'Donnerschwinge', id: '7FD' }),
+      netRegexFr: NetRegexes.ability({ source: 'Aile-De-Foudre', id: '7FD' }),
+      netRegexJa: NetRegexes.ability({ source: 'サンダーウィング', id: '7FD' }),
+      netRegexCn: NetRegexes.ability({ source: '雷翼', id: '7FD' }),
+      netRegexKo: NetRegexes.ability({ source: '번개날개', id: '7FD' }),
+      condition: Conditions.targetIsYou(),
+      alarmText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Thunder on YOU',
+          de: 'Blitz auf DIR',
+          fr: 'Foudre sur VOUS',
+          ja: '自分にサンダー',
+          cn: '雷点名',
+          ko: '번개 대상자',
+        },
       },
     },
     {
       id: 'T9 Dragon Safe Zone',
-      regex: Regexes.headMarker({ id: '0014', capture: false }),
+      netRegex: NetRegexes.headMarker({ id: '0014', capture: false }),
       delaySeconds: 3,
       durationSeconds: 6,
       suppressSeconds: 20,
@@ -398,10 +413,8 @@
     },
     {
       id: 'T9 Dragon Marker',
-      regex: Regexes.headMarker({ id: '0014' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      netRegex: NetRegexes.headMarker({ id: '0014' }),
+      condition: Conditions.targetIsYou(),
       alarmText: function(data, matches) {
         data.naelDiveMarkerCount = data.naelDiveMarkerCount || 0;
         if (matches.target != data.me)
@@ -414,6 +427,7 @@
           fr: 'Allez en ' + marker + ' (au ' + dir + ')',
           ja: marker + 'に行く' + ' (あと ' + dir + '秒)',
           cn: '去' + marker + ' (在 ' + dir + '秒)',
+          ko: marker + '로 이동' + ' (in ' + dir + ')',
         };
       },
       tts: function(data, matches) {
@@ -426,6 +440,7 @@
           fr: 'Allez en ' + ['A', 'B', 'C'][data.naelDiveMarkerCount],
           ja: ['A', 'B', 'C'][data.naelDiveMarkerCount] + '行くよ',
           cn: '去' + ['A', 'B', 'C'][data.naelDiveMarkerCount],
+          ko: ['A', 'B', 'C'][data.naelDiveMarkerCount] + '로 이동',
         };
       },
     },
@@ -458,7 +473,7 @@
         'Fireball': 'Feuerball',
         'Ghost': 'Geist',
         'Golem Meteors': 'Golem Meteore',
-        'Heavensfall': 'Himmelsfall',
+        'Heavensfall': 'Himmelssturz',
         'Iron Chariot': 'Eiserner Streitwagen',
         'Lunar Dynamo': 'Lunarer Dynamo',
         'Megaflare': 'Megaflare',
@@ -475,25 +490,21 @@
         '\\(Out\\)': '(Raus)',
         '\\(South\\)': '(Süden)',
       },
-      '~effectNames': {
-        'Garrote Twist': 'Leicht fixierbar',
-        'Raven Blight': 'Pestschwinge',
-      },
     },
     {
       'locale': 'fr',
       'replaceSync': {
-        'Astral Debris': 'Débris astral',
-        'Dalamud Fragment': 'Débris de Dalamud',
-        'Dalamud Spawn': 'Golem de Dalamud',
-        'Firehorn': 'Corne-de-feu',
-        'Iceclaw': 'Griffe-de-glace',
+        'Astral Debris': 'Débris Astral',
+        'Dalamud Fragment': 'Débris De Dalamud',
+        'Dalamud Spawn': 'Golem De Dalamud',
+        'Firehorn': 'Corne-De-Feu',
+        'Iceclaw': 'Griffe-De-Glace',
         'Nael Geminus': 'Nael Geminus',
-        'Nael deus Darnus': 'Nael deus Darnus',
+        'Nael deus Darnus': 'Nael Deus Darnus',
         'Ragnarok': 'Ragnarok',
         'The Ghost Of Meracydia': 'Fantôme Méracydien',
-        'Thunderwing': 'Aile-de-foudre',
-        'Umbral Debris': 'Débris ombral',
+        'Thunderwing': 'Aile-De-Foudre',
+        'Umbral Debris': 'Débris Ombral',
       },
       'replaceText': {
         '(?<! )Meteor(?! Stream)': 'Météore',
@@ -503,7 +514,7 @@
         'Cauterize': 'Cautérisation',
         'Chain Lightning': 'Chaîne d\'éclairs',
         'Dalamud Dive': 'Chute de Dalamud',
-        'Divebomb': 'Bombe plongeante',
+        'Divebomb Mark': 'Bombe plongeante, marque',
         'Fireball': 'Boule de feu',
         'Ghost Add': 'Add Fantôme',
         'Golem Meteors': 'Golem de Dalamud',
@@ -524,14 +535,9 @@
         '\\(Out\\)': '(Extérieur)',
         '\\(South\\)': '(Sud)',
       },
-      '~effectNames': {
-        'Garrote Twist': 'Sangle accélérée',
-        'Raven Blight': 'Bile de rapace',
-      },
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
         'Astral Debris': 'アストラルデブリ',
         'Dalamud Fragment': 'ダラガブデブリ',
@@ -555,8 +561,9 @@
         'Dalamud Dive': 'ダラガブダイブ',
         'Divebomb': 'ダイブボム',
         'Fireball': 'ファイアボール',
-        'Ghost': 'ゴースト',
-        'Heavensfall': 'ヘヴンスフォール',
+        'Ghost Add': '雑魚: ゴースト',
+        'Golem Meteors': 'ゴーレムメテオ',
+        'Heavensfall': '天地崩壊',
         'Iron Chariot': 'アイアンチャリオット',
         'Lunar Dynamo': 'ルナダイナモ',
         'Megaflare': 'メガフレア',
@@ -567,15 +574,15 @@
         'Stardust': 'スターダスト',
         'Super Nova': 'スーパーノヴァ',
         'Thermionic Beam': 'サーミオニックビーム',
-      },
-      '~effectNames': {
-        'Garrote Twist': '拘束加速',
-        'Raven Blight': '凶鳥毒気',
+        '\\(East\\)': '(東))',
+        '\\(In\\)': '(中)',
+        '\\(North\\)': '(北)',
+        '\\(Out\\)': '(外)',
+        '\\(South\\)': '(南)',
       },
     },
     {
       'locale': 'cn',
-      'missingTranslations': true,
       'replaceSync': {
         'Astral Debris': '星极岩屑',
         'Dalamud Fragment': '卫月岩屑',
@@ -598,9 +605,10 @@
         'Chain Lightning': '雷光链',
         'Dalamud Dive': '月华冲',
         'Divebomb': '爆破俯冲',
-        'Fireball': '火球',
+        'Fireball': '烈火球',
         'Ghost': '幽灵',
-        'Heavensfall': '惊天动地',
+        'Golem Meteors': '石头人陨石',
+        'Heavensfall': '天崩地裂',
         'Iron Chariot': '钢铁战车',
         'Lunar Dynamo': '月流电圈',
         'Megaflare': '百万核爆',
@@ -611,15 +619,15 @@
         'Stardust': '星尘',
         'Super Nova': '超新星',
         'Thermionic Beam': '热离子光束',
-      },
-      '~effectNames': {
-        'Garrote Twist': '拘束加速',
-        'Raven Blight': '凶鸟毒气',
+        '\\(East\\)': '(东)',
+        '\\(In\\)': '(内)',
+        '\\(North\\)': '(北)',
+        '\\(Out\\)': '(外)',
+        '\\(South\\)': '(南)',
       },
     },
     {
       'locale': 'ko',
-      'missingTranslations': true,
       'replaceSync': {
         'Astral Debris': '천상의 잔해',
         'Dalamud Fragment': '달라가브의 잔해',
@@ -643,8 +651,9 @@
         'Dalamud Dive': '달라가브 강하',
         'Divebomb': '급강하 폭격',
         'Fireball': '화염구',
-        'Ghost': '유령',
-        'Heavensfall': '천지 붕괴',
+        'Ghost Add': '유령 쫄',
+        'Golem Meteors': '골렘 메테오',
+        'Heavensfall': '천지붕괴',
         'Iron Chariot': '강철 전차',
         'Lunar Dynamo': '달의 원동력',
         'Megaflare': '메가플레어',
@@ -655,10 +664,13 @@
         'Stardust': '별조각',
         'Super Nova': '초신성',
         'Thermionic Beam': '열전자 광선',
-      },
-      '~effectNames': {
-        'Garrote Twist': '구속 가속',
-        'Raven Blight': '흉조의 독',
+        'Mark A': 'A징',
+        'Mark B': 'B징',
+        '\\(East\\)': '(동)',
+        '\\(South\\)': '(남)',
+        '\\(North\\)': '(북)',
+        '\\(In\\)': '(안)',
+        '\\(Out\\)': '(밖)',
       },
     },
   ],

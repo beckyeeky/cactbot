@@ -83,6 +83,9 @@ namespace Cactbot {
     public delegate void FateEventHandler(JSEvents.FateEvent e);
     public event FateEventHandler OnFateEvent;
 
+    public delegate void CEEventHandler(JSEvents.CEEvent e);
+    public event CEEventHandler OnCEEvent;
+
     public void Wipe() {
       Advanced_Combat_Tracker.ActGlobals.oFormActMain.EndCombat(false);
       OnPartyWipe(new JSEvents.PartyWipeEvent());
@@ -90,6 +93,10 @@ namespace Cactbot {
 
     public void DoFateEvent(JSEvents.FateEvent e) {
       OnFateEvent(e);
+    }
+
+    public void DoCEEvent(JSEvents.CEEvent e) {
+      OnCEEvent(e);
     }
 
     public CactbotEventSource(RainbowMage.OverlayPlugin.ILogger logger)
@@ -108,6 +115,7 @@ namespace Cactbot {
         "onInCombatChangedEvent",
         "onZoneChangedEvent",
         "onFateEvent",
+        "onCEEvent",
         "onPlayerDied",
         "onPartyWipe",
         "onPlayerChangedEvent",
@@ -242,6 +250,11 @@ namespace Cactbot {
         LogInfo("System Locale: {0}", pc_locale_);
       }
 
+      // This will be set explicitly, so if it's not set now, it will be set after reloading ACT.
+      // Log this for now as there will likely be a lot of questions, re: user directories.
+      if (Config.UserConfigFile != null)
+        LogInfo("cactbot user directory: {0}", Config.UserConfigFile);
+
       // Temporarily target cn if plugin is old v2.0.4.0
       if (language_ == "cn" || ffxiv.ToString() == "2.0.4.0") {
         ffxiv_ = new FFXIVProcessCn(this);
@@ -271,6 +284,7 @@ namespace Cactbot {
       OnPlayerDied += (e) => DispatchToJS(e);
       OnPartyWipe += (e) => DispatchToJS(e);
       OnFateEvent += (e) => DispatchToJS(e);
+      OnCEEvent += (e) => DispatchToJS(e);
 
       fast_update_timer_.Interval = kFastTimerMilli;
       fast_update_timer_.Start();
@@ -324,6 +338,11 @@ namespace Cactbot {
       ev["type"] = e.EventName();
       ev["detail"] = JObject.FromObject(e);
       DispatchEvent(ev);
+    }
+
+    public void ClearFateWatcherDictionaries() {
+      fate_watcher_.RemoveAndClearCEs();
+      fate_watcher_.RemoveAndClearFates();
     }
 
     // Events that we want to update as soon as possible.  Return next time this should be called.
@@ -394,6 +413,7 @@ namespace Cactbot {
       if (notify_state_.zone_name == null || !zone_name.Equals(notify_state_.zone_name)) {
         notify_state_.zone_name = zone_name;
         OnZoneChanged(new JSEvents.ZoneChangedEvent(zone_name));
+        ClearFateWatcherDictionaries();
       }
 
       DateTime now = DateTime.Now;
@@ -415,10 +435,9 @@ namespace Cactbot {
       if (player != null) {
         bool send = false;
         if (!player.Equals(notify_state_.player)) {
-          // Clear the FATE dictionary if we switched characters
-          if (notify_state_.player != null && !player.name.Equals(notify_state_.player.name)) {
-            fate_watcher_.RemoveAndClearFates();
-          }
+          // Clear the FateWatcher dictionaries if we switched characters
+          if (notify_state_.player != null && !player.name.Equals(notify_state_.player.name))
+            ClearFateWatcherDictionaries();
           notify_state_.player = player;
           send = true;
         }
@@ -554,7 +573,7 @@ namespace Cactbot {
     }
 
     private Dictionary<string, string> GetLocalUserFiles(string config_dir) {
-      if (config_dir == null || config_dir == "")
+      if (String.IsNullOrEmpty(config_dir))
         return null;
 
       // TODO: It's not great to have to load every js and css file in the user dir.
@@ -590,6 +609,11 @@ namespace Cactbot {
             continue;
           user_files[Path.GetFileName(filename)] = File.ReadAllText(filename) +
             $"\n//# sourceURL={filename}";
+        }
+
+        var textFilenames = Directory.EnumerateFiles(path, "*.txt");
+        foreach (string filename in textFilenames) {
+          user_files[Path.GetFileName(filename)] = File.ReadAllText(filename);
         }
       } catch (Exception e) {
         LogError("User error file exception: {0}", e.ToString());
@@ -633,6 +657,11 @@ namespace Cactbot {
             local_files = null;
           }
         }
+
+        // Set any implicitly discovered cactbot user config dirs as explicit.
+        // This will help in the future when there aren't local plugins or html.
+        if (config_dir != null)
+          Config.UserConfigFile = config_dir;
       }
     }
 
@@ -663,7 +692,7 @@ namespace Cactbot {
       paths.Add(Config.UserConfigFile);
 
       foreach (var path in paths) {
-        if (path == "" || path == null)
+        if (String.IsNullOrEmpty(path))
           continue;
 
         var watchDir = "";
@@ -722,11 +751,12 @@ namespace Cactbot {
       var path = new VersionChecker(this).GetCactbotDirectory();
       string lc = dirName.ToLowerInvariant();
       var name = nameOverride != null ? nameOverride : dirName;
-      var filename = fileOverride != null ? fileOverride : dirName;
+      var filename = (fileOverride != null ? fileOverride : dirName).ToLowerInvariant() + ".html";
+      var uri = new System.Uri(Path.Combine(path, "ui", lc, filename));
 
       Registry.RegisterOverlayPreset(new OverlayPreset{
         Name = $"Cactbot {name}",
-        Url = Path.Combine(path, "ui", lc, $"{filename}.html"),
+        Url = uri.AbsoluteUri,
         Size = new int[] { width, height },
         Locked = false,
       });
@@ -735,9 +765,10 @@ namespace Cactbot {
     private void RegisterDpsPreset(string name, string file, int width, int height) {
       var path = new VersionChecker(this).GetCactbotDirectory();
       string lc = name.ToLowerInvariant();
+      var uri = new System.Uri(Path.Combine(path, "ui", "dps", lc, $"{file}.html"));
       Registry.RegisterOverlayPreset(new OverlayPreset{
         Name = $"Cactbot DPS {name}",
-        Url = Path.Combine(path, "ui", "dps", lc, $"{file}.html"),
+        Url = uri.AbsoluteUri,
         Size = new int[] { width, height },
         Locked = false,
       });

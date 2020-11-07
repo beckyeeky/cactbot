@@ -4,14 +4,9 @@ let Options = {
   Triggers: [],
   PlayerNicks: {},
   DisabledTriggers: {},
-  IgnoreZones: [
-    'PvpSeize',
-    'PvpSecure',
-    'PvpShatter',
-    'EurekaAnemos',
-    'EurekaPagos',
-    'EurekaPyros',
-    'EurekaHydatos',
+  IgnoreContentTypes: [
+    ContentType.Pvp,
+    ContentType.Eureka,
   ],
 
   AbilityIdNameMap: {
@@ -101,90 +96,54 @@ let Options = {
   },
 };
 
-let kEarlyPullText = {
+const kEarlyPullText = {
   en: 'early pull',
   de: 'zu früh angegriffen',
   fr: 'early pull',
-  // FIXME
-  ja: 'early pull',
+  ja: 'タゲ取り早い',
   cn: '抢开',
   ko: '풀링 빠름',
 };
 
-let kLatePullText = {
+const kLatePullText = {
   en: 'late pull',
   de: 'zu spät angegriffen',
   fr: 'late pull',
-  // FIXME
-  ja: 'late pull',
+  ja: 'タゲ取り遅い',
   cn: '晚开',
   ko: '풀링 늦음',
 };
 
 const kPartyWipeText = {
   en: 'Party Wipe',
-  de: 'Party Wipe',
+  de: 'Gruppe ausgelöscht',
   fr: 'Party Wipe',
-  ja: 'Party Wipe',
+  ja: 'ワイプ',
   cn: '团灭',
   ko: '파티 전멸',
+};
+
+const kCopiedMessage = {
+  en: 'Copied!',
+  de: 'Kopiert!',
+  fr: 'Copié !',
+  ja: 'コピーした！',
+  cn: '已复制！',
+  ko: '복사 완료!',
 };
 
 // Internal trigger id for early pull
 let kEarlyPullId = 'General Early Pull';
 
-// Character offsets into log lines for the chars of the type.
-let kTypeOffset0 = 15;
-let kTypeOffset1 = 16;
+// Fields for net log ability lines.
+let kFieldFlags = 8;
+let kFieldDamage = 9;
 
-/*
-Log Message Types (hex)
-00 = game log
-01 = zone change
-03 = added combatant
-04 = removed combatant
-14 = starts casting
-15 = single target (damage, skill)
-16 = aoe (damage, skills, etc)
-17 = cancelled/interrupted
-18 = hot/dot tick
-19 = was defeated by
-1A = gains effect
-1B = head marker
-1E = loses effect
-1F = meditate stacks?!
-*/
-
-// Fields for type=15/16 (decimal)
-let kFieldType = 0;
-let kFieldAttackerId = 1;
-let kFieldAttackerName = 2;
-let kFieldAbilityId = 3;
-let kFieldAbilityName = 4;
-let kFieldTargetId = 5;
-let kFieldTargetName = 6;
-let kFieldFlags = 7;
-let kFieldDamage = 8;
-// ??
-let kFieldTargetCurrentHp = 23;
-let kFieldTargetMaxHp = 24;
-let kFieldTargetCurrentMp = 25;
-let kFieldTargetMaxMp = 26;
-let kFieldTargetCurrentTp = 27;
-let kFieldTargetMaxTp = 28;
-let kFieldTargetX = 29;
-let kFieldTargetY = 30;
-let kFieldTargetZ = 31;
-// ??
-let kFieldAttackerX = 38;
-let kFieldAttackerY = 39;
-let kFieldAttackerZ = 40;
-
-// If kFieldFlags is any of these values, then consider field 9/10 as 7/8.
+// If kFieldFlags is any of these values, then consider field 10/11 as 8/9.
 // It appears a little bit that flags come in pairs of values, but it's unclear
 // what these mean.
 let kShiftFlagValues = ['3E', '113', '213', '313'];
-let kFlagInstantDeath = 'XX'; // FIXME
+let kFlagInstantDeath = '36'; // Always 36 ?
 // miss, damage, block, parry, instant death
 let kAttackFlags = ['01', '03', '05', '06', kFlagInstantDeath];
 
@@ -200,18 +159,6 @@ Field 7 Flags:
     0x05 = blocked damage
     0x06 = parried damage
     0x?? = instant death
-
-  misc low bytes:
-    0x08 = mudra(bogus), esuna(no effects?), bane(missed)
-    0x09 = bane(target)
-    0x0B = aetherflow
-    0x0D = purification, invigorate (with tp value in left three chars of next field)
-    0x0F = bio, chain strat, emergency tactics, protect, swiftcast, bane(recipient), sprint, fists of fire, mudra
-    0x10 = shadow flare, sacred soil
-    0x26 = mount (always 126?)
-    0x3A = skill with no buffs/damage (e.g. teleport, bahamut's favor, ninja bunny)
-    0x3B = huton
-    0x33 = summon
 
   damage modifiers:
     0x100 = crit damage
@@ -259,10 +206,6 @@ Examples:
 
 /* eslint-enable */
 
-let gLiveList;
-let gMistakeCollector;
-let gDamageTracker;
-
 function ShortNamify(name) {
   // TODO: make this unique among the party in case of first name collisions.
   // TODO: probably this should be a general cactbot utility.
@@ -274,9 +217,13 @@ function ShortNamify(name) {
   return idx < 0 ? name : name.substr(0, idx);
 }
 
-function DamageFromFields(fields) {
-  let field = fields[kFieldDamage];
-  let len = field.length;
+// Turns a scrambled string damage field into an integer.
+// Since fields are modified in place right now, this does nothing if called
+// again with an integer.  This is kind of a hack, sorry.
+function UnscrambleDamage(field) {
+  if (typeof field !== 'string')
+    return field;
+  const len = field.length;
   if (len <= 4)
     return 0;
   // Get the left two bytes as damage.
@@ -284,26 +231,25 @@ function DamageFromFields(fields) {
   // Check for third byte == 0x40.
   if (field[len - 4] == '4') {
     // Wrap in the 4th byte as extra damage.  See notes above.
-    let rightDamage = parseInt(field.substr(len - 2, 2), 16);
+    const rightDamage = parseInt(field.substr(len - 2, 2), 16);
     damage = damage - rightDamage + (rightDamage << 16);
   }
   return damage;
 }
 
-function IsCritDamage(flags) {
-  return parseInt(flags, 16) & 0x100;
-}
-
-function IsCritHeal(flags) {
-  return flags == '10004';
-}
-
-function IsDirectHitDamage(flags) {
-  return parseInt(flags, 16) & 0x200;
-}
-
 function IsPlayerId(id) {
   return id[0] < 4;
+}
+
+function IsTriggerEnabled(options, id) {
+  if (id in options.DisabledTriggers)
+    return false;
+
+  const autoConfig = options.PerTriggerAutoConfig[id];
+  if (autoConfig)
+    return autoConfig.enabled;
+
+  return true;
 }
 
 class OopsyLiveList {
@@ -367,6 +313,26 @@ class OopsyLiveList {
   MakeRow() {
     let div = document.createElement('div');
     div.classList.add('mistake-row');
+
+    // click-to-copy function
+    div.addEventListener('click', (e) => {
+      const str = e.target.childNodes[0].textContent;
+      const el = document.createElement('textarea');
+      el.value = str;
+      e.target.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      e.target.removeChild(el);
+
+      // copied message
+      const msg = document.createElement('div');
+      msg.classList.add('copied-msg');
+      msg.innerText = kCopiedMessage[this.options.DisplayLanguage] || kCopiedMessage['en'];
+      document.body.appendChild(msg);
+      setTimeout(() => {
+        document.body.removeChild(msg);
+      }, 1000);
+    });
     this.items.push(div);
     this.container.appendChild(div);
     return div;
@@ -391,16 +357,118 @@ class OopsyLiveList {
     this.numItems = 0;
     this.container.innerHTML = '';
   }
+
+  StartNewACTCombat() {
+    this.Reset();
+  }
+
+  OnChangeZone(e) {
+    this.Reset();
+  }
+}
+
+class OopsySummaryList {
+  constructor(options, container) {
+    this.options = options;
+    this.container = container;
+    this.container.classList.remove('hide');
+
+    this.pullIdx = 0;
+    this.zoneName = null;
+    this.currentDiv = null;
+  }
+
+  GetTimeStr(d) {
+    // ISO-8601 or death.
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
+    const hours = ('00' + d.getHours()).slice(-2);
+    const minutes = ('00' + d.getMinutes()).slice(-2);
+    return `${d.getFullYear()}-${month}-${day} ${hours}:${minutes}`;
+  }
+
+  StartNewSectionIfNeeded() {
+    if (this.currentDiv)
+      return;
+
+    let section = document.createElement('div');
+    section.classList.add('section');
+    this.container.appendChild(section);
+
+    let headerDiv = document.createElement('div');
+    headerDiv.classList.add('section-header');
+    section.appendChild(headerDiv);
+
+    // TODO: It would kind of be nice to sync this with pullcounter,
+    // but it's not clear how to connect these two.
+    this.pullIdx++;
+
+    let pullDiv = document.createElement('div');
+    pullDiv.innerText = `Pull ${this.pullIdx}`;
+    headerDiv.appendChild(pullDiv);
+    let zoneDiv = document.createElement('div');
+    if (this.zoneName)
+      zoneDiv.innerText = `(${this.zoneName})`;
+    headerDiv.appendChild(zoneDiv);
+    let timeDiv = document.createElement('div');
+    timeDiv.innerText = this.GetTimeStr(new Date());
+    headerDiv.appendChild(timeDiv);
+
+    let rowContainer = document.createElement('div');
+    rowContainer.classList.add('section-rows');
+    section.appendChild(rowContainer);
+
+    this.currentDiv = rowContainer;
+  }
+
+  EndSection() {
+    this.currentDiv = null;
+  }
+
+  AddLine(iconClass, text, time) {
+    this.StartNewSectionIfNeeded();
+
+    let rowDiv = document.createElement('div');
+    rowDiv.classList.add('mistake-row');
+    this.currentDiv.appendChild(rowDiv);
+
+    // TODO: maybe combine this with OopsyLiveList.
+    let iconDiv = document.createElement('div');
+    iconDiv.classList.add('mistake-icon');
+    iconDiv.classList.add(iconClass);
+    rowDiv.appendChild(iconDiv);
+    let textDiv = document.createElement('div');
+    textDiv.classList.add('mistake-text');
+    textDiv.innerHTML = text;
+    rowDiv.appendChild(textDiv);
+    let timeDiv = document.createElement('div');
+    timeDiv.classList.add('mistake-time');
+    timeDiv.innerHTML = time;
+    rowDiv.appendChild(timeDiv);
+  }
+
+  SetInCombat(inCombat) {
+    // noop
+  }
+
+  StartNewACTCombat() {
+    this.EndSection();
+    this.StartNewSectionIfNeeded();
+  }
+
+  OnChangeZone(e) {
+    this.zoneName = e.zoneName;
+  }
 }
 
 // Collector:
 // * processes mistakes, adds lines to the live list
 // * handles timing issues with starting/stopping/early pulls
 class MistakeCollector {
-  constructor(options, liveList) {
+  constructor(options, listView) {
     this.options = options;
     this.parserLang = this.options.ParserLanguage || 'en';
-    this.liveList = liveList;
+    this.listView = listView;
     this.baseTime = null;
     this.inACTCombat = false;
     this.inGameCombat = false;
@@ -412,7 +480,6 @@ class MistakeCollector {
     this.stopTime = null;
     this.firstPuller = null;
     this.engageTime = null;
-    this.liveList.Reset();
   }
 
   GetFormattedTime(time) {
@@ -438,7 +505,7 @@ class MistakeCollector {
     // period of time.  Gross.
     //
     // Because damage comes before in combat (regardless of where engage
-    // occurs), StartCombat has to be responsible for clearing the liveList
+    // occurs), StartCombat has to be responsible for clearing the listView
     // list.
     let now = Date.now();
     let kMinimumSecondsAfterWipe = 5;
@@ -476,13 +543,13 @@ class MistakeCollector {
     if (!text)
       return;
     let blameText = blame ? ShortNamify(blame) + ': ' : '';
-    this.liveList.AddLine(type, blameText + text, this.GetFormattedTime(time));
+    this.listView.AddLine(type, blameText + text, this.GetFormattedTime(time));
   }
 
   OnFullMistakeText(type, blame, text, time) {
     if (!text)
       return;
-    this.liveList.AddLine(type, text, this.GetFormattedTime(time));
+    this.listView.AddLine(type, text, this.GetFormattedTime(time));
   }
 
   AddEngage() {
@@ -493,36 +560,34 @@ class MistakeCollector {
     }
     let seconds = ((Date.now() - this.startTime) / 1000);
     if (this.firstPuller && seconds >= this.options.MinimumTimeForPullMistake) {
-      let text = kEarlyPullText[this.options.DisplayLanguage] + ' (' + seconds.toFixed(1) + 's)';
-      if (!this.options.DisabledTriggers[kEarlyPullId])
+      let text = this.Translate(kEarlyPullText) + ' (' + seconds.toFixed(1) + 's)';
+      if (IsTriggerEnabled(this.options, kEarlyPullId))
         this.OnMistakeText('pull', this.firstPuller, text);
     }
   }
 
-  AddDamage(fields, line) {
+  AddDamage(matches) {
     if (!this.firstPuller) {
-      if (this.options.Debug)
-        console.log('Pull: ' + line);
-      if (IsPlayerId(fields[kFieldAttackerId]))
-        this.firstPuller = fields[kFieldAttackerName];
-      else if (IsPlayerId(fields[kFieldTargetId]))
-        this.firstPuller = fields[kFieldTargetName];
+      if (IsPlayerId(matches.sourceId))
+        this.firstPuller = matches.source;
+      else if (IsPlayerId(matches.targetId))
+        this.firstPuller = matches.target;
       else
         this.firstPuller = '???';
 
       this.StartCombat();
       let seconds = ((Date.now() - this.engageTime) / 1000);
       if (this.engageTime && seconds >= this.options.MinimumTimeForPullMistake) {
-        let text = kLatePullText[this.options.DisplayLanguage] + ' (' + seconds.toFixed(1) + 's)';
-        if (!this.options.DisabledTriggers[kEarlyPullId])
+        let text = this.Translate(kLatePullText) + ' (' + seconds.toFixed(1) + 's)';
+        if (IsTriggerEnabled(this.options, kEarlyPullId))
           this.OnMistakeText('pull', this.firstPuller, text);
       }
     }
   }
 
-  AddDeath(name, fields) {
+  AddDeath(name, matches) {
     let text;
-    if (fields) {
+    if (matches) {
       // Note: ACT just evaluates independently what the hp of everybody
       // is and so may be out of date modulo one hp regen tick with
       // respect to the "current" hp value, e.g. charybdis may appear to do
@@ -533,12 +598,12 @@ class MistakeCollector {
 
       // hp string = (damage/hp at time of death)
       let hp = '';
-      if (fields[kFieldFlags] == kFlagInstantDeath) {
+      if (matches.flags === kFlagInstantDeath) {
         // TODO: show something for infinite damage?
-      } else if (kFieldTargetCurrentHp in fields) {
-        hp = ' (' + DamageFromFields(fields) + '/' + fields[kFieldTargetCurrentHp] + ')';
+      } else if ('targetCurrentHp' in matches) {
+        hp = ' (' + UnscrambleDamage(matches.damage) + '/' + matches.targetCurrentHp + ')';
       }
-      text = fields[kFieldAbilityName] + hp;
+      text = matches.ability + hp;
     }
     this.OnMistakeText('death', name, text);
 
@@ -552,7 +617,7 @@ class MistakeCollector {
     // wipe then (to make post-wipe deaths more obvious), however this
     // requires making liveList be able to insert items in a sorted
     // manner instead of just being append only.
-    this.OnFullMistakeText('wipe', null, kPartyWipeText[this.options.DisplayLanguage || 'en']);
+    this.OnFullMistakeText('wipe', null, this.Translate(kPartyWipeText));
     // Party wipe usually comes a few seconds after everybody dies
     // so this will clobber any late damage.
     this.StopCombat();
@@ -576,7 +641,7 @@ class MistakeCollector {
       else
         this.StopCombat();
 
-      this.liveList.SetInCombat(this.inGameCombat);
+      this.listView.SetInCombat(this.inGameCombat);
     }
 
     let inACTCombat = e.detail.inACTCombat;
@@ -587,12 +652,12 @@ class MistakeCollector {
         // for when combat started.  Starting here is not the right
         // time if this plugin is loaded while ACT is already in combat.
         this.baseTime = Date.now();
-        this.liveList.Reset();
+        this.listView.StartNewACTCombat();
       }
     }
   }
 
-  OnZoneChangeEvent(e) {
+  OnChangeZone(e) {
     this.Reset();
   }
 }
@@ -610,11 +675,22 @@ class DamageTracker {
     this.abilityTriggers = [];
     this.effectTriggers = [];
     this.healTriggers = [];
+    this.netTriggers = [];
 
     this.partyTracker = new PartyTracker();
     addOverlayListener('PartyChanged', (e) => {
       this.partyTracker.onPartyChanged(e);
     });
+
+    const lang = this.options.ParserLanguage;
+    this.countdownEngageRegex = LocaleNetRegex.countdownEngage[lang] ||
+      LocaleNetRegex.countdownEngage['en'];
+    this.countdownStartRegex = LocaleNetRegex.countdownStart[lang] ||
+      LocaleNetRegex.countdownStart['en'];
+    this.countdownCancelRegex = LocaleNetRegex.countdownCancel[lang] ||
+      LocaleNetRegex.countdownCancel['en'];
+    this.defeatedRegex = NetRegexes.wasDefeated();
+    this.abilityFullRegex = NetRegexes.abilityFull();
 
     this.Reset();
   }
@@ -635,6 +711,7 @@ class DamageTracker {
       ParseLocaleFloat: parseFloat,
     };
     this.lastDamage = {};
+    // Trigger ID -> { events: [], matches: [] }
     this.activeTriggers = {};
 
     for (let i = 0; i < this.timers.length; ++i)
@@ -642,132 +719,133 @@ class DamageTracker {
     this.timers = [];
   }
 
-  OnLogEvent(e) {
+  OnNetLog(e) {
     if (this.ignoreZone)
       return;
-    for (let i = 0; i < e.detail.logs.length; ++i) {
-      let line = e.detail.logs[i];
-      for (let j = 0; j < this.generalTriggers.length; ++j) {
-        let trigger = this.generalTriggers[j];
+
+    const line = e.rawLine;
+    for (let trigger of this.netTriggers) {
+      let matches = line.match(trigger.netRegex);
+      if (matches != null)
+        this.OnTrigger(trigger, { line: line }, matches);
+    }
+
+    const splitLine = e.line;
+    const type = splitLine[0];
+
+    if (type === '00') {
+      if (this.countdownEngageRegex.test(line))
+        this.collector.AddEngage();
+      if (this.countdownStartRegex.test(line) || this.countdownCancelRegex.test(line))
+        this.collector.Reset();
+    } else if (type === '26') {
+      this.OnEffectEvent(line);
+    } else if (type === '21' || type === '22') {
+      this.OnAbilityEvent(line, splitLine);
+    } else if (type === '25') {
+      this.OnDefeated(line);
+    }
+  }
+
+  OnLogEvent(e) {
+    if (this.ignoreZone || this.generalTriggers.length === 0)
+      return;
+    for (const line of e.detail.logs) {
+      for (const trigger of this.generalTriggers) {
         let matches = line.match(trigger.regex);
         if (matches != null)
           this.OnTrigger(trigger, { line: line }, matches);
       }
-
-      if (line[kTypeOffset0] == '0' && line[kTypeOffset1] == '0') {
-        if (line.match(gLang.countdownEngageRegex())) {
-          this.collector.AddEngage();
-          continue;
-        }
-        if (line.match(gLang.countdownStartRegex()) || line.match(gLang.countdownCancelRegex())) {
-          this.collector.Reset();
-          continue;
-        }
-      }
-      // 15 chars in is the type: 15 (single target) / 16 (aoe)
-      // See table at the top of this file.
-      if (line[kTypeOffset0] != '1')
-        continue;
-      if (line[kTypeOffset1] == 'A' || line[kTypeOffset1] == 'E')
-        this.OnEffectEvent(line);
-      if (line[kTypeOffset1] == '5' || line[kTypeOffset1] == '6')
-        this.OnAbilityEvent(line.substr(kTypeOffset0).split(':'), line);
-      if (line[kTypeOffset1] == '9')
-        this.OnDefeated(line);
     }
   }
 
   OnDefeated(line) {
-    // two chars for type + colon
-    let offset = kTypeOffset0 + 3;
-    let defeatedIdx = line.indexOf(' was defeated');
-    if (defeatedIdx == -1) {
-      console.error(['OnDefeatedParseError', line]);
+    const matches = line.match(this.defeatedRegex);
+    if (!matches)
       return;
-    }
-    let name = line.substr(offset, defeatedIdx - offset);
-    let fields = this.lastDamage[name];
+    const name = matches.groups.target;
+
+    const last = this.lastDamage[name];
     delete this.lastDamage[name];
+
     // Monsters get defeated as well, but they will never
     // have lastDamage marked for them.  It's possible that
     // in a very short fight, a player will never take
     // damage and will not get killed by an ability and
     // so won't get a death notice.
+
     // TODO: track all players in the instance and support
     // death notices even if there's no ability damage.
-    if (fields)
-      this.collector.AddDeath(name, fields);
+    if (last)
+      this.collector.AddDeath(name, last);
   }
 
-  OnAbilityEvent(fields, line) {
+  OnAbilityEvent(line, splitLine) {
+    const lineMatches = line.match(this.abilityFullRegex);
+    if (!lineMatches)
+      return;
+
+    let matches = lineMatches.groups;
+
     // Shift damage and flags forward for mysterious spurious :3E:0:.
     // Plenary Indulgence also appears to prepend confession stacks.
     // UNKNOWN: Can these two happen at the same time?
-    if (kShiftFlagValues.indexOf(fields[kFieldFlags]) >= 0) {
-      fields[kFieldFlags] = fields[kFieldFlags + 2];
-      fields[kFieldFlags + 1] = fields[kFieldFlags + 3];
+    if (kShiftFlagValues.includes(splitLine[kFieldFlags])) {
+      matches.flags = splitLine[kFieldFlags + 2];
+      matches.damage = splitLine[kFieldFlags + 3];
     }
-
-    // Clobber ability names here.
-    let abilityId = fields[kFieldAbilityId];
-    if (abilityId in this.options.AbilityIdNameMap)
-      fields[kFieldAbilityName] = this.options.AbilityIdNameMap[abilityId];
-
 
     // Lazy initialize event.
     let evt;
-    for (let i = 0; i < this.abilityTriggers.length; ++i) {
-      let trigger = this.abilityTriggers[i];
-      let matches = abilityId.match(trigger.idRegex);
-      if (matches == null)
+
+    const abilityId = matches.id;
+    for (const trigger of this.abilityTriggers) {
+      if (!trigger.idRegex.test(abilityId))
         continue;
       if (!evt)
-        evt = this.EventFromFields(fields, line);
+        evt = this.ProcessMatchesIntoEvent(line, matches);
       this.OnTrigger(trigger, evt, matches);
     }
 
     // Length 1 or 2.
-    let lowByte = fields[kFieldFlags].substr(-2);
+    let lowByte = matches.flags.substr(-2);
+    if (lowByte.length === 1)
+      lowByte = '0' + lowByte;
 
     // Healing?
-    if (lowByte == '04' || lowByte == '4') {
-      for (let i = 0; i < this.healTriggers.length; ++i) {
-        let trigger = this.healTriggers[i];
-        let matches = abilityId.match(trigger.idRegex);
-        if (matches == null)
+    if (lowByte == '04') {
+      for (const trigger of this.healTriggers) {
+        if (!trigger.idRegex.test(abilityId))
           continue;
         if (!evt)
-          evt = this.EventFromFields(fields, line);
+          evt = this.ProcessMatchesIntoEvent(line, matches);
         this.OnTrigger(trigger, evt, matches);
       }
       return;
     }
 
-    if (kAttackFlags.indexOf(lowByte) == -1)
+    if (!kAttackFlags.includes(lowByte))
       return;
 
     // TODO track first puller here, collector doesn't need every damage line
     if (!this.collector.firstPuller)
-      this.collector.AddDamage(fields, line);
+      this.collector.AddDamage(matches);
 
-    if (IsPlayerId(fields[kFieldTargetId][0]))
-      this.lastDamage[fields[kFieldTargetName]] = fields;
+    if (IsPlayerId(matches.targetId))
+      this.lastDamage[matches.target] = matches;
 
-    for (let i = 0; i < this.damageTriggers.length; ++i) {
-      let trigger = this.damageTriggers[i];
-      let matches = abilityId.match(trigger.idRegex);
-      if (matches == null)
+    for (const trigger of this.damageTriggers) {
+      if (!trigger.idRegex.test(abilityId))
         continue;
       if (!evt)
-        evt = this.EventFromFields(fields, line);
+        evt = this.ProcessMatchesIntoEvent(line, matches);
       this.OnTrigger(trigger, evt, matches);
     }
   }
 
   OnEffectEvent(line) {
     let evt;
-    for (let i = 0; i < this.effectTriggers.length; ++i) {
-      let trigger = this.effectTriggers[i];
+    for (const trigger of this.effectTriggers) {
       let matches;
       let isGainLine;
       if (trigger.gainRegex) {
@@ -780,9 +858,9 @@ class DamageTracker {
         if (matches)
           isGainLine = false;
       }
-      if (matches == null)
+      if (matches === null)
         continue;
-      // TODO: just pass groups on through, and change `attacker` to `source`.
+
       let g = matches.groups;
       if (!evt) {
         evt = {
@@ -793,53 +871,47 @@ class DamageTracker {
           durationSeconds: g.duration,
         };
       }
-      this.OnTrigger(trigger, evt, null);
+      this.OnTrigger(trigger, evt, g);
     }
   }
 
-  EventFromFields(fields, line) {
-    let evt = {
+  // This function does too much, but it's a way to do one-time work if any trigger
+  // matches without having to do that work on every single ability line.
+  // This should only be called once per matches object as it modifies it.
+  ProcessMatchesIntoEvent(line, matches) {
+    const abilityId = matches.id;
+    if (abilityId in this.options.AbilityIdNameMap)
+      matches.ability = this.options.AbilityIdNameMap[abilityId];
+
+    matches.damage = UnscrambleDamage(matches.damage);
+
+    return {
       line: line,
-      type: fields[kFieldType],
-      attackerId: fields[kFieldAttackerId],
-      attackerName: fields[kFieldAttackerName],
-      abilityId: fields[kFieldAbilityId],
-      abilityName: fields[kFieldAbilityName],
-      targetId: fields[kFieldTargetId],
-      targetName: fields[kFieldTargetName],
-      flags: fields[kFieldFlags],
-      targetCurrentHp: fields[kFieldTargetCurrentHp],
-      targetMaxHp: fields[kFieldTargetMaxHp],
-      targetCurrentMp: fields[kFieldTargetCurrentMp],
-      targetMaxMp: fields[kFieldTargetMaxMp],
-      targetCurrentTp: fields[kFieldTargetCurrentTp],
-      targetMaxTp: fields[kFieldTargetMaxTp],
-      targetX: fields[kFieldTargetX],
-      targetY: fields[kFieldTargetY],
-      targetZ: fields[kFieldTargetZ],
-      attackerX: fields[kFieldAttackerX],
-      attackerY: fields[kFieldAttackerY],
-      attackerZ: fields[kFieldAttackerZ],
+      // Convert from network log decimal id to parsed log hex id for backwards compat.
+      type: matches.type === '21' ? '15' : '16',
+      attackerId: matches.sourceId,
+      attackerName: matches.source,
+      abilityId: matches.id,
+      abilityName: matches.ability,
+      targetId: matches.targetId,
+      targetName: matches.target,
+      flags: matches.flags,
+      damage: matches.damage,
+      targetCurrentHp: matches.targetCurrentHp,
+      targetMaxHp: matches.targetMaxHp,
+      damageStr: matches.damage,
     };
-    evt.damage = DamageFromFields(fields);
-    let isCrit = IsCritDamage(evt.flags);
-    let exclamation = isCrit ? '!' : '';
-    // DH on its own doesn't get an exclamation.
-    exclamation += isCrit && IsDirectHitDamage(evt.flags) ? '!' : '';
-    exclamation += IsCritHeal(evt.flags) ? '!' : '';
-    evt.damageStr = evt.damage + exclamation;
-    return evt;
   }
 
   AddImpliedDeathReason(obj) {
     if (!obj)
       return;
-    let fields = {};
-    fields[kFieldTargetName] = obj.name;
-    fields[kFieldAbilityName] = obj.reason;
-    fields[kFieldFlags] = kFlagInstantDeath;
-    fields[kFieldDamage] = 0;
-    this.lastDamage[obj.name] = fields;
+    this.lastDamage[obj.name] = {
+      target: obj.name,
+      ability: obj.reason,
+      flags: kFlagInstantDeath,
+      damage: 0,
+    };
   }
 
   OnTrigger(trigger, evt, matches) {
@@ -848,7 +920,7 @@ class DamageTracker {
     if ((matches != undefined) && (matches.groups != undefined))
       matches = matches.groups;
 
-    if (trigger.id && this.options.DisabledTriggers[trigger.id])
+    if (trigger.id && !IsTriggerEnabled(this.options, trigger.id))
       return;
 
     if ('condition' in trigger) {
@@ -856,29 +928,36 @@ class DamageTracker {
         return;
     }
 
-    let ValueOrFunction = (f, events) => {
+    let ValueOrFunction = (f, events, matches) => {
       return (typeof f == 'function') ? f(events, this.data, matches) : f;
     };
 
-    let collectSeconds = 'collectSeconds' in trigger ? ValueOrFunction(trigger.collectSeconds) : 0;
+    let collectSeconds = 'collectSeconds' in trigger ? ValueOrFunction(trigger.collectSeconds, matches) : 0;
     let collectMultipleEvents = 'collectSeconds' in trigger;
-    if (collectMultipleEvents && trigger in this.activeTriggers) {
-      this.activeTriggers[trigger].push(evt);
+    if (collectMultipleEvents && trigger.id in this.activeTriggers) {
+      this.activeTriggers[trigger.id].events.push(evt);
+      this.activeTriggers[trigger.id].matches.push(matches);
       return;
     }
     let delay;
     if (collectMultipleEvents)
       delay = collectSeconds || 0;
     else
-      delay = 'delaySeconds' in trigger ? ValueOrFunction(trigger.delaySeconds, evt) : 0;
+      delay = 'delaySeconds' in trigger ? ValueOrFunction(trigger.delaySeconds, evt, matches) : 0;
 
 
     let triggerTime = Date.now();
     let f = (function() {
-      let eventOrEvents = collectMultipleEvents ? this.activeTriggers[trigger] : evt;
-      delete this.activeTriggers[trigger];
+      let eventParam = evt;
+      let matchesParam = matches;
+      if (collectMultipleEvents) {
+        eventParam = this.activeTriggers[trigger.id].events;
+        matchesParam = this.activeTriggers[trigger.id].matches;
+        delete this.activeTriggers[trigger.id];
+      }
+
       if ('mistake' in trigger) {
-        let m = ValueOrFunction(trigger.mistake, eventOrEvents);
+        let m = ValueOrFunction(trigger.mistake, eventParam, matchesParam);
         if (Array.isArray(m)) {
           for (let i = 0; i < m.length; ++i)
             this.collector.OnMistakeObj(m[i]);
@@ -887,20 +966,28 @@ class DamageTracker {
         }
       }
       if ('deathReason' in trigger) {
-        let ret = ValueOrFunction(trigger.deathReason, eventOrEvents);
+        let ret = ValueOrFunction(trigger.deathReason, eventParam, matchesParam);
         if (ret) {
           ret.reason = this.collector.Translate(ret.reason);
           this.AddImpliedDeathReason(ret);
         }
       }
       if ('run' in trigger)
-        ValueOrFunction(trigger.run, eventOrEvents);
+        ValueOrFunction(trigger.run, eventParam, matchesParam);
     }).bind(this);
 
     // Even if delay = 0, if collectMultipleEvents is specified,
     // then set this here so that events can be passed as an array for consistency.
-    if (collectMultipleEvents)
-      this.activeTriggers[trigger] = [evt];
+    if (collectMultipleEvents) {
+      if (!trigger.id) {
+        console.error('Missing trigger id with collectSeconds specified.');
+        return;
+      }
+      this.activeTriggers[trigger.id] = {
+        events: [evt],
+        matches: [matches],
+      };
+    }
 
     if (!delay)
       f();
@@ -915,8 +1002,13 @@ class DamageTracker {
     this.collector.OnPartyWipeEvent(e);
   }
 
-  OnZoneChangeEvent(e) {
-    this.zoneName = e.detail.zoneName;
+  OnChangeZone(e) {
+    this.zoneName = e.zoneName;
+    this.zoneId = e.zoneID;
+
+    const zoneInfo = ZoneInfo[this.zoneId];
+    this.contentType = zoneInfo ? zoneInfo.contentType : 0;
+
     this.ReloadTriggers();
   }
 
@@ -929,12 +1021,52 @@ class DamageTracker {
     if (!dict)
       return;
     let keys = Object.keys(dict);
-    for (let j = 0; j < keys.length; ++j) {
-      let key = keys[j];
+    for (let key of keys) {
       let id = dict[key];
       let trigger = {
         id: key,
         damageRegex: id,
+        idRegex: Regexes.parse('^' + id + '$'),
+        mistake: function(e, data) {
+          if (!IsPlayerId(e.targetId))
+            return;
+          return { type: type, blame: e.targetName, text: e.abilityName };
+        },
+      };
+      this.damageTriggers.push(trigger);
+    }
+  }
+
+  AddGainsEffectTriggers(type, dict) {
+    if (!dict)
+      return;
+    let keys = Object.keys(dict);
+    for (let key of keys) {
+      let id = dict[key];
+      let trigger = {
+        id: key,
+        netRegex: NetRegexes.gainsEffect({ effectId: id }),
+        mistake: function(e, data, matches) {
+          return { type: type, blame: matches.target, text: matches.effect };
+        },
+      };
+      this.netTriggers.push(trigger);
+    }
+  }
+
+  // Helper function for "double tap" shares where multiple players share
+  // damage when it should only be on one person, such as a spread mechanic.
+  AddShareTriggers(type, dict) {
+    if (!dict)
+      return;
+    let keys = Object.keys(dict);
+    let condFunc = (e) => e.type != 15;
+    for (let key of keys) {
+      let id = dict[key];
+      let trigger = {
+        id: key,
+        damageRegex: id,
+        condition: condFunc,
         idRegex: Regexes.parse('^' + id + '$'),
         mistake: function(e, data) {
           return { type: type, blame: e.targetName, text: e.abilityName };
@@ -958,47 +1090,61 @@ class DamageTracker {
     this.abilityTriggers = [];
     this.effectTriggers = [];
     this.healTriggers = [];
+    this.netTriggers = [];
 
-    this.ignoreZone = false;
-    for (let i = 0; i < Options.IgnoreZones.length; ++i) {
-      if (this.zoneName.match(gLang.kZone[Options.IgnoreZones[i]])) {
-        this.ignoreZone = true;
+    this.ignoreZone = Options.IgnoreContentTypes.includes(this.contentType);
+    if (this.ignoreZone)
+      return;
+
+    for (const set of this.triggerSets) {
+      if ('zoneId' in set) {
+        if (set.zoneId !== ZoneId.MatchAll && set.zoneId !== this.zoneId && !(typeof set.zoneId == 'object' && set.zoneId.includes(this.zoneId)))
+          continue;
+      } else if ('zoneRegex' in set) {
+        const zoneError = (s) => {
+          console.error(s + ': ' + JSON.stringify(set.zoneRegex) + ' in ' + set.filename);
+        };
+
+        let zoneRegex = set.zoneRegex;
+        if (typeof zoneRegex !== 'object') {
+          zoneError('zoneRegex must be translatable object or regexp');
+          continue;
+        } else if (!(zoneRegex instanceof RegExp)) {
+          const parserLang = this.options.ParserLanguage || 'en';
+          if (parserLang in zoneRegex) {
+            zoneRegex = zoneRegex[parserLang];
+          } else if ('en' in zoneRegex) {
+            zoneRegex = zoneRegex['en'];
+          } else {
+            zoneError('unknown zoneRegex language');
+            continue;
+          }
+
+          if (!(zoneRegex instanceof RegExp)) {
+            zoneError('zoneRegex must be regexp');
+            continue;
+          }
+        }
+
+        if (this.zoneName.search(Regexes.parse(zoneRegex)) < 0)
+          continue;
+      } else {
         return;
       }
-    }
 
-    for (let i = 0; i < this.triggerSets.length; ++i) {
-      let set = this.triggerSets[i];
-
-      let zoneError = (s) => {
-        console.error(s + ': ' + JSON.stringify(set.zoneRegex) + ' in ' + set.filename);
-      };
-
-      let zoneRegex = set.zoneRegex;
-      if (typeof zoneRegex !== 'object') {
-        zoneError('zoneRegex must be translatable object or regexp');
-        continue;
-      } else if (!(zoneRegex instanceof RegExp)) {
-        let parserLang = this.options.ParserLanguage || 'en';
-        if (parserLang in zoneRegex) {
-          zoneRegex = zoneRegex[parserLang];
-        } else if ('en' in zoneRegex) {
-          zoneRegex = zoneRegex['en'];
-        } else {
-          zoneError('unknown zoneRegex language');
-          continue;
-        }
-
-        if (!(zoneRegex instanceof RegExp)) {
-          zoneError('zoneRegex must be regexp');
-          continue;
-        }
+      if (this.options.Debug) {
+        if (set.filename)
+          console.log('Loading ' + set.filename);
+        else
+          console.log('Loading user triggers for zone');
       }
 
-      if (this.zoneName.search(zoneRegex) < 0)
-        continue;
       this.AddSimpleTriggers('warn', set.damageWarn);
       this.AddSimpleTriggers('fail', set.damageFail);
+      this.AddGainsEffectTriggers('warn', set.gainsEffectWarn);
+      this.AddGainsEffectTriggers('fail', set.gainsEffectFail);
+      this.AddShareTriggers('warn', set.shareWarn);
+      this.AddShareTriggers('fail', set.shareFail);
 
       if (!set.triggers)
         set.triggers = [];
@@ -1017,16 +1163,20 @@ class DamageTracker {
           this.abilityTriggers.push(trigger);
         }
         if ('gainsEffectRegex' in trigger) {
-          trigger.gainRegex = Regexes.gainsEffect({ effect: trigger.gainsEffectRegex });
+          trigger.gainRegex = NetRegexes.gainsEffect({ effect: trigger.gainsEffectRegex });
           this.effectTriggers.push(trigger);
         }
         if ('losesEffectRegex' in trigger) {
-          trigger.loseRegex = Regexes.losesEffect({ effect: trigger.losesEffectRegex });
+          trigger.loseRegex = NetRegexes.losesEffect({ effect: trigger.losesEffectRegex });
           this.effectTriggers.push(trigger);
         }
         if ('healRegex' in trigger) {
           trigger.idRegex = Regexes.parse('^' + Regexes.anyOf(trigger.healRegex) + '$');
           this.healTriggers.push(trigger);
+        }
+        if ('netRegex' in trigger) {
+          trigger.netRegex = Regexes.parse(Regexes.anyOf(trigger.netRegex));
+          this.netTriggers.push(trigger);
         }
       }
     }
@@ -1048,9 +1198,11 @@ class DamageTracker {
   }
 
   ProcessDataFiles() {
+    // Only run this once.
     if (this.triggerSets)
       return;
-    if (!gLang)
+    // Wait until OnPlayerChange + OnDataFilesRead occur for the first time.
+    if (!this.dataFiles)
       return;
     if (!this.me)
       return;
@@ -1069,14 +1221,17 @@ class DamageTracker {
         console.error('Unexpected JSON from ' + filename + ', expected an array');
         continue;
       }
-      for (let i = 0; i < json.length; ++i) {
-        if (!('zoneRegex' in json[i])) {
-          console.error('Unexpected JSON from ' + filename + ', expected a zoneRegex');
+      for (const triggerSet of json) {
+        const hasZoneRegex = 'zoneRegex' in triggerSet;
+        const hasZoneId = 'zoneId' in triggerSet;
+        if (!hasZoneRegex && !hasZoneId || hasZoneRegex && hasZoneId) {
+          console.error('Unexpected JSON from ' + filename + ', need one of zoneRegex/zoneID');
           continue;
         }
-        json[i].filename = filename;
-        if ('triggers' in json[i]) {
-          if (typeof json[i].triggers != 'object' || !(json[i].triggers.length >= 0)) {
+
+        triggerSet.filename = filename;
+        if ('triggers' in json) {
+          if (typeof triggerSet.triggers != 'object' || !(triggerSet.triggers.length >= 0)) {
             console.error('Unexpected JSON from ' + filename + ', expected triggers to be an array');
             continue;
           }
@@ -1088,34 +1243,43 @@ class DamageTracker {
   }
 }
 
-UserConfig.getUserConfigLocation('oopsyraidsy', function(e) {
-  gLiveList = new OopsyLiveList(Options, document.getElementById('livelist'));
-  gMistakeCollector = new MistakeCollector(Options, gLiveList);
-  gDamageTracker = new DamageTracker(Options, gMistakeCollector);
+UserConfig.getUserConfigLocation('oopsyraidsy', Options, () => {
+  let listView;
+  let mistakeCollector;
 
-  addOverlayListener('onLogEvent', function(e) {
-    gDamageTracker.OnLogEvent(e);
+  let summaryElement = document.getElementById('summary');
+  let liveListElement = document.getElementById('livelist');
+
+  // Choose the ui based on whether this is the summary view or the live list.
+  // They have different elements in the file.
+  if (summaryElement) {
+    listView = new OopsySummaryList(Options, summaryElement);
+    mistakeCollector = new MistakeCollector(Options, listView);
+  } else {
+    listView = new OopsyLiveList(Options, liveListElement);
+    mistakeCollector = new MistakeCollector(Options, listView);
+  }
+
+  let damageTracker = new DamageTracker(Options, mistakeCollector);
+
+  addOverlayListener('onLogEvent', (e) => damageTracker.OnLogEvent(e));
+  addOverlayListener('LogLine', (e) => damageTracker.OnNetLog(e));
+  addOverlayListener('onPartyWipe', (e) => damageTracker.OnPartyWipeEvent(e));
+  addOverlayListener('onPlayerChangedEvent', (e) => damageTracker.OnPlayerChange(e));
+  addOverlayListener('ChangeZone', (e) => {
+    damageTracker.OnChangeZone(e);
+    mistakeCollector.OnChangeZone(e);
+    listView.OnChangeZone(e);
   });
-  addOverlayListener('onPartyWipe', function(e) {
-    gDamageTracker.OnPartyWipeEvent(e);
-  });
-  addOverlayListener('onZoneChangedEvent', function(e) {
-    gDamageTracker.OnZoneChangeEvent(e);
-    gMistakeCollector.OnZoneChangeEvent(e);
-  });
-  addOverlayListener('onInCombatChangedEvent', function(e) {
-    gDamageTracker.OnInCombatChangedEvent(e);
-    gMistakeCollector.OnInCombatChangedEvent(e);
+  addOverlayListener('onInCombatChangedEvent', (e) => {
+    damageTracker.OnInCombatChangedEvent(e);
+    mistakeCollector.OnInCombatChangedEvent(e);
   });
 
   callOverlayHandler({
     call: 'cactbotReadDataFiles',
     source: location.href,
-  }).then((r) => gDamageTracker.OnDataFilesRead(r));
-
-  addOverlayListener('onPlayerChangedEvent', function(e) {
-    gDamageTracker.OnPlayerChange(e);
-  });
+  }).then((r) => damageTracker.OnDataFilesRead(r));
 
   callOverlayHandler({ call: 'cactbotRequestPlayerUpdate' });
 });

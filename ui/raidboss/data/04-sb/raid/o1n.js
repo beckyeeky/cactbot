@@ -2,10 +2,7 @@
 
 // O1S - Deltascape 1.0 Normal
 [{
-  zoneRegex: {
-    en: /^Deltascape \(V1\.0\)$/,
-    cn: /^欧米茄时空狭缝 \(德尔塔幻境1\)$/,
-  },
+  zoneId: ZoneId.DeltascapeV10,
   timelineFile: 'o1n.txt',
   timelineTriggers: [
     {
@@ -21,62 +18,62 @@
   triggers: [
     {
       id: 'O1N Blaze',
-      regex: Regexes.startsUsing({ id: '23E1', source: 'Alte Roite' }),
-      regexDe: Regexes.startsUsing({ id: '23E1', source: 'Alte Roite' }),
-      regexFr: Regexes.startsUsing({ id: '23E1', source: 'Alte Roite' }),
-      regexJa: Regexes.startsUsing({ id: '23E1', source: 'アルテ・ロイテ' }),
-      regexCn: Regexes.startsUsing({ id: '23E1', source: '老者' }),
-      regexKo: Regexes.startsUsing({ id: '23E1', source: '알테 로이테' }),
-      response: Responses.stackOn(),
+      netRegex: NetRegexes.startsUsing({ id: '23E1', source: 'Alte Roite' }),
+      netRegexDe: NetRegexes.startsUsing({ id: '23E1', source: 'Alte Roite' }),
+      netRegexFr: NetRegexes.startsUsing({ id: '23E1', source: 'Alte Roite' }),
+      netRegexJa: NetRegexes.startsUsing({ id: '23E1', source: 'アルテ・ロイテ' }),
+      netRegexCn: NetRegexes.startsUsing({ id: '23E1', source: '老者' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '23E1', source: '알테 로이테' }),
+      response: Responses.stackMarkerOn(),
     },
     {
       id: 'O1N Breath Wing',
-      regex: Regexes.startsUsing({ id: '23DE', source: 'Alte Roite', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '23DE', source: 'Alte Roite', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '23DE', source: 'Alte Roite', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '23DE', source: 'アルテ・ロイテ', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '23DE', source: '老者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '23DE', source: '알테 로이테', capture: false }),
-      infoText: {
-        en: 'Breath Wing: Be beside boss',
-        de: 'Atemschwinge: Neben Boss gehen',
-        cn: '站boss附近',
-      },
-      tts: {
-        en: 'breath wing',
-        de: 'atemschwinge',
-        cn: '站boss附近',
+      netRegex: NetRegexes.startsUsing({ id: '23DE', source: 'Alte Roite', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '23DE', source: 'Alte Roite', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '23DE', source: 'Alte Roite', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '23DE', source: 'アルテ・ロイテ', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '23DE', source: '老者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '23DE', source: '알테 로이테', capture: false }),
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Breath Wing: Be beside boss',
+          de: 'Atemschwinge: Neben Boss gehen',
+          ja: 'ブレスウィング: ボスに近づく',
+          cn: '站boss附近',
+          ko: '날개바람: 보스 옆으로',
+        },
       },
     },
     {
       id: 'O1N Clamp',
-      regex: Regexes.startsUsing({ id: '23E2', source: 'Alte Roite', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '23E2', source: 'Alte Roite', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '23E2', source: 'Alte Roite', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '23E2', source: 'アルテ・ロイテ', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '23E2', source: '老者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '23E2', source: '알테 로이테', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '23E2', source: 'Alte Roite', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '23E2', source: 'Alte Roite', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '23E2', source: 'Alte Roite', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '23E2', source: 'アルテ・ロイテ', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '23E2', source: '老者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '23E2', source: '알테 로이테', capture: false }),
       response: Responses.awayFromFront(),
     },
     {
       // Knockback immunities don't work.
       id: 'O1N Downburst',
-      regex: Regexes.startsUsing({ id: '1ED8', source: 'Alte Roite', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '1ED8', source: 'Alte Roite', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '1ED8', source: 'Alte Roite', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '1ED8', source: 'アルテ・ロイテ', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '1ED8', source: '老者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '1ED8', source: '알테 로이테', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '1ED8', source: 'Alte Roite', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '1ED8', source: 'Alte Roite', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '1ED8', source: 'Alte Roite', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '1ED8', source: 'アルテ・ロイテ', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '1ED8', source: '老者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '1ED8', source: '알테 로이테', capture: false }),
       response: Responses.knockback(),
     },
     {
       id: 'O1N Roar',
-      regex: Regexes.startsUsing({ id: '23DC', source: 'Alte Roite', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '23DC', source: 'Alte Roite', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '23DC', source: 'Alte Roite', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '23DC', source: 'アルテ・ロイテ', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '23DC', source: '老者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '23DC', source: '알테 로이테', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '23DC', source: 'Alte Roite', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '23DC', source: 'Alte Roite', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '23DC', source: 'Alte Roite', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '23DC', source: 'アルテ・ロイテ', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '23DC', source: '老者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '23DC', source: '알테 로이테', capture: false }),
       condition: function(data) {
         return data.role == 'healer';
       },
@@ -84,12 +81,12 @@
     },
     {
       id: 'O1N Charybdis',
-      regex: Regexes.startsUsing({ id: '23DB', source: 'Alte Roite', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '23DB', source: 'Alte Roite', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '23DB', source: 'Alte Roite', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '23DB', source: 'アルテ・ロイテ', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '23DB', source: '老者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '23DB', source: '알테 로이테', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '23DB', source: 'Alte Roite', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '23DB', source: 'Alte Roite', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '23DB', source: 'Alte Roite', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '23DB', source: 'アルテ・ロイテ', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '23DB', source: '老者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '23DB', source: '알테 로이테', capture: false }),
       condition: function(data) {
         return data.role == 'healer';
       },
@@ -98,12 +95,12 @@
     },
     {
       id: 'O1N Twin Bolt',
-      regex: Regexes.startsUsing({ id: '23D7', source: 'Alte Roite' }),
-      regexDe: Regexes.startsUsing({ id: '23D7', source: 'Alte Roite' }),
-      regexFr: Regexes.startsUsing({ id: '23D7', source: 'Alte Roite' }),
-      regexJa: Regexes.startsUsing({ id: '23D7', source: 'アルテ・ロイテ' }),
-      regexCn: Regexes.startsUsing({ id: '23D7', source: '老者' }),
-      regexKo: Regexes.startsUsing({ id: '23D7', source: '알테 로이테' }),
+      netRegex: NetRegexes.startsUsing({ id: '23D7', source: 'Alte Roite' }),
+      netRegexDe: NetRegexes.startsUsing({ id: '23D7', source: 'Alte Roite' }),
+      netRegexFr: NetRegexes.startsUsing({ id: '23D7', source: 'Alte Roite' }),
+      netRegexJa: NetRegexes.startsUsing({ id: '23D7', source: 'アルテ・ロイテ' }),
+      netRegexCn: NetRegexes.startsUsing({ id: '23D7', source: '老者' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '23D7', source: '알테 로이테' }),
       condition: function(data) {
         return data.role == 'tank' || data.role == 'healer';
       },
@@ -114,12 +111,12 @@
       // cast by Alte Roite on Alte Roite, and when that resolves the markers on players resolve
       // with 23DA.
       id: 'O1N Levinbolt',
-      regex: Regexes.startsUsing({ id: '23D9', source: 'Alte Roite', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '23D9', source: 'Alte Roite', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '23D9', source: 'Alte Roite', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '23D9', source: 'アルテ・ロイテ', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '23D9', source: '老者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '23D9', source: '알테 로이테', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '23D9', source: 'Alte Roite', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '23D9', source: 'Alte Roite', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '23D9', source: 'Alte Roite', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '23D9', source: 'アルテ・ロイテ', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '23D9', source: '老者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '23D9', source: '알테 로이테', capture: false }),
       response: Responses.spread(),
     },
   ],
@@ -135,7 +132,7 @@
         'Twin Bolt': 'Zwillingsschlag',
         'The Classical Elements': 'Klassisches Element',
         'Roar': 'Brüllen',
-        'Levinbolt': 'Keraunisches Feld',
+        'Levinbolt': 'Blitzschlag',
         'Flash Freeze': 'Blitzeis',
         'Flame': 'Flamme',
         'Downburst': 'Fallböe',
@@ -143,9 +140,7 @@
         'Charybdis': 'Charybdis',
         'Burn': 'Verbrennung',
         'Breath Wing': 'Atemschwinge',
-        'Blaze': 'Flamme',
-      },
-      '~effectNames': {
+        'Blaze': 'Frost',
       },
     },
     {
@@ -167,9 +162,7 @@
         'Charybdis': 'Charybde',
         'Burn': 'Combustion',
         'Breath Wing': 'Aile déferlante',
-        'Blaze': 'Fournaise',
-      },
-      '~effectNames': {
+        'Blaze': 'Givre',
       },
     },
     {
@@ -191,9 +184,7 @@
         'Charybdis': 'ミールストーム',
         'Burn': '燃焼',
         'Breath Wing': 'ブレスウィング',
-        'Blaze': '火炎',
-      },
-      '~effectNames': {
+        'Blaze': 'ブレイズ',
       },
     },
     {
@@ -206,7 +197,7 @@
         'Wyrm Tail': '太古龙尾',
         'Twin Bolt': '双重落雷',
         'The Classical elements': '经典元素',
-        'Roar': '咆啸',
+        'Roar': '咆哮',
         'Levinbolt': '闪电',
         'Flash Freeze': '闪耀冻结',
         'Flame': '火焰',
@@ -215,9 +206,7 @@
         'Charybdis': '大漩涡',
         'Burn': '燃烧',
         'Breath Wing': '风息之翼',
-        'Blaze': '炎爆',
-      },
-      '~effectNames': {
+        'Blaze': '冰焰',
       },
     },
     {
@@ -225,6 +214,7 @@
       'missingTranslations': true,
       'replaceSync': {
         'Alte Roite': '알테 로이테',
+        'Ball Of Fire': '화염 구체',
       },
       'replaceText': {
         'Wyrm Tail': '태고의 용 꼬리',
@@ -240,8 +230,6 @@
         'Burn': '연소',
         'Breath Wing': '날개바람',
         'Blaze': '화염',
-      },
-      '~effectNames': {
       },
     },
   ],

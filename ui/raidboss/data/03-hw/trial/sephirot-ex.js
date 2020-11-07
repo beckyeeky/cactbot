@@ -1,10 +1,7 @@
 'use strict';
 
 [{
-  zoneRegex: {
-    en: /^Containment Bay S1T7 \(Extreme\)$/,
-    cn: /^萨菲洛特歼殛战$/,
-  },
+  zoneId: ZoneId.ContainmentBayS1T7Extreme,
   timelineFile: 'sephirot-ex.txt',
   triggers: [
   ],
@@ -40,16 +37,18 @@
     },
     {
       'locale': 'fr',
-      'missingTranslations': true,
       'replaceSync': {
         'Coronal Wind': 'vent coronaire',
         'Sephirot': 'Sephirot',
         'Storm Of Words': 'tempête de mots',
       },
       'replaceText': {
+        'Adds Spawn': 'Apparition d\'adds',
         'Ascension': 'Ascension',
         'Chesed': 'Chesed',
-        'Da\'at': 'Da\'at',
+        'Chesed Gevurah': 'Chesed Gevurah',
+        'Da\'at Tethers': 'Liens Da\'at',
+        'Da\'at spread': 'Dispersion Da\'at',
         'Earth Shaker': 'Secousse',
         'Ein Sof': 'Ein Sof',
         'Fiendish Rage': 'Colère de Sephirot',
@@ -69,13 +68,13 @@
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
         'Coronal Wind': 'コロナルウィンド',
         'Sephirot': 'セフィロト',
         'Storm Of Words': 'ストーム・オブ・ワード',
       },
       'replaceText': {
+        'Adds Spawn': '雑魚',
         'Ascension': 'アセンション',
         'Chesed': 'ケセド',
         'Da\'at': 'ダアト',
@@ -98,13 +97,13 @@
     },
     {
       'locale': 'cn',
-      'missingTranslations': true,
       'replaceSync': {
         'Coronal Wind': '冠状气流',
         'Sephirot': '萨菲洛特',
         'Storm Of Words': '言语风暴',
       },
       'replaceText': {
+        'Adds Spawn': '小怪出现',
         'Ascension': '上升气流',
         'Chesed': '仁慈',
         'Da\'at': '知识',

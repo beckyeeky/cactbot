@@ -2,10 +2,7 @@
 
 // UCU - The Unending Coil Of Bahamut (Ultimate)
 [{
-  zoneRegex: {
-    en: /^The Unending Coil Of Bahamut \(Ultimate\)$/,
-    ko: /^절 바하무트 토벌전$/,
-  },
+  zoneId: ZoneId.TheUnendingCoilOfBahamutUltimate,
   damageFail: {
     'UCU Lunar Dynamo': '26BC',
     'UCU Iron Chariot': '26BB',
@@ -17,18 +14,21 @@
       id: 'UCU Twister Death',
       damageRegex: '26AB',
       condition: function(e, data) {
-        // Instant death uses '32' as its flags, differentiating
+        // Instant death uses '36' as its flags, differentiating
         // from the explosion damage you take when somebody else
         // pops one.
-        return data.IsPlayerId(e.targetId) && e.flags == '32';
+        return data.IsPlayerId(e.targetId) && e.flags == '36';
       },
-      mistake: function(e, data) {
+      mistake: function(e) {
         return {
           type: 'fail',
           blame: e.targetName,
           text: {
             en: 'Twister Pop',
             de: 'Wirbelsturm berührt',
+            fr: 'Apparition des tornades',
+            ja: 'ツイスター',
+            cn: '旋风',
             ko: '회오리 밟음',
           },
         };
@@ -47,7 +47,10 @@
           text: {
             en: 'Pizza Slice',
             de: 'Pizzastück',
-            ko: e.abilityName,
+            fr: 'Parts de pizza',
+            ja: 'サーミオニックバースト',
+            cn: '天崩地裂',
+            ko: '장판에 맞음',
           },
         };
       },
@@ -68,6 +71,9 @@
           text: {
             en: 'hit by lightning',
             de: 'vom Blitz getroffen',
+            fr: 'frappé par la foudre',
+            ja: 'チェインライトニング',
+            cn: '雷光链',
             ko: '번개 맞음',
           },
         };
@@ -75,25 +81,32 @@
     },
     {
       id: 'UCU Burns',
-      gainsEffectRegex: gLang.kEffect.Burns,
-      mistake: function(e) {
-        return { type: 'fail', blame: e.targetName, text: e.effectName };
+      netRegex: NetRegexes.gainsEffect({ effectId: 'FA' }),
+      mistake: function(e, data, matches) {
+        return { type: 'warn', blame: e.target, text: e.effect };
       },
     },
     {
       id: 'UCU Sludge',
-      gainsEffectRegex: gLang.kEffect.Sludge,
-      mistake: function(e) {
-        return { type: 'fail', blame: e.targetName, text: e.effectName };
+      netRegex: NetRegexes.gainsEffect({ effectId: '11F' }),
+      mistake: function(e, data, matches) {
+        return { type: 'fail', blame: e.target, text: e.effect };
       },
     },
     {
-      id: 'UCU Doom Collect',
-      gainsEffectRegex: gLang.kEffect.Doom,
-      losesEffectRegex: gLang.kEffect.Doom,
-      run: function(e, data) {
+      id: 'UCU Doom Gain',
+      netRegex: NetRegexes.gainsEffect({ effectId: 'D2' }),
+      run: function(e, data, matches) {
         data.hasDoom = data.hasDoom || {};
-        data.hasDoom[e.targetName] = e.gains;
+        data.hasDoom[matches.target] = true;
+      },
+    },
+    {
+      id: 'UCU Doom Lose',
+      netRegex: NetRegexes.losesEffect({ effectId: 'D2' }),
+      run: function(e, data, matches) {
+        data.hasDoom = data.hasDoom || {};
+        data.hasDoom[matches.target] = false;
       },
     },
     {
@@ -110,21 +123,21 @@
       // died to doom.  You can get non-fatally iceballed or auto'd in between,
       // but what can you do.
       id: 'UCU Doom Death',
-      gainsEffectRegex: gLang.kEffect.Doom,
-      delaySeconds: function(e) {
-        return e.durationSeconds - 1;
+      netRegex: NetRegexes.gainsEffect({ effectId: 'D2' }),
+      delaySeconds: function(e, data, matches) {
+        return parseFloat(matches.duration) - 1;
       },
       deathReason: function(e, data, matches) {
-        if (!data.hasDoom || !data.hasDoom[e.targetName])
+        if (!data.hasDoom || !data.hasDoom[matches.target])
           return;
         let reason;
         if (e.durationSeconds < 9)
-          reason = e.effectName + ' #1';
+          reason = matches.effect + ' #1';
         else if (e.durationSeconds < 14)
-          reason = e.effectName + ' #2';
+          reason = matches.effect + ' #2';
         else
-          reason = e.effectName + ' #3';
-        return { name: e.targetName, reason: reason };
+          reason = matches.effect + ' #3';
+        return { name: matches.target, reason: reason };
       },
     },
   ],

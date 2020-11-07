@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 namespace Cactbot {
   public class FFXIVProcessKo : FFXIVProcess {
     //
-    // for FFXIV KO version: 5.1
+    // for FFXIV KO version: 5.2
     //
     // Latest KO version can be found at:
     // https://www.ff14.co.kr/news/notice?category=3
@@ -42,7 +42,7 @@ namespace Cactbot {
       [FieldOffset(0xB0)]
       public Single rotation;
 
-      [FieldOffset(0x18B8)]
+      [FieldOffset(0x1898)]
       public CharacterDetails charDetails;
     }
 
@@ -58,9 +58,6 @@ namespace Cactbot {
       [FieldOffset(0x08)]
       public int mp;
 
-      [FieldOffset(0x0C)]
-      public int max_mp;
-
       [FieldOffset(0x12)]
       public short gp;
 
@@ -73,13 +70,13 @@ namespace Cactbot {
       [FieldOffset(0x18)]
       public short max_cp;
 
-      [FieldOffset(0x3C)]
+      [FieldOffset(0x3E)]
       public EntityJob job;
 
-      [FieldOffset(0x3E)]
+      [FieldOffset(0x40)]
       public byte level;
 
-      [FieldOffset(0x5F)]
+      [FieldOffset(0x61)]
       public short shieldPercentage;
     }
     public FFXIVProcessKo(ILogger logger) : base(logger) { }
@@ -89,8 +86,8 @@ namespace Cactbot {
 
     // A piece of code that reads the pointer to the list of all entities, that we
     // refer to as the charmap. The pointer is the 4 byte ?????????.
-    private static String kCharmapSignature = "488B1D????????488BFA33D2488BCF";
-    private static int kCharmapSignatureOffset = -12;
+    private static String kCharmapSignature = "574883EC??488B1D????????488BF233D2";
+    private static int kCharmapSignatureOffset = -9;
     // The signature finds a pointer in the executable code which uses RIP addressing.
     private static bool kCharmapSignatureRIP = true;
     // The pointer is to a structure as:
@@ -187,7 +184,9 @@ namespace Cactbot {
           entity.hp = mem.charDetails.hp;
           entity.max_hp = mem.charDetails.max_hp;
           entity.mp = mem.charDetails.mp;
-          entity.max_mp = mem.charDetails.max_mp;
+          // This doesn't exist in memory, so just send the right value.
+          // As there are other versions that still have it, don't change the event.
+          entity.max_mp = 10000;
           entity.shield_value = mem.charDetails.shieldPercentage * entity.max_hp / 100;
 
           if (IsGatherer(entity.job)) {
@@ -245,70 +244,50 @@ namespace Cactbot {
       job_inner_ptr = IntPtr.Add(job_inner_ptr, kJobDataInnerStructOffset);
 
       fixed (byte* p = Read8(job_inner_ptr, kJobDataInnerStructSize)) {
-        if (p == null)
+        if (p == null) {
           return null;
-        else {
+        } else {
           switch (job) {
-            case EntityJob.RDM: {
+            case EntityJob.RDM:
                 return JObject.FromObject(*(RedMageJobMemory*)&p[0]);
-              };
-            case EntityJob.WAR: {
+            case EntityJob.WAR:
                 return JObject.FromObject(*(WarriorJobMemory*)&p[0]);
-              };
-            case EntityJob.DRK: {
+            case EntityJob.DRK:
                 return JObject.FromObject(*(DarkKnightJobMemory*)&p[0]);
-              };
-            case EntityJob.PLD: {
+            case EntityJob.PLD:
                 return JObject.FromObject(*(PaladinJobMemory*)&p[0]);
-              };
-            case EntityJob.GNB: {
+            case EntityJob.GNB:
                 return JObject.FromObject(*(GunbreakerJobMemory*)&p[0]);
-              };
-            case EntityJob.BRD: {
+            case EntityJob.BRD:
                 return JObject.FromObject(*(BardJobMemory*)&p[0]);
-              }
-            case EntityJob.DNC: {
+            case EntityJob.DNC:
                 return JObject.FromObject(*(DancerJobMemory*)&p[0]);
-              };
-            case EntityJob.DRG: {
+            case EntityJob.DRG:
                 return JObject.FromObject(*(DragoonJobMemory*)&p[0]);
-              };
-            case EntityJob.NIN: {
+            case EntityJob.NIN:
                 return JObject.FromObject(*(NinjaJobMemory*)&p[0]);
-              };
-            case EntityJob.THM: {
+            case EntityJob.THM:
                 return JObject.FromObject(*(ThaumaturgeJobMemory*)&p[0]);
-              }
-            case EntityJob.BLM: {
+            case EntityJob.BLM:
                 return JObject.FromObject(*(BlackMageJobMemory*)&p[0]);
-              };
-            case EntityJob.WHM: {
+            case EntityJob.WHM:
                 return JObject.FromObject(*(WhiteMageJobMemory*)&p[0]);
-              };
-            case EntityJob.ACN: {
+            case EntityJob.ACN:
                 return JObject.FromObject(*(ArcanistJobMemory*)&p[0]);
-              };
-            case EntityJob.SMN: {
+            case EntityJob.SMN:
                 return JObject.FromObject(*(SummonerJobMemory*)&p[0]);
-              };
-            case EntityJob.SCH: {
+            case EntityJob.SCH:
                 return JObject.FromObject(*(ScholarJobMemory*)&p[0]);
-              };
-            case EntityJob.PGL: {
-                return JObject.FromObject(*(PuglistJobMemory*)&p[0]);
-              };
-            case EntityJob.MNK: {
+            case EntityJob.PGL:
+                return JObject.FromObject(*(PugilistJobMemory*)&p[0]);
+            case EntityJob.MNK:
                 return JObject.FromObject(*(MonkJobMemory*)&p[0]);
-              };
-            case EntityJob.MCH: {
+            case EntityJob.MCH:
                 return JObject.FromObject(*(MachinistJobMemory*)&p[0]);
-              };
-            case EntityJob.AST: {
+            case EntityJob.AST:
                 return JObject.FromObject(*(AstrologianJobMemory*)&p[0]);
-              };
-            case EntityJob.SAM: {
+            case EntityJob.SAM:
                 return JObject.FromObject(*(SamuraiJobMemory*)&p[0]);
-              };
           }
           return null;
         }
@@ -337,8 +316,15 @@ namespace Cactbot {
     public struct DarkKnightJobMemory {
       [FieldOffset(0x00)]
       public byte blood;
+
       [FieldOffset(0x02)]
       public ushort darksideMilliseconds;
+
+      [FieldOffset(0x04)]
+      public byte darkArts;
+
+      [FieldOffset(0x06)]
+      public ushort livingShadowMilliseconds;
     };
 
     [Serializable]
@@ -404,6 +390,9 @@ namespace Cactbot {
 
       [FieldOffset(0x00)]
       public byte feathers;
+
+      [FieldOffset(0x01)]
+      public byte esprit;
 
       [NonSerialized]
       [FieldOffset(0x02)]
@@ -583,7 +572,7 @@ namespace Cactbot {
     };
 
     [StructLayout(LayoutKind.Explicit)]
-    public struct PuglistJobMemory {
+    public struct PugilistJobMemory {
       [FieldOffset(0x00)]
       public ushort lightningMilliseconds;
 
@@ -601,6 +590,16 @@ namespace Cactbot {
 
       [FieldOffset(0x03)]
       public byte chakraStacks;
+
+      [NonSerialized]
+      [FieldOffset(0x04)]
+      private byte _lightningTimerState;
+
+      public bool lightningTimerFrozen {
+        get {
+          return (_lightningTimerState > 0);
+        }
+      }
     };
 
     [StructLayout(LayoutKind.Explicit)]
@@ -616,6 +615,25 @@ namespace Cactbot {
 
       [FieldOffset(0x05)]
       public byte battery;
+      
+      [FieldOffset(0x06)]
+      public byte lastBatteryAmount;
+
+      [NonSerialized]
+      [FieldOffset(0x07)]
+      private byte chargeTimerState;
+
+      public bool overheated {
+        get {
+          return (chargeTimerState & 0x1) == 1;
+        }
+      }
+
+      public bool queenActive {
+        get {
+          return (chargeTimerState & 0x2) == 1;
+        }
+      }
     };
 
     [StructLayout(LayoutKind.Explicit)]
@@ -670,8 +688,11 @@ namespace Cactbot {
 
     [StructLayout(LayoutKind.Explicit)]
     public struct SamuraiJobMemory {
-      [FieldOffset(0x04)]
+      [FieldOffset(0x03)]
       public byte kenki;
+      
+      [FieldOffset(0x04)]
+      public byte meditationStacks;
 
       [NonSerialized]
       [FieldOffset(0x05)]

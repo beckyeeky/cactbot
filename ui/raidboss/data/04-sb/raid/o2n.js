@@ -2,9 +2,7 @@
 
 // O2N - Deltascape 2.0 Normal
 [{
-  zoneRegex: {
-    en: /^Deltascape \(V2\.0\)$/,
-  },
+  zoneId: ZoneId.DeltascapeV20,
   timelineFile: 'o2n.txt',
   timelineTriggers: [
     {
@@ -17,12 +15,7 @@
   triggers: [
     {
       id: 'O2N Levitation Gain',
-      regex: Regexes.gainsEffect({ effect: 'Levitation' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Levitation' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Lévitation' }),
-      regexJa: Regexes.gainsEffect({ effect: 'レビテト' }),
-      regexCn: Regexes.gainsEffect({ effect: '浮空' }),
-      regexKo: Regexes.gainsEffect({ effect: '레비테트' }),
+      netRegex: NetRegexes.gainsEffect({ effectId: '556' }),
       condition: Conditions.targetIsYou(),
       run: function(data) {
         data.levitating = true;
@@ -30,12 +23,7 @@
     },
     {
       id: 'O2N Levitation Lose',
-      regex: Regexes.losesEffect({ effect: 'Levitation' }),
-      regexDe: Regexes.losesEffect({ effect: 'Levitation' }),
-      regexFr: Regexes.losesEffect({ effect: 'Lévitation' }),
-      regexJa: Regexes.losesEffect({ effect: 'レビテト' }),
-      regexCn: Regexes.losesEffect({ effect: '浮空' }),
-      regexKo: Regexes.losesEffect({ effect: '레비테트' }),
+      netRegex: NetRegexes.losesEffect({ effectId: '556' }),
       condition: Conditions.targetIsYou(),
       run: function(data) {
         data.levitating = false;
@@ -43,39 +31,51 @@
     },
     {
       id: 'O2N Gravitational Manipulation Stack',
-      regex: Regexes.headMarker({ id: '0071' }),
+      netRegex: NetRegexes.headMarker({ id: '0071' }),
       alertText: function(data, matches) {
         if (data.me == matches.target) {
           return {
             en: 'Stack marker on YOU',
             de: 'Sammeln Marker auf DIR',
+            ja: '自分に集合',
+            cn: '集合点名',
+            ko: '쉐어징 대상자',
           };
         }
         return {
-          en: 'Stack on ' + data.shortName(matches.target),
-          de: 'Sammeln auf ' + data.shortName(matches.target),
+          en: 'Stack on ' + data.ShortName(matches.target),
+          de: 'Sammeln auf ' + data.ShortName(matches.target),
+          ja: data.ShortName(matches.target) + 'に集合',
+          cn: '靠近' + data.ShortName(matches.target) + '集合',
+          ko: '' + data.ShortName(matches.target) + ' 쉐어징',
         };
       },
     },
     {
       id: 'O2N Gravitational Manipulation Float',
-      regex: Regexes.headMarker({ id: '0071' }),
+      netRegex: NetRegexes.headMarker({ id: '0071' }),
       condition: function(data, matches) {
         return !data.levitating && Conditions.targetIsNotYou();
       },
-      infoText: {
-        en: 'Levitate',
-        de: 'Schweben',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Levitate',
+          de: 'Schweben',
+          ja: '浮上',
+          cn: '浮空',
+          ko: '공중부양',
+        },
       },
     },
     {
       id: 'O2N Evilsphere',
-      regex: Regexes.startsUsing({ id: '250F', source: 'Catastrophe' }),
-      regexDe: Regexes.startsUsing({ id: '250F', source: 'Katastroph' }),
-      regexFr: Regexes.startsUsing({ id: '250F', source: 'Catastrophe' }),
-      regexJa: Regexes.startsUsing({ id: '250F', source: 'カタストロフィー' }),
-      regexCn: Regexes.startsUsing({ id: '250F', source: '灾变者' }),
-      regexKo: Regexes.startsUsing({ id: '250F', source: '카타스트로피' }),
+      netRegex: NetRegexes.startsUsing({ id: '250F', source: 'Catastrophe' }),
+      netRegexDe: NetRegexes.startsUsing({ id: '250F', source: 'Katastroph' }),
+      netRegexFr: NetRegexes.startsUsing({ id: '250F', source: 'Catastrophe' }),
+      netRegexJa: NetRegexes.startsUsing({ id: '250F', source: 'カタストロフィー' }),
+      netRegexCn: NetRegexes.startsUsing({ id: '250F', source: '灾变者' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '250F', source: '카타스트로피' }),
       condition: function(data) {
         return data.role == 'tank' || data.role == 'healer';
       },
@@ -83,44 +83,53 @@
     },
     {
       id: 'O2N -100Gs',
-      regex: Regexes.startsUsing({ id: '24FF', source: 'Catastrophe', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '24FF', source: 'Katastroph', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '24FF', source: 'Catastrophe', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '24FF', source: 'カタストロフィー', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '24FF', source: '灾变者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '24FF', source: '카타스트로피', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '24FF', source: 'Catastrophe', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '24FF', source: 'Katastroph', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '24FF', source: 'Catastrophe', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '24FF', source: 'カタストロフィー', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '24FF', source: '灾变者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '24FF', source: '카타스트로피', capture: false }),
       infoText: {
         en: '-100 Gs: Go north/south',
         de: '-100G: Nach Norden/Süden',
+        ja: '-100 G: 北/南へ',
+        cn: '去北边/南边',
+        ko: '중력 마이너스 100: 남/북쪽으로',
       },
       tts: {
         en: '100 gs',
         de: '-100 G',
+        ja: 'マイナス100 G',
+        cn: '重力负100',
+        ko: '중력 마이너스 100',
       },
     },
     {
       id: 'O2N Demon Eye',
-      regex: Regexes.startsUsing({ id: '250D', source: 'Catastrophe', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '250D', source: 'Katastroph', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '250D', source: 'Catastrophe', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '250D', source: 'カタストロフィー', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '250D', source: '灾变者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '250D', source: '카타스트로피', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '250D', source: 'Catastrophe', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '250D', source: 'Katastroph', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '250D', source: 'Catastrophe', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '250D', source: 'カタストロフィー', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '250D', source: '灾变者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '250D', source: '카타스트로피', capture: false }),
       response: Responses.lookAway(),
     },
     {
       id: 'O2N Earthquake',
-      regex: Regexes.startsUsing({ id: '2512', source: 'Catastrophe', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2512', source: 'Katastroph', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2512', source: 'Catastrophe', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2512', source: 'カタストロフィー', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2512', source: '灾变者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2512', source: '카타스트로피', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2512', source: 'Catastrophe', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2512', source: 'Katastroph', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2512', source: 'Catastrophe', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2512', source: 'カタストロフィー', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2512', source: '灾变者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2512', source: '카타스트로피', capture: false }),
       alertText: function(data) {
         if (!data.levitating) {
           return {
             en: 'Levitate',
             de: 'Schweben',
+            ja: '浮上',
+            cn: '浮空',
+            ko: '공중부양',
           };
         }
       },
@@ -129,6 +138,9 @@
           return {
             en: 'Earthquake',
             de: 'Erdbeben',
+            ja: '地震',
+            cn: '地震',
+            ko: '대지진',
           };
         }
       },
@@ -137,29 +149,27 @@
           return {
             en: 'levitate',
             de: 'schweben',
+            ja: '浮上',
+            cn: '浮空',
+            ko: '공중부양',
           };
         }
       },
     },
     {
       id: 'O2N Gravitational Wave',
-      regex: Regexes.startsUsing({ id: '2510', source: 'Catastrophe', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2510', source: 'Katastroph', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2510', source: 'Catastrophe', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2510', source: 'カタストロフィー', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2510', source: '灾变者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2510', source: '카타스트로피', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2510', source: 'Catastrophe', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2510', source: 'Katastroph', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2510', source: 'Catastrophe', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2510', source: 'カタストロフィー', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2510', source: '灾变者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2510', source: '카타스트로피', capture: false }),
       condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
       id: 'O2N Six Fulms Under',
-      regex: Regexes.gainsEffect({ effect: 'Six Fulms Under' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Versinkend' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Enfoncement' }),
-      regexJa: Regexes.gainsEffect({ effect: '沈下' }),
-      regexCn: Regexes.gainsEffect({ effect: '下陷' }),
-      regexKo: Regexes.gainsEffect({ effect: '침하' }),
+      netRegex: NetRegexes.gainsEffect({ effectId: '237' }),
       condition: Conditions.targetIsYou(),
       delaySeconds: 5,
       suppressSeconds: 10,
@@ -168,6 +178,9 @@
           return {
             en: 'Levitate',
             de: 'Schweben',
+            ja: '浮上',
+            cn: '浮空',
+            ko: '공중부양',
           };
         }
       },
@@ -176,22 +189,28 @@
           return {
             en: '6 Fulms Under',
             de: 'Versinkend',
+            ja: '沈下',
+            cn: '下陷',
+            ko: '하강',
           };
         }
       },
       tts: {
         en: 'float',
         de: 'schweben',
+        ja: '浮上',
+        cn: '浮空',
+        ko: '공중부양',
       },
     },
     {
       id: 'O2N Antilight',
-      regex: Regexes.startsUsing({ id: '2502', source: 'Catastrophe', capture: false }),
-      regexDe: Regexes.startsUsing({ id: '2502', source: 'Katastroph', capture: false }),
-      regexFr: Regexes.startsUsing({ id: '2502', source: 'Catastrophe', capture: false }),
-      regexJa: Regexes.startsUsing({ id: '2502', source: 'カタストロフィー', capture: false }),
-      regexCn: Regexes.startsUsing({ id: '2502', source: '灾变者', capture: false }),
-      regexKo: Regexes.startsUsing({ id: '2502', source: '카타스트로피', capture: false }),
+      netRegex: NetRegexes.startsUsing({ id: '2502', source: 'Catastrophe', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '2502', source: 'Katastroph', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '2502', source: 'Catastrophe', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '2502', source: 'カタストロフィー', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '2502', source: '灾变者', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '2502', source: '카타스트로피', capture: false }),
       preRun: function(data) {
         data.antiCounter = data.antiCounter || 0;
       },
@@ -209,6 +228,9 @@
           return {
             en: 'Levitate',
             de: 'Levitation',
+            ja: '浮上',
+            cn: '浮空',
+            ko: '공중부양',
           };
         }
         // It's always safe not to levitate after the first Antilight.
@@ -217,11 +239,17 @@
           return {
             en: 'Go center and don\'t levitate',
             de: 'Geh in die Mitte und nicht schweben',
+            ja: '中央に浮かばず集合',
+            cn: '中间集合不要浮空',
+            ko: '공중부양 하지않고 가운데로',
           };
         }
         return {
           en: 'Don\'t levitate',
           de: 'Nicht schweben',
+          ja: '浮上はしない',
+          cn: '不要浮空',
+          ko: '공중부양 하지않기',
         };
       },
       infoText: function(data) {
@@ -245,8 +273,8 @@
     {
       'locale': 'de',
       'replaceSync': {
-        'Potent Petrosphere': 'Petrosphäre[p] I',
-        '(?<! )Petrosphere': 'Petrosphäre[p] II',
+        'Potent Petrosphere': 'Petrosphäre I',
+        '(?<! )Petrosphere': 'Petrosphäre II',
         'Fleshy Member': 'Tentakel',
         'Catastrophe': 'Katastroph',
       },
@@ -265,12 +293,9 @@
         'Epicenter': 'Epizentrum',
         'Earthquake': 'Erdbeben',
         'Demon Eye': 'Dämonenauge',
-        'Antilight': 'Dunkellicht',
+        'Antilight': 'Dunkles Licht',
         '(?<!-)100 Gs': '100 G',
         '-100 Gs': 'Minus 100 G',
-      },
-      '~effectNames': {
-        'Six Fulms Under': 'Versinkend',
       },
     },
     {
@@ -300,9 +325,6 @@
         '(?<!-)100 Gs': 'Gravité 100',
         '-100 Gs': 'Gravité -100',
       },
-      '~effectNames': {
-        'Six Fulms Under': 'Enfoncement',
-      },
     },
     {
       'locale': 'ja',
@@ -330,9 +352,6 @@
         'Antilight': '暗黒光',
         '(?<!-)100 Gs': '重力100',
         '-100 Gs': '重力マイナス100',
-      },
-      '~effectNames': {
-        'Six Fulms Under': '沈下',
       },
     },
     {
@@ -362,9 +381,6 @@
         '(?<!-)100 Gs': '重力100',
         '-100 Gs': '重力-100',
       },
-      '~effectNames': {
-        'Six Fulms Under': '下陷',
-      },
     },
     {
       'locale': 'ko',
@@ -383,7 +399,7 @@
         'Gravitational Manipulation': '중력 조작',
         'Gravitational Explosion': '중력 폭발',
         'Gravitational Distortion': '중력 왜곡',
-        '(?<! )Explosion': '폭발',
+        '(?<! )Explosion': '폭산',
         'Evilsphere': '악의 세력권',
         'Erosion': '침식',
         'Epicenter': '진원 생성',
@@ -392,9 +408,6 @@
         'Antilight': '암흑광',
         '(?<!-)100 Gs': '중력 100',
         '-100 Gs': '중력 -100',
-      },
-      '~effectNames': {
-        'Six Fulms Under': '침하',
       },
     },
   ],

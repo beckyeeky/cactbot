@@ -1,11 +1,7 @@
 'use strict';
 
 [{
-  zoneRegex: {
-    en: /^Middle La Noscea$/,
-    cn: /^中拉诺西亚$/,
-    ko: /^중부 라노시아$/,
-  },
+  zoneId: ZoneId.MiddleLaNoscea,
   timelineFile: 'test.txt',
   // timeline here is additions to the timeline.  They can
   // be strings, or arrays of strings, or functions that
@@ -50,26 +46,32 @@
   timelineTriggers: [
     {
       id: 'Test Angry Dummy',
-      regex: /(Angry Dummy)/,
+      regex: /Angry Dummy/,
       beforeSeconds: 2,
-      infoText: function(data, matches) {
-        return {
-          en: 'Stack for ' + matches[1],
-          de: 'Sammeln für ' + matches[1],
+      infoText: (data, matches, output) => output.stack(),
+      tts: (data, matches, output) => output.stackTTS(),
+      outputStrings: {
+        stack: {
+          en: 'Stack for Angry Dummy',
+          de: 'Sammeln für Wütender Dummy',
+          fr: 'Packez-vous pour Mannequin en colère',
+          ja: '怒る木人に集合',
           cn: '木人处集合',
-          ko: matches[1] + '에 집합',
-        };
-      },
-      tts: {
-        en: 'Stack',
-        de: 'Sammeln',
-        cn: '集合',
-        ko: '집합',
+          ko: '화난 나무인형에 집합',
+        },
+        stackTTS: {
+          en: 'Stack',
+          de: 'Sammeln',
+          fr: 'Packez-vous',
+          ja: '集合',
+          cn: '集合',
+          ko: '집합',
+        },
       },
     },
     {
       id: 'Test Delayed Dummy',
-      regex: /(Angry Dummy)/,
+      regex: /Angry Dummy/,
       // Add in a huge delay to make it obvious the delay runs before promise.
       delaySeconds: 10,
       promise: function(data, matches) {
@@ -82,12 +84,19 @@
         });
         return p;
       },
-      infoText: function(data) {
+      infoText: function(data, matches, output) {
         let elapsed = data.delayedDummyTimestampAfter - data.delayedDummyTimestampBefore;
-        return {
-          en: 'Elapsed ms: ' + elapsed,
-          de: 'Abgelaufene ms: ' + elapsed,
-        };
+        return output.elapsed({ elapsed: elapsed });
+      },
+      outputStrings: {
+        elapsed: {
+          en: 'Elapsed ms: ${elapsed}',
+          de: 'Abgelaufene ms: ${elapsed}',
+          fr: 'Expiré ms: ${elapsed}',
+          ja: '経過時間：${elapsed}',
+          cn: '经过时间：${elapsed}',
+          ko: '경과 시간: ${elapsed}',
+        },
       },
     },
   ],
@@ -97,93 +106,112 @@
       netRegex: NetRegexes.gameNameLog({ line: 'You poke the striking dummy.*?', capture: false }),
       netRegexDe: NetRegexes.gameNameLog({ line: 'Du stupst die Trainingspuppe an.*?', capture: false }),
       netRegexFr: NetRegexes.gameNameLog({ line: 'Vous touchez légèrement le mannequin d\'entraînement du doigt.*?', capture: false }),
+      netRegexJa: NetRegexes.gameNameLog({ line: '.*は木人をつついた.*?', capture: false }),
       netRegexCn: NetRegexes.gameNameLog({ line: '.*用手指戳向木人.*?', capture: false }),
       netRegexKo: NetRegexes.gameNameLog({ line: '.*나무인형을 쿡쿡 찌릅니다.*?', capture: false }),
-      preRun: function(data) {
+      preRun: (data) => {
         data.pokes = (data.pokes || 0) + 1;
       },
-      infoText: function(data) {
-        return {
-          en: 'poke #' + data.pokes,
-          de: 'stups #' + data.pokes,
-          fr: 'Touché #' + data.pokes,
-          cn: '戳 #' + data.pokes,
-          ko: data.pokes + '번 찌름',
-        };
+      infoText: (data, _, output) => output.poke({ numPokes: data.pokes }),
+      outputStrings: {
+        poke: {
+          en: 'poke #${numPokes}',
+          de: 'stups #${numPokes}',
+          fr: 'poussée #${numPokes}',
+          ja: 'つつく #${numPokes}',
+          cn: '戳 #${numPokes}',
+          ko: '${numPokes}번 찌름',
+        },
       },
     },
     {
       id: 'Test Psych',
-      regex: Regexes.gameNameLog({ line: 'You psych yourself up alongside the striking dummy.*.*?', capture: false }),
-      regexDe: Regexes.gameNameLog({ line: 'Du willst wahren Kampfgeist in der Trainingspuppe entfachen.*?', capture: false }),
-      regexFr: Regexes.gameNameLog({ line: 'Vous vous motivez devant le mannequin d\'entraînement.*?', capture: false }),
-      regexCn: Regexes.gameNameLog({ line: '.*激励木人.*?', capture: false }),
-      regexKo: Regexes.gameNameLog({ line: '.*나무인형에게 힘을 불어넣습니다.*?', capture: false }),
-      alertText: {
-        en: 'PSYCH!!!',
-        de: 'AUF GEHTS!!!',
-        fr: 'MOTIVATION !!!',
-        cn: '激励！！',
-        ko: '힘내라!!',
-      },
+      netRegex: NetRegexes.gameNameLog({ line: 'You psych yourself up alongside the striking dummy.*?', capture: false }),
+      netRegexDe: NetRegexes.gameNameLog({ line: 'Du willst wahren Kampfgeist in der Trainingspuppe entfachen.*?', capture: false }),
+      netRegexFr: NetRegexes.gameNameLog({ line: 'Vous vous motivez devant le mannequin d\'entraînement.*?', capture: false }),
+      netRegexJa: NetRegexes.gameNameLog({ line: '.*は木人に活を入れた.*?', capture: false }),
+      netRegexCn: NetRegexes.gameNameLog({ line: '.*激励木人.*?', capture: false }),
+      netRegexKo: NetRegexes.gameNameLog({ line: '.*나무인형에게 힘을 불어넣습니다.*?', capture: false }),
+      alertText: (data, _, output) => output.text(),
       groupTTS: {
         en: 'group psych',
         de: 'Gruppen auf gehts',
-        fr: 'group motivation',
+        fr: 'motivation de groupe',
+        ja: 'グループ、活を入れる',
         cn: '组激励',
         ko: '단체 격려',
       },
       tts: {
         en: 'psych',
         de: 'auf gehts',
-        fr: 'Motivation',
+        fr: 'motivation',
+        ja: '活を入れる',
         cn: '激励',
         ko: '힘내라!',
+      },
+      outputStrings: {
+        text: {
+          en: 'PSYCH!!!',
+          de: 'AUF GEHTS!!!',
+          fr: 'MOTIVATION !!!',
+          ja: '活を入れる！！',
+          cn: '激励！！',
+          ko: '힘내라!!',
+        },
       },
     },
     {
       id: 'Test Laugh',
-      regex: Regexes.gameNameLog({ line: 'You burst out laughing at the striking dummy.*?', capture: false }),
-      regexDe: Regexes.gameNameLog({ line: 'Du lachst herzlich mit der Trainingspuppe.*?', capture: false }),
-      regexFr: Regexes.gameNameLog({ line: 'Vous vous esclaffez devant le mannequin d\'entraînement.*?', capture: false }),
-      regexCn: Regexes.gameNameLog({ line: '.*看着木人高声大笑.*?', capture: false }),
-      regexKo: Regexes.gameNameLog({ line: '.*나무인형을 보고 폭소를 터뜨립니다.*?', capture: false }),
+      netRegex: NetRegexes.gameNameLog({ line: 'You burst out laughing at the striking dummy.*?', capture: false }),
+      netRegexDe: NetRegexes.gameNameLog({ line: 'Du lachst herzlich mit der Trainingspuppe.*?', capture: false }),
+      netRegexFr: NetRegexes.gameNameLog({ line: 'Vous vous esclaffez devant le mannequin d\'entraînement.*?', capture: false }),
+      netRegexJa: NetRegexes.gameNameLog({ line: '.*は木人のことを大笑いした.*?', capture: false }),
+      netRegexCn: NetRegexes.gameNameLog({ line: '.*看着木人高声大笑.*?', capture: false }),
+      netRegexKo: NetRegexes.gameNameLog({ line: '.*나무인형을 보고 폭소를 터뜨립니다.*?', capture: false }),
       suppressSeconds: 5,
-      alarmText: {
-        en: 'hahahahaha',
-        de: 'hahahahaha',
-        fr: 'Mouahahaha',
-        cn: '2333333333',
-        ko: '푸하하하하핳',
-      },
+      alarmText: (data, _, output) => output.text(),
       groupTTS: {
         en: 'group laugh',
         de: 'Gruppenlache',
-        fr: 'group motivation',
+        fr: 'rire de groupe',
+        ja: 'グループハハハ',
         cn: '组哈哈',
         ko: '단체 웃음',
       },
       tts: {
         en: 'hahahahaha',
         de: 'hahahahaha',
-        fr: 'Haha mort de rire',
+        fr: 'hahahahaha',
+        ja: 'ハハハハハ',
         cn: '哈哈哈哈哈哈',
         ko: '푸하하하하핳',
+      },
+      outputStrings: {
+        text: {
+          en: 'hahahahaha',
+          de: 'hahahahaha',
+          fr: 'hahahahaha',
+          ja: 'ハハハハハ',
+          cn: '2333333333',
+          ko: '푸하하하하핳',
+        },
       },
     },
     {
       id: 'Test Clap',
-      regex: Regexes.gameNameLog({ line: 'You clap for the striking dummy.*?', capture: false }),
-      regexDe: Regexes.gameNameLog({ line: 'Du klatschst begeistert Beifall für die Trainingspuppe.*?', capture: false }),
-      regexFr: Regexes.gameNameLog({ line: 'Vous applaudissez le mannequin d\'entraînement.*?', capture: false }),
-      regexCn: Regexes.gameNameLog({ line: '.*向木人送上掌声.*?', capture: false }),
-      regexKo: Regexes.gameNameLog({ line: '.*나무인형에게 박수를 보냅니다.*?', capture: false }),
+      netRegex: NetRegexes.gameNameLog({ line: 'You clap for the striking dummy.*?', capture: false }),
+      netRegexDe: NetRegexes.gameNameLog({ line: 'Du klatschst begeistert Beifall für die Trainingspuppe.*?', capture: false }),
+      netRegexFr: NetRegexes.gameNameLog({ line: 'Vous applaudissez le mannequin d\'entraînement.*?', capture: false }),
+      netRegexJa: NetRegexes.gameNameLog({ line: '.*は木人に拍手した.*?', capture: false }),
+      netRegexCn: NetRegexes.gameNameLog({ line: '.*向木人送上掌声.*?', capture: false }),
+      netRegexKo: NetRegexes.gameNameLog({ line: '.*나무인형에게 박수를 보냅니다.*?', capture: false }),
       sound: '../../resources/sounds/WeakAuras/Applause.ogg',
       soundVolume: 0.3,
       tts: {
         en: 'clapity clap',
         de: 'klatschen',
-        fr: 'Bravo, vive la France',
+        fr: 'applaudissement',
+        ja: '拍手',
         cn: '鼓掌',
         ko: '박수 짝짝짝',
       },
@@ -191,14 +219,16 @@
     {
       id: 'Test Lang',
       // In game: /echo cactbot lang
-      regex: Regexes.echo({ line: 'cactbot lang.*?', capture: false }),
-      regexDe: Regexes.echo({ line: 'cactbot sprache.*?', capture: false }),
-      regexKo: Regexes.echo({ line: 'cactbot 언어.*?', capture: false }),
+      netRegex: NetRegexes.echo({ line: 'cactbot lang.*?', capture: false }),
+      netRegexDe: NetRegexes.echo({ line: 'cactbot sprache.*?', capture: false }),
+      netRegexJa: NetRegexes.echo({ line: 'cactbot言語.*?', capture: false }),
+      netRegexKo: NetRegexes.echo({ line: 'cactbot 언어.*?', capture: false }),
       infoText: function(data) {
         return {
           en: 'Language: ' + data.parserLang,
           de: 'Sprache: ' + data.parserLang,
           fr: 'Langage: ' + data.paserLang,
+          ja: '言語：' + data.parserLang,
           cn: '语言: ' + data.parserLang,
           ko: '언어: ' + data.parserLang,
         };
@@ -206,14 +236,20 @@
     },
     {
       id: 'Test Response',
-      regex: Regexes.echo({ line: 'cactbot test response.*?', capture: false }),
-      regexDe: Regexes.echo({ line: 'cactbot test antwort.*?', capture: false }),
-      response: function(data) {
+      netRegex: NetRegexes.echo({ line: 'cactbot test response.*?', capture: false }),
+      netRegexDe: NetRegexes.echo({ line: 'cactbot test antwort.*?', capture: false }),
+      response: function(data, _, output) {
+        output.responseOutputStrings = {
+          alarmOne: '1',
+          alertTwo: '2',
+          infoThree: '3',
+          ttsFour: '4',
+        };
         return {
-          alarmText: '1',
-          alertText: '2',
-          infoText: '3',
-          tts: '4',
+          alarmText: output.alarmOne(),
+          alertText: output.alertTwo(),
+          infoText: output.infoThree(),
+          tts: output.ttsFour(),
         };
       },
     },
@@ -229,7 +265,7 @@
         'cactbot lang': 'cactbot sprache',
         'cactbot test response': 'cactbot test antwort',
         'You clap for the striking dummy': 'Du klatschst begeistert Beifall für die Trainingspuppe',
-        'You psych yourself up alongside the striking dummy.*': 'Du willst wahren Kampfgeist in der Trainingspuppe entfachen',
+        'You psych yourself up alongside the striking dummy': 'Du willst wahren Kampfgeist in der Trainingspuppe entfachen',
         'You poke the striking dummy': 'Du stupst die Trainingspuppe an',
       },
       replaceText: {
@@ -246,26 +282,50 @@
     },
     {
       locale: 'fr',
-      missingTranslations: true,
       replaceSync: {
         'You bid farewell to the striking dummy': 'Vous faites vos adieux au mannequin d\'entraînement',
         'You bow courteously to the striking dummy': 'Vous vous inclinez devant le mannequin d\'entraînement',
+        'test sync': 'test sync',
       },
       replaceText: {
-        'Final Sting': 'Dard final',
         'Almagest': 'Almageste',
         'Angry Dummy': 'Mannequin en colère',
-        'Long Castbar': 'Longue barre de lancement',
-        'Dummy Stands Still': 'Mannequin immobile',
         'Death': 'Mort',
+        'Death To': 'Mort sur',
+        'Dummy Stands Still': 'Mannequin immobile',
+        'Engage': 'À l\'attaque',
+        'Final Sting': 'Dard final',
+        'Long Castbar': 'Longue barre de lancement',
+        'Pentacle Sac': 'Pentacle Sac',
+        'Super Tankbuster': 'Super Tank buster',
+      },
+    },
+    {
+      locale: 'ja',
+      replaceSync: {
+        'You bid farewell to the striking dummy': '.*は木人に別れの挨拶をした',
+        'You bow courteously to the striking dummy': '.*は木人にお辞儀した',
+        'test sync': 'test sync',
+      },
+      replaceText: {
+        'Almagest': 'アルマゲスト',
+        'Angry Dummy': '怒る木人',
+        'Death': '死',
+        'Death To': '死の宣告',
+        'Dummy Stands Still': '木人はじっとしている',
+        'Engage': '戦闘開始',
+        'Final Sting': 'ファイナルスピア',
+        'Long Castbar': '長い長い詠唱バー',
+        'Pentacle Sac': 'ナイサイ',
+        'Super Tankbuster': 'スーパータンクバスター',
       },
     },
     {
       locale: 'cn',
-      missingTranslations: true,
       replaceSync: {
         'You bid farewell to the striking dummy': '.*向木人告别',
         'You bow courteously to the striking dummy': '.*恭敬地对木人行礼',
+        'test sync': 'test sync',
       },
       replaceText: {
         'Final Sting': '终极针',
@@ -277,6 +337,7 @@
         'Death To': '嗝屁攻击：',
         'Death': '嗝屁',
         'Engage': '战斗开始',
+        'Pentacle Sac': '传毒',
       },
     },
     {

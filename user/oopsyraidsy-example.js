@@ -6,7 +6,7 @@
 // the value should be true if the trigger is to be ignored, whereas false
 // will have no effect.  The trigger ids can be found in the trigger files for
 // each fight in the files inside of this directory:
-// https://github.com/quisquous/cactbot/tree/master/ui/oopsyraidsy/data/
+// https://github.com/quisquous/cactbot/tree/main/ui/oopsyraidsy/data/
 Options.DisabledTriggers = {
   'General Rabbit Medium': true,
   'General Early Pull': true,
@@ -33,19 +33,19 @@ Options.AbilityIdNameMap['26CA'] = 'White Swirly';
 
 
 // An array of user-defined triggers, in the format defined in the readme:
-// https://github.com/quisquous/cactbot/tree/master/ui/oopsyraidsy/data/
+// https://github.com/quisquous/cactbot/tree/main/docs/OopsyraidsyGuide.md
 //
 // Here's an example trigger to show a line in the mistake log when
 // you crit adlo yourself in Summerford Farms.
 Options.Triggers = [
   {
-    zoneRegex: /^Middle La Noscea$/,
+    zoneId: ZoneId.MiddleLaNoscea,
     triggers: [
       {
         id: 'Test Self Crit Adlo',
         healRegex: 'B9', // Adloquium ability id
-        condition: function(e, data) {
-          return e.targetName == data.me && e.damageStr.substr(-1) == '!';
+        condition: function(e, data, matches) {
+          return e.targetName == data.me && matches.flags === '10004';
         },
         mistake: function(e, data) {
           let text = e.abilityName + ': ' + e.damageStr;

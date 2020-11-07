@@ -2,11 +2,7 @@
 
 // O12N - Alphascape 4.0
 [{
-  zoneRegex: {
-    en: /^Alphascape \(V4\.0\)$/,
-    cn: /^欧米茄时空狭缝 \(阿尔法幻境4\)$/,
-    ko: /^차원의 틈 오메가: 알파편 \(4\)$/,
-  },
+  zoneId: ZoneId.AlphascapeV40,
   timelineFile: 'o12n.txt',
   timelineTriggers: [
     {
@@ -19,12 +15,12 @@
   triggers: [
     {
       id: 'O12N Solar Ray',
-      regex: Regexes.startsUsing({ id: ['330F', '3310'], source: ['Omega', 'Omega-M'] }),
-      regexDe: Regexes.startsUsing({ id: ['330F', '3310'], source: ['Omega', 'Omega-M'] }),
-      regexFr: Regexes.startsUsing({ id: ['330F', '3310'], source: ['Oméga', 'Oméga-M'] }),
-      regexJa: Regexes.startsUsing({ id: ['330F', '3310'], source: ['オメガ', 'オメガM'] }),
-      regexCn: Regexes.startsUsing({ id: ['330F', '3310'], source: ['欧米茄', '欧米茄M'] }),
-      regexKo: Regexes.startsUsing({ id: ['330F', '3310'], source: ['오메가', '오메가 M'] }),
+      netRegex: NetRegexes.startsUsing({ id: ['330F', '3310'], source: ['Omega', 'Omega-M'] }),
+      netRegexDe: NetRegexes.startsUsing({ id: ['330F', '3310'], source: ['Omega', 'Omega-M'] }),
+      netRegexFr: NetRegexes.startsUsing({ id: ['330F', '3310'], source: ['Oméga', 'Oméga-M'] }),
+      netRegexJa: NetRegexes.startsUsing({ id: ['330F', '3310'], source: ['オメガ', 'オメガM'] }),
+      netRegexCn: NetRegexes.startsUsing({ id: ['330F', '3310'], source: ['欧米茄', '欧米茄M'] }),
+      netRegexKo: NetRegexes.startsUsing({ id: ['330F', '3310'], source: ['오메가', '오메가 M'] }),
       condition: function(data, matches) {
         return data.me == matches.target || data.role == 'healer';
       },
@@ -33,12 +29,12 @@
     },
     {
       id: 'O12N Optimized Blade Dance',
-      regex: Regexes.startsUsing({ id: ['3321', '3322'], source: ['Omega', 'Omega-M'] }),
-      regexDe: Regexes.startsUsing({ id: ['3321', '3322'], source: ['Omega', 'Omega-M'] }),
-      regexFr: Regexes.startsUsing({ id: ['3321', '3322'], source: ['Oméga', 'Oméga-M'] }),
-      regexJa: Regexes.startsUsing({ id: ['3321', '3322'], source: ['オメガ', 'オメガM'] }),
-      regexCn: Regexes.startsUsing({ id: ['3321', '3322'], source: ['欧米茄', '欧米茄M'] }),
-      regexKo: Regexes.startsUsing({ id: ['3321', '3322'], source: ['오메가', '오메가 M'] }),
+      netRegex: NetRegexes.startsUsing({ id: ['3321', '3322'], source: ['Omega', 'Omega-M'] }),
+      netRegexDe: NetRegexes.startsUsing({ id: ['3321', '3322'], source: ['Omega', 'Omega-M'] }),
+      netRegexFr: NetRegexes.startsUsing({ id: ['3321', '3322'], source: ['Oméga', 'Oméga-M'] }),
+      netRegexJa: NetRegexes.startsUsing({ id: ['3321', '3322'], source: ['オメガ', 'オメガM'] }),
+      netRegexCn: NetRegexes.startsUsing({ id: ['3321', '3322'], source: ['欧米茄', '欧米茄M'] }),
+      netRegexKo: NetRegexes.startsUsing({ id: ['3321', '3322'], source: ['오메가', '오메가 M'] }),
       condition: function(data, matches) {
         return data.me == matches.target || data.role == 'healer';
       },
@@ -47,26 +43,30 @@
     },
     {
       id: 'O12N Local Resonance',
-      regex: Regexes.gainsEffect({ target: 'Omega', effect: 'Local Resonance', capture: false }),
-      regexDe: Regexes.gainsEffect({ target: 'Omega', effect: 'Resonanzprogramm: Nah', capture: false }),
-      regexFr: Regexes.gainsEffect({ target: 'Oméga', effect: 'Programme De Résonance: Proximité', capture: false }),
-      regexJa: Regexes.gainsEffect({ target: 'オメガ', effect: 'レゾナンスプログラム：ニアー', capture: false }),
-      regexCn: Regexes.gainsEffect({ target: '欧米茄', effect: '共鸣程序：近', capture: false }),
-      regexKo: Regexes.gainsEffect({ target: '오메가', effect: '공명 프로그램: 근거리', capture: false }),
+      netRegex: NetRegexes.gainsEffect({ target: 'Omega', effectId: '67E', capture: false }),
+      netRegexDe: NetRegexes.gainsEffect({ target: 'Omega', effectId: '67E', capture: false }),
+      netRegexFr: NetRegexes.gainsEffect({ target: 'Oméga', effectId: '67E', capture: false }),
+      netRegexJa: NetRegexes.gainsEffect({ target: 'オメガ', effectId: '67E', capture: false }),
+      netRegexCn: NetRegexes.gainsEffect({ target: '欧米茄', effectId: '67E', capture: false }),
+      netRegexKo: NetRegexes.gainsEffect({ target: '오메가', effectId: '67E', capture: false }),
       condition: function(data) {
         return data.role == 'tank';
       },
-      alertText: {
-        en: 'Move bosses apart',
-        de: 'Bosse auseinander ziehen',
-        fr: 'Ecartez les boss',
-        cn: '分开boss',
-        ko: '보스 서로 떨어뜨리기',
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Move bosses apart',
+          de: 'Bosse auseinander ziehen',
+          fr: 'Ecartez les boss',
+          ja: 'ボスを引き離す',
+          cn: '分开boss',
+          ko: '보스 서로 떨어뜨리기',
+        },
       },
     },
     {
       id: 'O12N Optimized Meteor',
-      regex: Regexes.headMarker({ id: '0057' }),
+      netRegex: NetRegexes.headMarker({ id: '0057' }),
       condition: function(data, matches) {
         return data.me == matches.target;
       },
@@ -74,7 +74,7 @@
     },
     {
       id: 'O12N Stack Spread Markers',
-      regex: Regexes.headMarker({ id: '008B' }),
+      netRegex: NetRegexes.headMarker({ id: '008B' }),
       alertText: function(data, matches) {
         if (data.me != matches.target)
           return;
@@ -82,7 +82,7 @@
           en: 'Get Out',
           de: 'Raus da',
           fr: 'Sortez',
-          ja: '誘引',
+          ja: '外へ',
           cn: '远离',
           ko: '파티에서 멀어지기',
         };
@@ -102,50 +102,47 @@
     },
     {
       id: 'O12N Packet Filter F',
-      regex: Regexes.gainsEffect({ effect: 'Packet Filter F' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Sicherungssystem W' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Programme Protecteur F' }),
-      regexJa: Regexes.gainsEffect({ effect: 'ガードプログラムF' }),
-      regexCn: Regexes.gainsEffect({ effect: '防护程序F' }),
-      regexKo: Regexes.gainsEffect({ effect: '방어 프로그램 F' }),
+      netRegex: NetRegexes.gainsEffect({ effectId: '67D' }),
       condition: function(data, matches) {
         return data.me == matches.target;
       },
-      infoText: {
-        en: 'Attack Omega-M',
-        de: 'Omega-M angreifen',
-        fr: 'Attaquez Oméga-M',
-        cn: '攻击男性',
-        ko: '오메가 M 공격',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Attack Omega-M',
+          de: 'Omega-M angreifen',
+          fr: 'Attaquez Oméga-M',
+          ja: 'オメガMに攻撃',
+          cn: '攻击男性',
+          ko: '오메가 M 공격',
+        },
       },
     },
     {
       id: 'O12N Packet Filter M',
-      regex: Regexes.gainsEffect({ effect: 'Packet Filter M' }),
-      regexDe: Regexes.gainsEffect({ effect: 'Sicherungssystem M' }),
-      regexFr: Regexes.gainsEffect({ effect: 'Programme Protecteur M' }),
-      regexJa: Regexes.gainsEffect({ effect: 'ガードプログラムM' }),
-      regexCn: Regexes.gainsEffect({ effect: '防护程序M' }),
-      regexKo: Regexes.gainsEffect({ effect: '방어 프로그램 M' }),
+      netRegex: NetRegexes.gainsEffect({ effectId: '67C' }),
       condition: function(data, matches) {
         return data.me == matches.target;
       },
-      infoText: {
-        en: 'Attack Omega-F',
-        de: 'Omega-W angreifen',
-        fr: 'Attaquez Oméga-F',
-        cn: '攻击女性',
-        ko: '오메가 F 공격',
+      infoText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Attack Omega-F',
+          de: 'Omega-W angreifen',
+          fr: 'Attaquez Oméga-F',
+          ja: 'オメガFに攻撃',
+          cn: '攻击女性',
+          ko: '오메가 F 공격',
+        },
       },
     },
   ],
   timelineReplace: [
     {
       'locale': 'de',
-      'missingTranslations': true,
       'replaceSync': {
+        'Calculations indicate increased probability of defeat': 'Warnung. Erhöhte Wahrscheinlichkeit einer Niederlage',
         'Omega(?!-)': 'Omega',
-        'Omega-F': 'Omega-W',
         'Omega-M': 'Omega-M',
         'Optical Unit': 'Optikmodul',
         'Progress to party combat': 'Initiiere Gruppenkampf',
@@ -178,20 +175,12 @@
         'Synthetic Blades': 'Synthetische Klinge',
         'Synthetic Shield': 'Synthetischer Schild',
       },
-      '~effectNames': {
-        'Invincibility': 'Unverwundbar',
-        'Local Resonance': 'Resonanzprogramm: Nah',
-        'Omega': 'Omega',
-        'Packet Filter F': 'Sicherungssystem W',
-        'Packet Filter M': 'Sicherungssystem M',
-      },
     },
     {
       'locale': 'fr',
       'missingTranslations': true,
       'replaceSync': {
         'Omega(?!-)': 'Oméga',
-        'Omega-F': 'Oméga-F',
         'Omega-M': 'Oméga-M',
         'Optical Unit': 'unité optique',
         'Progress to party combat': 'Limites du combat en solitaire atteintes',
@@ -224,20 +213,12 @@
         'Synthetic Blades': 'Lame optionnelle',
         'Synthetic Shield': 'Bouclier optionnel',
       },
-      '~effectNames': {
-        'Invincibility': 'Invulnérable',
-        'Local Resonance': 'Programme de résonance: proximité',
-        'Omega': 'Oméga',
-        'Packet Filter F': 'Programme protecteur F',
-        'Packet Filter M': 'Programme protecteur M',
-      },
     },
     {
       'locale': 'ja',
-      'missingTranslations': true,
       'replaceSync': {
+        'Calculations indicate increased probability of defeat': '警告……警告……敗北の危険性が上昇……',
         'Omega(?!-)': 'オメガ',
-        'Omega-F': 'オメガF',
         'Omega-M': 'オメガM',
         'Optical Unit': 'オプチカルユニット',
         'Progress to party combat': '単独戦闘による限界を確認',
@@ -270,20 +251,12 @@
         'Synthetic Blades': 'ブレードオプション',
         'Synthetic Shield': 'シールドオプション',
       },
-      '~effectNames': {
-        'Invincibility': '無敵',
-        'Local Resonance': 'レゾナンスプログラム：ニアー',
-        'Omega': 'オメガ',
-        'Packet Filter F': 'ガードプログラムF',
-        'Packet Filter M': 'ガードプログラムM',
-      },
     },
     {
       'locale': 'cn',
       'replaceSync': {
         'Calculations indicate increased probability of defeat': '警告……警告……失败的危险性上升……',
         'Omega(?!-)': '欧米茄',
-        'Omega-F': '欧米茄F',
         'Omega-M': '欧米茄M',
         'Optical Unit': '视觉组',
         'Progress to party combat': '确认到单独战斗的极限',
@@ -316,19 +289,11 @@
         'Synthetic Blades': '合成剑',
         'Synthetic Shield': '合成盾',
       },
-      '~effectNames': {
-        'Invincibility': '无敌',
-        'Local Resonance': '共鸣程序：近',
-        'Omega': '欧米茄',
-        'Packet Filter F': '防护程序F',
-        'Packet Filter M': '防护程序M',
-      },
     },
     {
       'locale': 'ko',
       'replaceSync': {
         'Omega(?!-)': '오메가',
-        'Omega-F': '오메가 F',
         'Omega-M': '오메가 M',
         'Optical Unit': '광학 유닛',
         'Progress to party combat': '단독 전투 한계 확인',
@@ -361,13 +326,6 @@
         'Suppression': '지원 프로그램 F',
         'Synthetic Blades': '칼날 장착',
         'Synthetic Shield': '방패 장착',
-      },
-      '~effectNames': {
-        'Invincibility': '무적',
-        'Local Resonance': '공명 프로그램: 근거리',
-        'Omega': '오메가',
-        'Packet Filter F': '방어 프로그램 F',
-        'Packet Filter M': '방어 프로그램 M',
       },
     },
   ],
