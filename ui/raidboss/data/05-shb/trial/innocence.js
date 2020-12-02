@@ -1,7 +1,10 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // Innocence Normal
-[{
+export default {
   zoneId: ZoneId.TheCrownOfTheImmaculate,
   timelineFile: 'innocence.txt',
   triggers: [
@@ -13,9 +16,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3E9A', source: 'イノセンス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3E9A', source: '无瑕灵君', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3E9A', source: '이노센스', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -68,9 +69,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3EEA', source: 'イノセンス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3EEA', source: '无瑕灵君', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3EEA', source: '이노센스', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -82,7 +81,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3EA3', source: '无瑕灵君' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3EA3', source: '이노센스' }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'healer';
+        return matches.target === data.me || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -129,9 +128,7 @@
     {
       id: 'Inno Winged Drop Of Light',
       netRegex: NetRegexes.headMarker({ id: '008A' }),
-      condition: function(data, matches) {
-        return matches.target == data.me;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -288,4 +285,4 @@
       },
     },
   ],
-}];
+};

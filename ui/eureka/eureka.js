@@ -1,6 +1,13 @@
-'use strict';
+import Regexes from '../../resources/regexes.js';
+import UserConfig from '../../resources/user_config.js';
+import ZoneId from '../../resources/zone_id.js';
+import ZoneInfo from '../../resources/zone_info.js';
+import { getWeather, findNextWeather, findNextWeatherNot, findNextNight, findNextDay, isNightTime } from '../../resources/weather.js';
 
-let bunnyLabel = {
+import './eureka_config.js';
+import '../../resources/common.js';
+
+const bunnyLabel = {
   en: 'Bunny',
   de: 'Hase',
   fr: 'Lapin',
@@ -9,7 +16,7 @@ let bunnyLabel = {
   cn: '兔子',
 };
 
-let Options = {
+const Options = {
   Debug: false,
   PopSound: '../../resources/sounds/PowerAuras/sonar.ogg',
   BunnyPopSound: '../../resources/sounds/WeakAuras/WaterDrop.ogg',
@@ -18,35 +25,35 @@ let Options = {
     weatherFor: {
       en: (nowMs, stopTime) => {
         if (stopTime) {
-          let min = (stopTime - nowMs) / 1000 / 60;
+          const min = (stopTime - nowMs) / 1000 / 60;
           return ' for ' + Math.ceil(min) + 'm';
         }
         return ' for ???';
       },
       de: (nowMs, stopTime) => {
         if (stopTime) {
-          let min = (stopTime - nowMs) / 1000 / 60;
+          const min = (stopTime - nowMs) / 1000 / 60;
           return ' für ' + Math.ceil(min) + 'min';
         }
         return ' für ???';
       },
       fr: (nowMs, stopTime) => {
         if (stopTime) {
-          let min = (stopTime - nowMs) / 1000 / 60;
+          const min = (stopTime - nowMs) / 1000 / 60;
           return ' pour ' + Math.ceil(min) + ' min ';
         }
         return ' pour ???';
       },
       ko: (nowMs, stopTime) => {
         if (stopTime) {
-          let min = (stopTime - nowMs) / 1000 / 60;
+          const min = (stopTime - nowMs) / 1000 / 60;
           return ' ' + Math.ceil(min) + '분 동안';
         }
         return ' ??? 동안';
       },
       cn: (nowMs, stopTime) => {
         if (stopTime) {
-          let min = (stopTime - nowMs) / 1000 / 60;
+          const min = (stopTime - nowMs) / 1000 / 60;
           return ' ' + Math.ceil(min) + '分钟后结束';
         }
         return ' ??? 分钟';
@@ -55,35 +62,35 @@ let Options = {
     weatherIn: {
       en: (nowMs, startTime) => {
         if (startTime) {
-          let min = (startTime - nowMs) / 1000 / 60;
+          const min = (startTime - nowMs) / 1000 / 60;
           return ' in ' + Math.ceil(min) + 'm';
         }
         return ' in ???';
       },
       de: (nowMs, startTime) => {
         if (startTime) {
-          let min = (startTime - nowMs) / 1000 / 60;
+          const min = (startTime - nowMs) / 1000 / 60;
           return ' in ' + Math.ceil(min) + 'min';
         }
         return ' in ???';
       },
       fr: (nowMs, startTime) => {
         if (startTime) {
-          let min = (startTime - nowMs) / 1000 / 60;
+          const min = (startTime - nowMs) / 1000 / 60;
           return ' dans ' + Math.ceil(min) + ' min ';
         }
         return ' dans ???';
       },
       ko: (nowMs, startTime) => {
         if (startTime) {
-          let min = (startTime - nowMs) / 1000 / 60;
+          const min = (startTime - nowMs) / 1000 / 60;
           return ' ' + Math.ceil(min) + '분 후';
         }
         return ' ??? 후';
       },
       cn: (nowMs, startTime) => {
         if (startTime) {
-          let min = (startTime - nowMs) / 1000 / 60;
+          const min = (startTime - nowMs) / 1000 / 60;
           return ' ' + Math.ceil(min) + '分钟后';
         }
         return ' ??? 后';
@@ -152,6 +159,7 @@ let Options = {
       mapWidth: 1300,
       mapHeight: 950,
       shortName: 'anemos',
+      hasTracker: true,
       primaryWeather: ['Gales'],
       // TODO: these could be a little better tuned :C
       mapToPixelXScalar: 41.12,
@@ -602,6 +610,7 @@ let Options = {
       mapWidth: 1500,
       mapHeight: 950,
       shortName: 'pagos',
+      hasTracker: true,
       mapToPixelXScalar: 41.08333,
       mapToPixelXConstant: -85.28333,
       mapToPixelYScalar: 41.09158,
@@ -1001,6 +1010,7 @@ let Options = {
       mapWidth: 1350,
       mapHeight: 1450,
       shortName: 'pyros',
+      hasTracker: true,
       mapToPixelXScalar: 42.515,
       mapToPixelXConstant: -344.064,
       mapToPixelYScalar: 42.486,
@@ -1400,6 +1410,7 @@ let Options = {
       mapWidth: 1500,
       mapHeight: 800,
       shortName: 'hydatos',
+      hasTracker: true,
       mapToPixelXScalar: 37.523,
       mapToPixelXConstant: -48.160,
       mapToPixelYScalar: 37.419,
@@ -2248,7 +2259,7 @@ let Options = {
   },
 };
 
-let gWeatherIcons = {
+const gWeatherIcons = {
   'Gales': '&#x1F300;',
   'Fog': '&#x2601;',
   'Blizzards': '&#x2744;',
@@ -2261,8 +2272,8 @@ let gWeatherIcons = {
   'Showers': '&#x2614;',
   'Gloom': '&#x2639;',
 };
-let gNightIcon = '&#x1F319;';
-let gDayIcon = '&#x263C;';
+const gNightIcon = '&#x1F319;';
+const gDayIcon = '&#x263C;';
 
 let gTracker;
 class EurekaTracker {
@@ -2295,9 +2306,9 @@ class EurekaTracker {
       return;
     }
 
-    let zi = this.zoneInfo;
-    let px = zi.mapToPixelXScalar * mx + zi.mapToPixelXConstant;
-    let py = zi.mapToPixelYScalar * my + zi.mapToPixelYConstant;
+    const zi = this.zoneInfo;
+    const px = zi.mapToPixelXScalar * mx + zi.mapToPixelXConstant;
+    const py = zi.mapToPixelYScalar * my + zi.mapToPixelYConstant;
 
     style.left = (px / zi.mapWidth * 100) + '%';
     style.top = (py / zi.mapHeight * 100) + '%';
@@ -2332,7 +2343,7 @@ class EurekaTracker {
 
   AddElement(container, nmKey) {
     const nm = this.nms[nmKey];
-    let label = document.createElement('div');
+    const label = document.createElement('div');
     label.classList.add('nm');
 
     if (nm.isCritical)
@@ -2344,17 +2355,17 @@ class EurekaTracker {
 
     this.SetStyleFromMap(label.style, nm.x, nm.y);
 
-    let icon = document.createElement('span');
+    const icon = document.createElement('span');
     icon.classList.add('nm-icon');
-    let name = document.createElement('span');
+    const name = document.createElement('span');
     name.classList.add('nm-name');
     name.classList.add('text');
     name.innerText = this.TransByDispLang(nm.label);
-    let progress = document.createElement('span');
+    const progress = document.createElement('span');
     progress.innerText = '';
     progress.classList.add('nm-progress');
     progress.classList.add('text');
-    let time = document.createElement('span');
+    const time = document.createElement('span');
     time.classList.add('nm-time');
     time.classList.add('text');
 
@@ -2379,7 +2390,7 @@ class EurekaTracker {
     // Anemos has no bunny fates
     this.nmKeys = Object.keys(this.nms);
 
-    let container = document.getElementById('nm-labels');
+    const container = document.getElementById('nm-labels');
     container.classList.add(this.zoneInfo.shortName);
 
     for (const key of this.nmKeys)
@@ -2388,7 +2399,7 @@ class EurekaTracker {
 
     this.fairy = this.zoneInfo.fairy;
     if (this.fairy) {
-      let fairyName = this.TransByParserLang(this.fairy);
+      const fairyName = this.TransByParserLang(this.fairy);
       this.fairy.regex = Regexes.addedCombatantFull({ name: fairyName });
     }
     this.playerElement = document.createElement('div');
@@ -2397,7 +2408,7 @@ class EurekaTracker {
   }
 
   ResetZone() {
-    let container = document.getElementById('nm-labels');
+    const container = document.getElementById('nm-labels');
     container.innerHTML = '';
     this.currentTracker = null;
     container.className = '';
@@ -2413,11 +2424,11 @@ class EurekaTracker {
     this.zoneId = e.zoneID;
 
     this.zoneInfo = this.options.ZoneInfo[this.zoneId];
-    let container = document.getElementById('container');
+    const container = document.getElementById('container');
     if (this.zoneInfo) {
       this.ResetZone();
 
-      let aspect = document.getElementById('aspect-ratio');
+      const aspect = document.getElementById('aspect-ratio');
       while (aspect.classList.length > 0)
         aspect.classList.remove(aspect.classList.item(0));
       aspect.classList.add('aspect-ratio-' + this.zoneInfo.shortName);
@@ -2439,7 +2450,7 @@ class EurekaTracker {
       container.classList.add('hide');
     }
 
-    let flags = document.getElementById('flag-labels');
+    const flags = document.getElementById('flag-labels');
 
     for (let i = 0; i < flags.children.length; ++i)
       flags.removeChild(flags.children[i]);
@@ -2489,7 +2500,7 @@ class EurekaTracker {
   }
 
   PlaySound(sound, volume) {
-    let audio = new Audio(sound);
+    const audio = new Audio(sound);
     audio.volume = volume;
     audio.play();
   }
@@ -2521,19 +2532,19 @@ class EurekaTracker {
   }
 
   ProcessFateQueue() {
-    while (this.fateQueue.length != 0)
+    while (this.fateQueue.length !== 0)
       this.OnFate(this.fateQueue.pop());
   }
 
   ProcessCEQueue() {
-    while (this.CEQueue.length != 0)
+    while (this.CEQueue.length !== 0)
       this.OnCE(this.CEQueue.pop());
   }
 
   UpdateTimes() {
-    let nowMs = +new Date();
+    const nowMs = +new Date();
 
-    let primaryWeatherList = this.zoneInfo.primaryWeather;
+    const primaryWeatherList = this.zoneInfo.primaryWeather;
     if (primaryWeatherList) {
       for (let i = 0; i < 5; ++i) {
         document.getElementById('label-weather-icon' + i).innerHTML = '';
@@ -2541,26 +2552,26 @@ class EurekaTracker {
       }
 
       for (let i = 0; i < 5 && i < primaryWeatherList.length; ++i) {
-        let primaryWeather = primaryWeatherList[i];
+        const primaryWeather = primaryWeatherList[i];
         if (!primaryWeather)
           continue;
-        let weather = getWeather(nowMs, this.zoneId);
-        let weatherIcon = gWeatherIcons[primaryWeather];
+        const weather = getWeather(nowMs, this.zoneId);
+        const weatherIcon = gWeatherIcons[primaryWeather];
         let weatherStr;
         if (weather === primaryWeather) {
-          let stopTime = findNextWeatherNot(nowMs, this.zoneId, primaryWeather);
+          const stopTime = findNextWeatherNot(nowMs, this.zoneId, primaryWeather);
           weatherStr = this.TransByDispLang(this.options.timeStrings.weatherFor)(nowMs, stopTime);
         } else {
-          let startTime = findNextWeather(nowMs, this.zoneId, primaryWeather);
+          const startTime = findNextWeather(nowMs, this.zoneId, primaryWeather);
           weatherStr = this.TransByDispLang(this.options.timeStrings.weatherIn)(nowMs, startTime);
         }
         document.getElementById('label-weather-icon' + i).innerHTML = weatherIcon;
         document.getElementById('label-weather-text' + i).innerHTML = weatherStr;
       }
     } else {
-      let currentWeather = getWeather(nowMs, this.zoneId);
-      let stopTime = findNextWeatherNot(nowMs, this.zoneId, currentWeather);
-      let weatherIcon = gWeatherIcons[currentWeather];
+      const currentWeather = getWeather(nowMs, this.zoneId);
+      const stopTime = findNextWeatherNot(nowMs, this.zoneId, currentWeather);
+      const weatherIcon = gWeatherIcons[currentWeather];
       let weatherStr = this.TransByDispLang(this.options.timeStrings.weatherFor)(nowMs, stopTime);
       document.getElementById('label-weather-icon0').innerHTML = weatherIcon;
       document.getElementById('label-weather-text0').innerHTML = weatherStr;
@@ -2569,9 +2580,9 @@ class EurekaTracker {
       let lastTime = nowMs;
       let lastWeather = currentWeather;
       for (let i = 1; i < 5; ++i) {
-        let startTime = findNextWeatherNot(lastTime, this.zoneId, lastWeather);
-        let weather = getWeather(startTime + 1, this.zoneId);
-        let weatherIcon = gWeatherIcons[weather];
+        const startTime = findNextWeatherNot(lastTime, this.zoneId, lastWeather);
+        const weather = getWeather(startTime + 1, this.zoneId);
+        const weatherIcon = gWeatherIcons[weather];
         weatherStr = this.TransByDispLang(this.options.timeStrings.weatherIn)(nowMs, startTime);
         document.getElementById('label-weather-icon' + i).innerHTML = weatherIcon;
         document.getElementById('label-weather-text' + i).innerHTML = weatherStr;
@@ -2580,16 +2591,16 @@ class EurekaTracker {
       }
     }
 
-    let nextDay = findNextNight(nowMs);
-    let nextNight = findNextDay(nowMs);
+    const nextDay = findNextNight(nowMs);
+    const nextNight = findNextDay(nowMs);
     let timeIcon;
     if (nextDay > nextNight)
       timeIcon = gNightIcon;
     else
       timeIcon = gDayIcon;
 
-    let dayNightMin = Math.ceil((Math.min(nextDay, nextNight) - nowMs) / 1000 / 60);
-    let timeStr = this.TransByDispLang(this.options.timeStrings.timeFor)(dayNightMin);
+    const dayNightMin = Math.ceil((Math.min(nextDay, nextNight) - nowMs) / 1000 / 60);
+    const timeStr = this.TransByDispLang(this.options.timeStrings.timeFor)(dayNightMin);
     document.getElementById('label-time-icon').innerHTML = timeIcon;
     document.getElementById('label-time-text').innerHTML = timeStr;
 
@@ -2602,7 +2613,7 @@ class EurekaTracker {
       return;
 
     for (let i = 0; i < this.nmKeys.length; ++i) {
-      let nm = this.nms[this.nmKeys[i]];
+      const nm = this.nms[this.nmKeys[i]];
 
       let respawnMs = null;
       if (nm.respawnTimeMsLocal)
@@ -2611,16 +2622,16 @@ class EurekaTracker {
         respawnMs = nm.respawnTimeMsTracker;
 
 
-      let popRespawnMs = respawnMs;
+      const popRespawnMs = respawnMs;
 
       // Ignore respawns in the past.
       respawnMs = Math.max(respawnMs, nowMs);
       let respawnIcon = '';
 
       if (nm.weather) {
-        let respawnWeather = getWeather(respawnMs, this.zoneId);
-        if (respawnWeather != nm.weather) {
-          let weatherStartTime =
+        const respawnWeather = getWeather(respawnMs, this.zoneId);
+        if (respawnWeather !== nm.weather) {
+          const weatherStartTime =
             findNextWeather(respawnMs, this.zoneId, nm.weather);
           if (weatherStartTime > respawnMs) {
             respawnIcon = gWeatherIcons[nm.weather];
@@ -2630,9 +2641,9 @@ class EurekaTracker {
       }
 
       if (nm.time === 'Night') {
-        let isNight = isNightTime(respawnMs);
+        const isNight = isNightTime(respawnMs);
         if (!isNight) {
-          let nextNight = findNextNight(respawnMs);
+          const nextNight = findNextNight(respawnMs);
           if (nextNight > respawnMs) {
             respawnIcon = gNightIcon;
             respawnMs = nextNight;
@@ -2640,11 +2651,11 @@ class EurekaTracker {
         }
       }
 
-      let remainingMs = respawnMs - nowMs;
+      const remainingMs = respawnMs - nowMs;
       if (remainingMs <= 0) {
         let openUntil = null;
         if (nm.weather) {
-          let weatherStartTime = findNextWeatherNot(nowMs, this.zoneId, nm.weather);
+          const weatherStartTime = findNextWeatherNot(nowMs, this.zoneId, nm.weather);
           respawnIcon = gWeatherIcons[nm.weather];
           openUntil = weatherStartTime;
         }
@@ -2654,8 +2665,8 @@ class EurekaTracker {
         }
 
         if (openUntil) {
-          let openMin = (openUntil - nowMs) / 1000 / 60;
-          let nmString = respawnIcon + Math.ceil(openMin) +
+          const openMin = (openUntil - nowMs) / 1000 / 60;
+          const nmString = respawnIcon + Math.ceil(openMin) +
             this.TransByDispLang(this.options.timeStrings.minute);
           nm.timeElement.innerHTML = nmString;
         } else {
@@ -2667,8 +2678,8 @@ class EurekaTracker {
         if (popRespawnMs > nowMs)
           respawnIcon = '';
 
-        let remainingMinutes = Math.ceil(remainingMs / 1000 / 60);
-        let nmString = respawnIcon + remainingMinutes +
+        const remainingMinutes = Math.ceil(remainingMs / 1000 / 60);
+        const nmString = respawnIcon + remainingMinutes +
           this.TransByDispLang(this.options.timeStrings.minute);
         nm.timeElement.innerHTML = nmString;
         nm.element.classList.add('nm-down');
@@ -2677,9 +2688,9 @@ class EurekaTracker {
   }
 
   ImportFromTracker(importText) {
-    let trackerToNM = {};
+    const trackerToNM = {};
     for (let i = 0; i < this.nmKeys.length; ++i) {
-      let nm = this.nms[this.nmKeys[i]];
+      const nm = this.nms[this.nmKeys[i]];
       if (!nm.trackerName)
         continue;
       trackerToNM[this.TransByParserLang(nm.trackerName).toLowerCase()] = nm;
@@ -2687,16 +2698,16 @@ class EurekaTracker {
 
     let regex = this.TransByParserLang(this.options.Regex);
     regex = regex['gTimeRegex'];
-    let importList = importText.split(' → ');
+    const importList = importText.split(' → ');
     for (let i = 0; i < importList.length; i++) {
-      let m = importList[i].match(regex);
+      const m = importList[i].match(regex);
       if (!m) {
         console.error('Unknown tracker entry: ' + importList[i]);
         continue;
       }
-      let name = m[1];
-      let time = m[2];
-      let nm = trackerToNM[name.toLowerCase()];
+      const name = m[1];
+      const time = m[2];
+      const nm = trackerToNM[name.toLowerCase()];
       if (nm)
         nm.respawnTimeMsTracker = (time * 60 * 1000) + (+new Date());
       else
@@ -2710,7 +2721,7 @@ class EurekaTracker {
     if (!this.zoneInfo)
       return;
     for (const log of e.detail.logs) {
-      let gFlagRegex = this.TransByParserLang(this.options.Regex, 'gFlagRegex');
+      const gFlagRegex = this.TransByParserLang(this.options.Regex, 'gFlagRegex');
       let match = log.match(gFlagRegex);
       if (match)
         this.AddFlag(match[2], match[3], match[1], match[4]);
@@ -2726,11 +2737,11 @@ class EurekaTracker {
       if (!this.zoneInfo.hasTracker)
         return;
 
-      let gTrackerRegex = this.TransByParserLang(this.options.Regex, 'gTrackerRegex');
+      const gTrackerRegex = this.TransByParserLang(this.options.Regex, 'gTrackerRegex');
       match = log.match(gTrackerRegex);
       if (match)
         this.currentTracker = match[1];
-      let gImportRegex = this.TransByParserLang(this.options.Regex, 'gImportRegex');
+      const gImportRegex = this.TransByParserLang(this.options.Regex, 'gImportRegex');
       match = log.match(gImportRegex);
       if (match) {
         this.ImportFromTracker(match[2]);
@@ -2750,8 +2761,8 @@ class EurekaTracker {
 
     switch (e.detail.eventType) {
     case 'add':
-      for (let key of this.nmKeys) {
-        let nm = this.nms[key];
+      for (const key of this.nmKeys) {
+        const nm = this.nms[key];
         if (e.detail.fateID === nm.fateID) {
           this.OnFatePop(nm);
           return;
@@ -2759,8 +2770,8 @@ class EurekaTracker {
       }
       break;
     case 'remove':
-      for (let key of this.nmKeys) {
-        let nm = this.nms[key];
+      for (const key of this.nmKeys) {
+        const nm = this.nms[key];
         if (e.detail.fateID === nm.fateID) {
           this.OnFateKill(nm);
           return;
@@ -2768,8 +2779,8 @@ class EurekaTracker {
       }
       break;
     case 'update':
-      for (let key of this.nmKeys) {
-        let nm = this.nms[key];
+      for (const key of this.nmKeys) {
+        const nm = this.nms[key];
         if (e.detail.fateID === nm.fateID) {
           this.OnFateUpdate(nm, e.detail.progress);
           return;
@@ -2792,7 +2803,7 @@ class EurekaTracker {
 
     let nm = null;
     for (const key of this.nmKeys) {
-      if (e.detail.data.ceKey == this.nms[key].ceKey) {
+      if (e.detail.data.ceKey === this.nms[key].ceKey) {
         nm = this.nms[key];
         break;
       }
@@ -2815,9 +2826,9 @@ class EurekaTracker {
   }
 
   SimplifyText(beforeText, afterText) {
-    let str = (beforeText + ' ' + afterText).toLowerCase();
+    const str = (beforeText + ' ' + afterText).toLowerCase();
 
-    let dict = {
+    const dict = {
       'train': [
         'train',
         'tren',
@@ -2851,11 +2862,11 @@ class EurekaTracker {
         '狗狗',
       ],
     };
-    let keys = Object.keys(dict);
+    const keys = Object.keys(dict);
     for (let i = 0; i < keys.length; ++i) {
-      let key = keys[i];
+      const key = keys[i];
       for (let j = 0; j < dict[key].length; ++j) {
-        let m = dict[key][j];
+        const m = dict[key][j];
         if (str.includes(m))
           return key;
       }
@@ -2863,32 +2874,32 @@ class EurekaTracker {
   }
 
   AddFlag(x, y, beforeText, afterText) {
-    let simplify = this.SimplifyText(beforeText, afterText);
+    const simplify = this.SimplifyText(beforeText, afterText);
     if (simplify) {
       beforeText = simplify;
       afterText = '';
     }
     beforeText = beforeText.replace(/(?: at|@)$/, '');
 
-    let container = document.getElementById('flag-labels');
-    let label = document.createElement('div');
+    const container = document.getElementById('flag-labels');
+    const label = document.createElement('div');
     label.classList.add('flag');
     this.SetStyleFromMap(label.style, x, y);
 
-    let icon = document.createElement('span');
+    const icon = document.createElement('span');
     icon.classList.add('flag-icon');
-    let name = document.createElement('span');
+    const name = document.createElement('span');
     name.classList.add('flag-name');
     name.classList.add('text');
     name.innerText = beforeText;
-    if (beforeText != '' && afterText != '')
+    if (beforeText !== '' && afterText !== '')
       name.innerText += ' ';
     name.innerText += afterText;
     label.appendChild(icon);
     label.appendChild(name);
     container.appendChild(label);
 
-    window.setTimeout(function() {
+    window.setTimeout(() => {
       // Changing zones can also orphan all the labels.
       if (label.parentElement === container)
         container.removeChild(label);
@@ -2902,20 +2913,20 @@ class EurekaTracker {
   }
 }
 
-UserConfig.getUserConfigLocation('eureka', Options, function(e) {
-  addOverlayListener('onPlayerChangedEvent', function(e) {
+UserConfig.getUserConfigLocation('eureka', Options, (e) => {
+  addOverlayListener('onPlayerChangedEvent', (e) => {
     gTracker.OnPlayerChange(e);
   });
-  addOverlayListener('ChangeZone', function(e) {
+  addOverlayListener('ChangeZone', (e) => {
     gTracker.OnChangeZone(e);
   });
-  addOverlayListener('onLogEvent', function(e) {
+  addOverlayListener('onLogEvent', (e) => {
     gTracker.OnLog(e);
   });
-  addOverlayListener('onFateEvent', function(e) {
+  addOverlayListener('onFateEvent', (e) => {
     gTracker.OnFate(e);
   });
-  addOverlayListener('onCEEvent', function(e) {
+  addOverlayListener('onCEEvent', (e) => {
     gTracker.OnCE(e);
   });
 

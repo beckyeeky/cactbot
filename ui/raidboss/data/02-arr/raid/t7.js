@@ -1,6 +1,10 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import Regexes from '../../../../../resources/regexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.TheSecondCoilOfBahamutTurn2,
   timelineFile: 't7.txt',
   triggers: [
@@ -22,6 +26,7 @@
           fr: 'Interrompez Voix du bélier',
           ja: '沈黙: 氷結の咆哮',
           cn: '沉默寒冰咆哮',
+          ko: '빙결의 포효 침묵시키기',
         },
       },
     },
@@ -43,6 +48,7 @@
           fr: 'Interrompez Voix du dragon',
           ja: '沈黙: 雷電の咆哮',
           cn: '沉默雷电咆哮',
+          ko: '뇌전의 포효 침묵시키기',
         },
       },
     },
@@ -54,9 +60,7 @@
       netRegexJa: NetRegexes.ability({ id: '7A8', source: 'メリュジーヌ' }),
       netRegexCn: NetRegexes.ability({ id: '7A8', source: '美瑠姬奴' }),
       netRegexKo: NetRegexes.ability({ id: '7A8', source: '멜뤼진' }),
-      condition: function(data, matches) {
-        return data.me == matches.target && data.job == 'BLU';
-      },
+      condition: (data, matches) => data.me === matches.target && data.job === 'BLU',
       delaySeconds: 6,
       suppressSeconds: 5,
       infoText: (data, _, output) => output.text(),
@@ -67,6 +71,7 @@
           fr: 'Gifle caudale dans 10s',
           ja: 'まもなくテールスラップ',
           cn: '10秒内死刑',
+          ko: '10초 안에 꼬리치기',
         },
       },
     },
@@ -86,6 +91,7 @@
           fr: 'Add Renaud',
           ja: '雑魚：ルノー',
           cn: '雷诺出现',
+          ko: '르노 쫄',
         },
       },
     },
@@ -93,9 +99,7 @@
       id: 'T7 Cursed Voice',
       netRegex: NetRegexes.gainsEffect({ effectId: '1C3' }),
       condition: Conditions.targetIsYou(),
-      delaySeconds: function(data, matches) {
-        return matches.duration - 3;
-      },
+      delaySeconds: (data, matches) => matches.duration - 3,
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -104,6 +108,7 @@
           fr: 'Voix du maléfice bientôt',
           ja: 'まもなく呪詛の声',
           cn: '诅咒之声即将判定',
+          ko: '곧 저주의 목소리',
         },
       },
     },
@@ -111,27 +116,31 @@
       id: 'T7 Cursed Shriek',
       netRegex: NetRegexes.gainsEffect({ effectId: '1C4' }),
       durationSeconds: 3,
-      alarmText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: 'Shriek on YOU',
-            de: 'Schrei Der Verwünschung auf DIR',
-            fr: 'Cri du maléfice sur VOUS',
-            ja: '自分に呪詛の叫声',
-            cn: '诅咒之嚎点名',
-          };
-        }
+      alarmText: (data, matches, output) => {
+        if (data.me === matches.target)
+          return output.shriekOnYou();
       },
-      infoText: function(data, matches) {
-        if (data.me != matches.target) {
-          return {
-            en: 'Shriek on ' + data.ShortName(matches.target),
-            de: 'Schrei Der Verwünschung auf ' + data.ShortName(matches.target),
-            fr: 'Cri du maléfice sur ' + data.ShortName(matches.target),
-            ja: data.ShortName(matches.target) + 'に呪詛の叫声',
-            cn: '诅咒之嚎点' + data.ShortName(matches.target),
-          };
-        }
+      infoText: (data, matches, output) => {
+        if (data.me !== matches.target)
+          return output.shriekOn({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        shriekOn: {
+          en: 'Shriek on ${player}',
+          de: 'Schrei Der Verwünschung auf ${player}',
+          fr: 'Cri du maléfice sur ${player}',
+          ja: '${player}に呪詛の叫声',
+          cn: '诅咒之嚎点${player}',
+          ko: '"${player}" 저주의 외침 대상',
+        },
+        shriekOnYou: {
+          en: 'Shriek on YOU',
+          de: 'Schrei Der Verwünschung auf DIR',
+          fr: 'Cri du maléfice sur VOUS',
+          ja: '自分に呪詛の叫声',
+          cn: '诅咒之嚎点名',
+          ko: '저주의 외침 대상자',
+        },
       },
     },
     {
@@ -139,23 +148,29 @@
       netRegex: NetRegexes.gainsEffect({ effectId: '1C4' }),
       delaySeconds: 7,
       durationSeconds: 3,
-      infoText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: 'Shriek Soon',
-            de: 'Schrei Der Verwünschung bald',
-            fr: 'Cri du maléfice bientôt',
-            ja: 'まもなく呪詛の叫声',
-            cn: '诅咒之嚎即将判定',
-          };
-        }
-        return {
+      infoText: (data, matches, output) => {
+        if (data.me === matches.target)
+          return output.shriekSoon();
+
+        return output.dodgeShriek();
+      },
+      outputStrings: {
+        shriekSoon: {
+          en: 'Shriek Soon',
+          de: 'Schrei Der Verwünschung bald',
+          fr: 'Cri du maléfice bientôt',
+          ja: 'まもなく呪詛の叫声',
+          cn: '诅咒之嚎即将判定',
+          ko: '곧 저주의 외침 발동',
+        },
+        dodgeShriek: {
           en: 'Dodge Shriek',
           de: 'Schrei Der Verwünschung ausweichen',
           fr: 'Esquivez le cri maudit',
           ja: '呪詛の叫声に避け',
           cn: '躲避诅咒之嚎',
-        };
+          ko: '저주의 외침 피하기',
+        },
       },
     },
     {
@@ -224,6 +239,7 @@
           fr: 'Queue venimeuse',
           ja: 'ベノモステール',
           cn: '猛毒之尾',
+          ko: '맹독 꼬리',
         },
       },
     },
@@ -345,4 +361,4 @@
       },
     },
   ],
-}];
+};

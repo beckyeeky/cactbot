@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.EdensGateInundationSavage,
   timelineFile: 'e3s.txt',
   timelineTriggers: [
@@ -25,7 +28,7 @@
       regex: /Spilling Wave/,
       beforeSeconds: 3,
       condition: function(data) {
-        return data.role == 'tank';
+        return data.role === 'tank';
       },
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -49,9 +52,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3FDC', source: 'リヴァイアサン', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3FDC', source: '利维亚桑', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3FDC', source: '리바이어선', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -62,9 +63,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3FDE', source: 'リヴァイアサン', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3FDE', source: '利维亚桑', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3FDE', source: '리바이어선', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -105,39 +104,42 @@
       id: 'E3S Rip Current',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
       suppressSeconds: 10,
-      alarmText: function(data, matches) {
-        if (matches.target != data.me && data.role == 'tank') {
-          return {
-            en: 'Tank Swap!',
-            de: 'Tankwechsel!',
-            fr: 'Tank swap !',
-            ja: 'スイッチ',
-            cn: '换T！',
-            ko: '탱 교대!',
-          };
-        }
+      alarmText: function(data, matches, output) {
+        if (matches.target !== data.me && data.role === 'tank')
+          return output.tankSwap();
       },
-      alertText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: 'Tank Buster on YOU',
-            de: 'Tank buster auf DIR',
-            fr: 'Tank buster sur VOUS',
-            ja: '自分にタンクバスター',
-            cn: '死刑点名',
-            ko: '탱버 대상자',
-          };
-        }
-        if (data.role == 'healer') {
-          return {
-            en: 'Tank Busters',
-            de: 'Tank buster',
-            fr: 'Tank buster',
-            ja: 'タンクバスター',
-            cn: '死刑',
-            ko: '탱버',
-          };
-        }
+      alertText: function(data, matches, output) {
+        if (data.me === matches.target)
+          return output.tankBusterOnYou();
+
+        if (data.role === 'healer')
+          return output.tankBusters();
+      },
+      outputStrings: {
+        tankBusterOnYou: {
+          en: 'Tank Buster on YOU',
+          de: 'Tank buster auf DIR',
+          fr: 'Tank buster sur VOUS',
+          ja: '自分にタンクバスター',
+          cn: '死刑点名',
+          ko: '탱버 대상자',
+        },
+        tankBusters: {
+          en: 'Tank Busters',
+          de: 'Tank buster',
+          fr: 'Tank buster',
+          ja: 'タンクバスター',
+          cn: '死刑',
+          ko: '탱버',
+        },
+        tankSwap: {
+          en: 'Tank Swap!',
+          de: 'Tankwechsel!',
+          fr: 'Tank swap !',
+          ja: 'スイッチ',
+          cn: '换T！',
+          ko: '탱 교대!',
+        },
       },
     },
     {
@@ -173,9 +175,7 @@
     {
       id: 'E3S Flare',
       netRegex: NetRegexes.headMarker({ id: '0057' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -258,25 +258,29 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3FE4', source: '利维亚桑', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3FE4', source: '리바이어선', capture: false }),
       delaySeconds: 2.9,
-      infoText: function(data) {
-        if (data.role == 'tank') {
-          return {
-            en: 'Flare To Outside Corner',
-            de: 'Flare in die äuseren Ecken',
-            fr: 'Brasier dans un coin extérieur',
-            ja: '隅にフレア',
-            cn: '外侧角落放核爆',
-            ko: '플레어 양옆 뒤로 유도',
-          };
-        }
-        return {
+      infoText: function(data, _, output) {
+        if (data.role === 'tank')
+          return output.flareToOutsideCorner();
+
+        return output.stackOutsideAvoidFlares();
+      },
+      outputStrings: {
+        flareToOutsideCorner: {
+          en: 'Flare To Outside Corner',
+          de: 'Flare in die äuseren Ecken',
+          fr: 'Brasier dans un coin extérieur',
+          ja: '隅にフレア',
+          cn: '外侧角落放核爆',
+          ko: '플레어 양옆 뒤로 유도',
+        },
+        stackOutsideAvoidFlares: {
           en: 'Stack Outside, Avoid Flares',
           de: 'Auserhalb sammeln, Flares vermeiden',
           fr: 'Packez-vous à l\'extérieur, évitez les brasiers',
           ja: '前で集合',
           cn: '外侧集合躲避核爆',
           ko: '양옆 앞으로 모이고, 플레어 피하기',
-        };
+        },
       },
     },
     {
@@ -308,7 +312,7 @@
       netRegexCn: NetRegexes.tether({ id: '005A', target: '利维亚桑' }),
       netRegexKo: NetRegexes.tether({ id: '005A', target: '리바이어선' }),
       condition: function(data, matches) {
-        return data.me == matches.source;
+        return data.me === matches.source;
       },
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -344,7 +348,7 @@
       netRegexCn: NetRegexes.tether({ id: '005A', target: '利维亚桑', capture: false }),
       netRegexKo: NetRegexes.tether({ id: '005A', target: '리바이어선', capture: false }),
       condition: function(data) {
-        return data.vent.length == 2 && !data.vent.includes(data.me) && data.role != 'tank';
+        return data.vent.length === 2 && !data.vent.includes(data.me) && data.role !== 'tank';
       },
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -361,9 +365,7 @@
     {
       id: 'E3S Surging Waters',
       netRegex: NetRegexes.gainsEffect({ effectId: '73A' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -381,53 +383,53 @@
       // TODO maybe tell other people about stacking for knockbacks
       id: 'E3S Sundering Waters',
       netRegex: NetRegexes.gainsEffect({ effectId: '73E' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
+      condition: Conditions.targetIsYou(),
+      alertText: function(data, matches, output) {
+        const seconds = matches.duration;
+        if (seconds <= 8)
+          return output.knockbackOnYou();
       },
-      alertText: function(data, matches) {
-        let seconds = matches.duration;
-        if (seconds <= 8) {
-          return {
-            en: 'Knockback on YOU',
-            de: 'Knockback auf Dir',
-            fr: 'Poussée sur VOUS',
-            ja: '自分にノックバック',
-            cn: '击退点名',
-            ko: '넉백 대상자',
-          };
-        }
-      },
-      infoText: function(data, matches) {
-        let seconds = matches.duration;
+      infoText: function(data, matches, output) {
+        const seconds = matches.duration;
         if (seconds <= 8)
           return;
-        if (seconds <= 21) {
-          return {
-            en: 'Late First Knockback',
-            de: 'Erster reinigender Knockback',
-            fr: 'Poussée tardive 1',
-            ja: '遅ノックバック1',
-            cn: '迟击退点名 #1',
-            ko: '늦은 넉백 대상자 1',
-          };
-        }
-        return {
+        if (seconds <= 21)
+          return output.lateFirstKnockback();
+
+        return output.lateSecondKnockback();
+      },
+      outputStrings: {
+        lateFirstKnockback: {
+          en: 'Late First Knockback',
+          de: 'Erster reinigender Knockback',
+          fr: 'Poussée tardive 1',
+          ja: '遅ノックバック1',
+          cn: '迟击退点名 #1',
+          ko: '늦은 넉백 대상자 1',
+        },
+        lateSecondKnockback: {
           en: 'Late Second Knockback',
           de: 'Zweiter reinigender Knockback',
           fr: 'Poussée tardive 2',
           ja: '遅ノックバック2',
           cn: '迟击退点名 #2',
           ko: '늦은 넉백 대상자 2',
-        };
+        },
+        knockbackOnYou: {
+          en: 'Knockback on YOU',
+          de: 'Knockback auf Dir',
+          fr: 'Poussée sur VOUS',
+          ja: '自分にノックバック',
+          cn: '击退点名',
+          ko: '넉백 대상자',
+        },
       },
     },
     {
       // 29 seconds
       id: 'E3S Scouring Waters Defamation',
       netRegex: NetRegexes.gainsEffect({ effectId: '765' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -443,9 +445,7 @@
     {
       id: 'E3S Scouring Waters Avoid Knockback',
       netRegex: NetRegexes.gainsEffect({ effectId: '765' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       delaySeconds: 22,
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -466,7 +466,7 @@
         // first tsunami stack is 25 seconds
         // second tsunami stack is 13 seconds
         // Everybody is in first stack, but tanks not in the second.
-        return parseFloat(matches.duration) > 15 || data.role != 'tank';
+        return parseFloat(matches.duration) > 15 || data.role !== 'tank';
       },
       delaySeconds: function(data, matches) {
         return parseFloat(matches.duration) - 3;
@@ -477,9 +477,7 @@
     {
       id: 'E3S Scouring Waters',
       netRegex: NetRegexes.gainsEffect({ effectId: '765' }),
-      condition: function(data, matches) {
-        return data.me != matches.target;
-      },
+      condition: Conditions.targetIsNotYou(),
       delaySeconds: 25,
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -496,9 +494,7 @@
     {
       id: 'E3S Sweeping Waters Gain',
       netRegex: NetRegexes.gainsEffect({ effectId: '73F' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -515,7 +511,7 @@
       id: 'E3S Sweeping Waters',
       netRegex: NetRegexes.gainsEffect({ effectId: '73F' }),
       condition: function(data, matches) {
-        return data.me == matches.target || data.role == 'tank';
+        return data.me === matches.target || data.role === 'tank';
       },
       delaySeconds: 13,
       suppressSeconds: 1,
@@ -833,4 +829,4 @@
       },
     },
   ],
-}];
+};

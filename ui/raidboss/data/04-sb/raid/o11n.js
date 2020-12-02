@@ -1,7 +1,9 @@
-'use strict';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // O11N - Alphascape 3.0
-[{
+export default {
   zoneId: ZoneId.AlphascapeV30,
   timelineFile: 'o11n.txt',
   timelineTriggers: [
@@ -10,7 +12,7 @@
       regex: /Blaster/,
       beforeSeconds: 3,
       condition: function(data) {
-        return data.role == 'tank';
+        return data.role === 'tank';
       },
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -99,25 +101,29 @@
       condition: function(data) {
         return data.lastWasStarboard !== undefined;
       },
-      alertText: function(data) {
-        if (data.lastWasStarboard) {
-          return {
-            en: 'Move (Left)',
-            de: 'Bewegen (Links)',
-            fr: 'Bougez (Gauche)',
-            ja: '動け (左へ)',
-            cn: '去左边',
-            ko: '이동 (왼쪽)',
-          };
-        }
-        return {
+      alertText: function(data, _, output) {
+        if (data.lastWasStarboard)
+          return output.moveLeft();
+
+        return output.stayLeft();
+      },
+      outputStrings: {
+        moveLeft: {
+          en: 'Move (Left)',
+          de: 'Bewegen (Links)',
+          fr: 'Bougez (Gauche)',
+          ja: '動け (左へ)',
+          cn: '去左边',
+          ko: '이동 (왼쪽)',
+        },
+        stayLeft: {
           en: 'Stay (Left)',
           de: 'Stehenbleiben (Links)',
           fr: 'Restez ici (Gauche)',
           ja: 'そのまま (左に)',
           cn: '呆在左边',
           ko: '멈추기 (왼쪽)',
-        };
+        },
       },
     },
     {
@@ -131,25 +137,29 @@
       condition: function(data) {
         return data.lastWasStarboard !== undefined;
       },
-      alertText: function(data) {
-        if (data.lastWasStarboard) {
-          return {
-            en: 'Stay (Right)',
-            de: 'Stehenbleiben (Rechts)',
-            fr: 'Restez ici (Droite)',
-            ja: 'そのまま (右に)',
-            cn: '呆在右边',
-            ko: '멈추기 (오른쪽)',
-          };
-        }
-        return {
+      alertText: function(data, _, output) {
+        if (data.lastWasStarboard)
+          return output.stayRight();
+
+        return output.moveRight();
+      },
+      outputStrings: {
+        stayRight: {
+          en: 'Stay (Right)',
+          de: 'Stehenbleiben (Rechts)',
+          fr: 'Restez ici (Droite)',
+          ja: 'そのまま (右に)',
+          cn: '呆在右边',
+          ko: '멈추기 (오른쪽)',
+        },
+        moveRight: {
           en: 'Move (Right)',
           de: 'Bewegen (Rechts)',
           fr: 'Bougez (droite)',
           ja: '動け (右へ)',
           cn: '去右边',
           ko: '이동 (오른쪽)',
-        };
+        },
       },
     },
   ],
@@ -285,4 +295,4 @@
       },
     },
   ],
-}];
+};

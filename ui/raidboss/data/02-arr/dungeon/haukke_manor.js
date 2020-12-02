@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.HaukkeManor,
   triggers: [
     {
@@ -77,6 +80,7 @@
           fr: 'Eteignez les lampes',
           ja: '消灯する',
           cn: '关灯',
+          ko: '등불 끄기',
         },
       },
     },
@@ -102,6 +106,7 @@
           fr: 'Tuez la sentinelle',
           ja: '守衛を倒す',
           cn: '击杀守卫',
+          ko: '경비원 죽이기',
         },
       },
     },
@@ -158,4 +163,4 @@
       },
     },
   ],
-}];
+};

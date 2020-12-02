@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.CinderDrift,
   timelineFile: 'ruby_weapon.txt',
   timelineTriggers: [
@@ -46,9 +49,7 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'ルビーウェポン', id: '4AA8', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '红宝石神兵', id: '4AA8', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '루비 웨폰', id: '4AA8', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -60,7 +61,7 @@
       netRegexCn: NetRegexes.startsUsing({ source: '红宝石神兵', id: '4AC7' }),
       netRegexKo: NetRegexes.startsUsing({ source: '루비 웨폰', id: '4AC7' }),
       condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer';
+        return data.role === 'tank' || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -190,9 +191,9 @@
       netRegexCn: NetRegexes.startsUsing({ source: '奈尔的幻影', id: '4ABF' }),
       netRegexKo: NetRegexes.startsUsing({ source: '넬의 환영', id: '4ABF' }),
       condition: function(data, matches) {
-        if (data.role != 'healer' || data.role != 'tank')
+        if (data.role !== 'healer' || data.role !== 'tank')
           return false;
-        if (data.colors[data.me] == data.colors[matches.target])
+        if (data.colors[data.me] === data.colors[matches.target])
           return true;
       },
       suppressSeconds: 1,
@@ -222,9 +223,7 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'ルビーウェポン', id: '4AC8', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '红宝石神兵', id: '4AC8', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '루비 웨폰', id: '4AC8', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
   ],
@@ -410,4 +409,4 @@
       },
     },
   ],
-}];
+};

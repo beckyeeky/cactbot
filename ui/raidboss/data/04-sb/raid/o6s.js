@@ -1,7 +1,10 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // O6S - Sigmascape 2.0 Savage
-[{
+export default {
   zoneId: ZoneId.SigmascapeV20Savage,
   timelineFile: 'o6s.txt',
   triggers: [
@@ -24,7 +27,7 @@
       netRegexCn: NetRegexes.addedCombatant({ name: '暴风领域', capture: false }),
       netRegexKo: NetRegexes.addedCombatant({ name: '폭풍 영역', capture: false }),
       condition: function(data) {
-        return data.role == 'tank';
+        return data.role === 'tank';
       },
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -41,17 +44,17 @@
     {
       id: 'O6S Demonic Stone',
       netRegex: NetRegexes.headMarker({ id: '0001' }),
-      alarmText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: 'Demonic Stone on YOU',
-            de: 'Dämonischer Stein auf DIR',
-            fr: 'Pierre démoniaque sur VOUS',
-            ko: '악령의 돌 장판 대상자',
-            ja: '自分にデモニックストーン',
-            cn: '引导aoe',
-          };
-        }
+      condition: Conditions.targetIsYou(),
+      alarmText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Demonic Stone on YOU',
+          de: 'Dämonischer Stein auf DIR',
+          fr: 'Pierre démoniaque sur VOUS',
+          ko: '악령의 돌 장판 대상자',
+          ja: '自分にデモニックストーン',
+          cn: '引导aoe',
+        },
       },
     },
     {
@@ -64,9 +67,7 @@
     {
       id: 'O6S Last Kiss Marker',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -85,7 +86,7 @@
       condition: function(data, matches) {
         // The person who gets the marker briefly gets the effect, so
         // don't tell them twice.
-        return data.me == matches.target && data.lastKiss != data.me;
+        return data.me === matches.target && data.lastKiss !== data.me;
       },
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
@@ -263,12 +264,12 @@
     },
     {
       'locale': 'ko',
-      'missingTranslations': true,
       'replaceSync': {
         'Demon Chadarnook': '차다르누크 악령',
         'Easterly': '극풍',
         'Goddess Chadarnook': '차다르누크 여신',
         'Haunt': '사념체',
+        'I have claimed the girl in the picture!': '우후후후…… 그림 속 여자는 내가 데려가마……',
         'Portrayal of Earth': '땅의 그림',
         'Portrayal of Fire': '불의 그림',
         'Portrayal of Water': '물의 그림',
@@ -285,6 +286,7 @@
         'Demonic Wave': '악령의 물결',
         'Divine Lure': '여신의 유혹',
         'Earthquake': '대지진',
+        'Easterlies': '극풍',
         'Featherlance': '깃털창',
         'Flash Fire': '불바다',
         'Flash Flood': '급류',
@@ -301,4 +303,4 @@
       },
     },
   ],
-}];
+};

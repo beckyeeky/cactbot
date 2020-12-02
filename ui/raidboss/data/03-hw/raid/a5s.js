@@ -1,4 +1,7 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // TODO: do the gobcut and gobstraight really alternate?
 // if so, then maybe we could call out which was coming.
@@ -12,7 +15,7 @@
 // TODO: is it worth calling out a safe spot for the second boost?
 // There's some notes below, but good words for directions are hard.
 
-let bombLocation = (matches) => {
+const bombLocation = (matches) => {
   // x = -15, -5, +5, +15 (east to west)
   // y = -205, -195, -185, -175 (north to south)
   return {
@@ -21,7 +24,7 @@ let bombLocation = (matches) => {
   };
 };
 
-[{
+export default {
   zoneId: ZoneId.AlexanderTheFistOfTheSonSavage,
   timelineFile: 'a5s.txt',
   timelineTriggers: [
@@ -102,14 +105,22 @@ let bombLocation = (matches) => {
     {
       id: 'A5S Concussion',
       netRegex: NetRegexes.gainsEffect({ effectId: '3E4' }),
-      response: function(data, matches) {
-        if (matches.target === data.me)
-          return;
-        if (data.role === 'tank')
-          return Responses.tankSwap('alarm');
-        if (data.job === 'BLU')
-          return Responses.tankSwap('info');
+      condition: (data, matches) => {
+        if (data.me !== matches.target)
+          return false;
+        return data.role === 'tank';
       },
+      response: Responses.tankBusterSwap('alarm'),
+    },
+    {
+      id: 'A5S Concussion BLU',
+      netRegex: NetRegexes.gainsEffect({ effectId: '3E4' }),
+      condition: (data, matches) => {
+        if (data.me !== matches.target)
+          return false;
+        return data.role !== 'tank' && data.job === 'BLU';
+      },
+      response: Responses.tankBusterSwap('info'),
     },
     {
       id: 'A5S Bomb Direction',
@@ -124,23 +135,27 @@ let bombLocation = (matches) => {
         data.bombCount++;
       },
       // We could give directions here, but "into / opposite spikey" is pretty succinct.
-      infoText: function(data) {
-        if (data.bombCount == 1) {
-          return {
-            en: 'Knock Bombs Into Spikey',
-            de: 'Bombe in die Spike-Bombe stoßen',
-            fr: 'Poussez les bombes dans la bombe à pointe',
-            ja: 'トゲ爆弾を飛ばす',
-            ko: '지뢰쪽으로 폭탄 밀기',
-          };
-        }
-        return {
+      infoText: function(data, _, output) {
+        if (data.bombCount === 1)
+          return output.knockBombsIntoSpikey();
+
+        return output.knockBombsOppositeSpikey();
+      },
+      outputStrings: {
+        knockBombsIntoSpikey: {
+          en: 'Knock Bombs Into Spikey',
+          de: 'Bombe in die Spike-Bombe stoßen',
+          fr: 'Poussez les bombes dans la bombe à pointe',
+          ja: 'トゲ爆弾を飛ばす',
+          ko: '지뢰쪽으로 폭탄 밀기',
+        },
+        knockBombsOppositeSpikey: {
           en: 'Knock Bombs Opposite Spikey',
           de: 'Bombe gegnüber der Spike-Bombe stoßen',
           fr: 'Poussez les bombes à l\'opposé de la bombe à pointe',
           ja: 'トゲ爆弾を対角に飛ばす',
           ko: '지뢰 반대쪽으로 폭탄 밀기',
-        };
+        },
       },
     },
     {
@@ -169,41 +184,17 @@ let bombLocation = (matches) => {
         data.boostBombs = data.boostBombs || [];
         data.boostBombs.push(bombLocation(matches));
       },
-      alertText: function(data) {
-        if (data.boostCount == 1) {
-          if (data.boostBombs.length != 1)
+      alertText: function(data, _, output) {
+        if (data.boostCount === 1) {
+          if (data.boostBombs.length !== 1)
             return;
           // index 0 = NW, 3 = NE, 12 = SW, 15 = SE
-          let index = data.boostBombs[0].x + data.boostBombs[0].y * 4;
+          const index = data.boostBombs[0].x + data.boostBombs[0].y * 4;
           return {
-            0: {
-              en: 'NW first',
-              de: 'NW zuerst',
-              fr: 'NO en premier',
-              ja: 'まずは北西',
-              ko: '북서쪽 먼저',
-            },
-            3: {
-              en: 'NE first',
-              de: 'NO zuerst',
-              fr: 'NE en premier',
-              ja: 'まずは北東',
-              ko: '북동쪽 먼저',
-            },
-            12: {
-              en: 'SW first',
-              de: 'SW zuerst',
-              fr: 'SO en premier',
-              ja: 'まずは南西',
-              ko: '남서쪽 먼저',
-            },
-            15: {
-              en: 'SE first',
-              de: 'SO zuerst',
-              fr: 'SE en premier',
-              ja: 'まずは南東',
-              ko: '남동쪽 먼저',
-            },
+            0: output.northwestFirst(),
+            3: output.northeastFirst(),
+            12: output.southwestFirst(),
+            15: output.southeastFirst(),
           }[index];
         }
 
@@ -211,6 +202,36 @@ let bombLocation = (matches) => {
         // TODO: This would be trivial to find the safe spot,
         // buuuuut this is hard to find good words for 16 spots.
         // Do you call it "NNW" or "East of NW But Also Outside" @_@
+      },
+      outputStrings: {
+        northwestFirst: {
+          en: 'NW first',
+          de: 'NW zuerst',
+          fr: 'NO en premier',
+          ja: 'まずは北西',
+          ko: '북서쪽 먼저',
+        },
+        northeastFirst: {
+          en: 'NE first',
+          de: 'NO zuerst',
+          fr: 'NE en premier',
+          ja: 'まずは北東',
+          ko: '북동쪽 먼저',
+        },
+        southwestFirst: {
+          en: 'SW first',
+          de: 'SW zuerst',
+          fr: 'SO en premier',
+          ja: 'まずは南西',
+          ko: '남서쪽 먼저',
+        },
+        southeastFirst: {
+          en: 'SE first',
+          de: 'SO zuerst',
+          fr: 'SE en premier',
+          ja: 'まずは南東',
+          ko: '남동쪽 먼저',
+        },
       },
     },
     {
@@ -234,14 +255,17 @@ let bombLocation = (matches) => {
       condition: function(data) {
         return data.role === 'healer';
       },
-      infoText: function(data, matches) {
-        return {
-          en: 'Shield ' + data.ShortName(matches.target),
-          de: 'Schild ' + data.ShortName(matches.target),
-          fr: 'Bouclier sur ' + data.ShortName(matches.target),
-          ja: data.ShortName(matches.target) + 'にバリア',
-          ko: '"' + data.ShortName(matches.target) + '" 에게 보호막',
-        };
+      infoText: function(data, matches, output) {
+        return output.text({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        text: {
+          en: 'Shield ${player}',
+          de: 'Schild ${player}',
+          fr: 'Bouclier sur ${player}',
+          ja: '${player}にバリア',
+          ko: '"${player}" 에게 보호막',
+        },
       },
     },
     {
@@ -529,7 +553,6 @@ let bombLocation = (matches) => {
     },
     {
       'locale': 'ko',
-      'missingTranslations': true,
       'replaceSync': {
         '(?<!Hummel)Faust': '파우스트',
         '(?<!Smart)Bomb': '폭탄',
@@ -537,6 +560,7 @@ let bombLocation = (matches) => {
         'Gobbledygroper': '고블키마이라',
         'Ratfinx Twinkledinks': '재주꾼 랫핑크스',
         'Smartbomb': '초고성능 폭탄',
+        'The Clevering': '고블린 과학 연구실',
       },
       'replaceText': {
         '--big--': '--커짐--',
@@ -574,4 +598,4 @@ let bombLocation = (matches) => {
       },
     },
   ],
-}];
+};

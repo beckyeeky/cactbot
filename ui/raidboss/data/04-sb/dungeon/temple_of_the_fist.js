@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.TheTempleOfTheFist,
   timelineFile: 'temple_of_the_fist.txt',
   timelineTriggers: [
@@ -9,7 +12,7 @@
       regex: /Pounce/,
       beforeSeconds: 5,
       condition: function(data) {
-        return data.role == 'healer' || data.role == 'tank';
+        return data.role === 'healer' || data.role === 'tank';
       },
       response: Responses.tankBuster(),
     },
@@ -17,9 +20,7 @@
       id: 'Temple Cardinal Shift',
       regex: /Cardinal Shift/,
       beforeSeconds: 5,
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
   ],
@@ -32,9 +33,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '1FD6', source: 'クァール・シュルティ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '1FD6', source: '凶豹所闻', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '1FD6', source: '커얼 슈루티', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -45,9 +44,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '1FD6', source: 'クァール・スムリティ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '1FD6', source: '凶豹所忆', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '1FD6', source: '커얼 스므리티', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -63,9 +60,7 @@
     {
       id: 'Temple Moonseal',
       netRegex: NetRegexes.headMarker({ id: '0059' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -81,9 +76,7 @@
     {
       id: 'Temple Sunseal',
       netRegex: NetRegexes.headMarker({ id: '0058' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -144,9 +137,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '1FE7', source: '双豹のイヴォン', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '1FE7', source: '双豹伊沃恩', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '1FE7', source: '쌍표범 이본', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -158,17 +149,20 @@
       netRegexCn: NetRegexes.startsUsing({ id: '1FE6', source: '双豹伊沃恩' }),
       netRegexKo: NetRegexes.startsUsing({ id: '1FE6', source: '쌍표범 이본' }),
       condition: function(data) {
-        return data.role == 'healer';
+        return data.role === 'healer';
       },
-      infoText: function(data, matches) {
-        return {
-          en: 'Heal ' + data.ShortName(matches.target) + ' soon',
-          de: 'Bald ' + data.ShortName(matches.target) + ' heilen',
-          fr: 'Soignez ' + data.ShortName(matches.target) + ' bientôt',
-          ja: 'すぐに' + data.ShortName(matches.target) + 'にヒール',
-          cn: '马上奶 ' + data.ShortName(matches.target),
-          ko: '' + data.ShortName(matches.target) + '힐 준비',
-        };
+      infoText: function(data, matches, output) {
+        return output.text({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        text: {
+          en: 'Heal ${player} soon',
+          de: 'Bald ${player} heilen',
+          fr: 'Soignez ${player} bientôt',
+          ja: 'すぐに${player}にヒール',
+          cn: '马上奶 ${player}',
+          ko: '${player}힐 준비',
+        },
       },
     },
     {
@@ -401,4 +395,4 @@
       },
     },
   ],
-}];
+};

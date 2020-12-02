@@ -1,9 +1,12 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // Note: no warnings for Sweeping Flames, Tail Sweep, or Roar.
 
 // Rathalos Extreme
-[{
+export default {
   zoneId: ZoneId.TheGreatHuntExtreme,
   triggers: [
     {
@@ -69,9 +72,7 @@
     {
       id: 'RathEx Fire Breath',
       netRegex: NetRegexes.headMarker({ id: '0081' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -98,7 +99,7 @@
       netRegexCn: NetRegexes.addedCombatant({ name: '草原绵羊', capture: false }),
       netRegexKo: NetRegexes.addedCombatant({ name: '초원 양', capture: false }),
       condition: function(data) {
-        return data.role == 'tank';
+        return data.role === 'tank';
       },
       suppressSeconds: 5,
       response: Responses.killAdds(),
@@ -141,4 +142,4 @@
       },
     },
   ],
-}];
+};

@@ -1,7 +1,9 @@
-'use strict';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // O7N - Sigmascape 3.0 Normal
-[{
+export default {
   zoneId: ZoneId.SigmascapeV30,
   timelineFile: 'o7n.txt',
   triggers: [
@@ -235,4 +237,4 @@
       },
     },
   ],
-}];
+};

@@ -1,15 +1,16 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.AlexanderTheCuffOfTheSonSavage,
   timelineFile: 'a6s.txt',
   triggers: [
     {
       id: 'A6S Magic Vulnerability Gain',
       netRegex: NetRegexes.gainsEffect({ effectId: '292' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.magicVulnerability = true;
       },
@@ -17,9 +18,7 @@
     {
       id: 'A6S Magic Vulnerability Loss',
       netRegex: NetRegexes.losesEffect({ effectId: '292' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.magicVulnerability = false;
       },
@@ -45,25 +44,29 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'ブラスター', id: '15F7', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '爆破者', id: '15F7', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '폭파자', id: '15F7', capture: false }),
-      infoText: function(data) {
-        if (data.role == 'tank' && !data.magicVulnerability) {
-          return {
-            en: 'Get Mines',
-            de: 'Mienen nehmen',
-            fr: 'Prenez les mines',
-            ja: '地雷を踏む',
-            cn: '踩雷',
-            ko: '지뢰 밟기',
-          };
-        }
-        return {
+      infoText: function(data, _, output) {
+        if (data.role === 'tank' && !data.magicVulnerability)
+          return output.getMines();
+
+        return output.avoidMines();
+      },
+      outputStrings: {
+        getMines: {
+          en: 'Get Mines',
+          de: 'Mienen nehmen',
+          fr: 'Prenez les mines',
+          ja: '地雷を踏む',
+          cn: '踩雷',
+          ko: '지뢰 밟기',
+        },
+        avoidMines: {
           en: 'Avoid Mines',
           de: 'Mienen vermeiden',
           fr: 'Évitez les mines',
           ja: '地雷を踏まない',
           cn: '躲开地雷',
           ko: '지뢰 피하기',
-        };
+        },
       },
     },
     {
@@ -95,9 +98,7 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'ブラスター・ミラージュ', id: '15FC' }),
       netRegexCn: NetRegexes.startsUsing({ source: '爆破者幻象', id: '15FC' }),
       netRegexKo: NetRegexes.startsUsing({ source: '폭파자의 환영', id: '15FC' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -118,9 +119,7 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'ブラスター・ミラージュ', id: '15FD' }),
       netRegexCn: NetRegexes.startsUsing({ source: '爆破者幻象', id: '15FD' }),
       netRegexKo: NetRegexes.startsUsing({ source: '폭파자의 환영', id: '15FD' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -136,9 +135,7 @@
     {
       id: 'A6S Low Arithmeticks',
       netRegex: NetRegexes.gainsEffect({ effectId: '3FD' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       suppressSeconds: 10,
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -155,9 +152,7 @@
     {
       id: 'A6S High Arithmeticks',
       netRegex: NetRegexes.gainsEffect({ effectId: '3FE' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       suppressSeconds: 10,
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -210,17 +205,20 @@
     {
       id: 'A6S Enumeration',
       netRegex: NetRegexes.headMarker({ id: ['0040', '0041', '0042'] }),
-      infoText: function(data, matches) {
+      infoText: function(data, matches, output) {
         // 0040 = 2, 0041 = 3, 0042 = 4
-        let count = 2 + parseInt(matches.id, 16) - parseInt('0040', 16);
-        return {
-          en: data.ShortName(matches.target) + ': ' + count,
-          de: data.ShortName(matches.target) + ': ' + count,
-          fr: data.ShortName(matches.target) + ': ' + count,
-          ja: data.ShortName(matches.target) + ': ' + count,
-          cn: data.ShortName(matches.target) + '生命计算法: ' + count,
-          ko: data.ShortName(matches.target) + ': ' + count,
-        };
+        const count = 2 + parseInt(matches.id, 16) - parseInt('0040', 16);
+        return output.text({ player: data.ShortName(matches.target), count: count });
+      },
+      outputStrings: {
+        text: {
+          en: '${player}: ${count}',
+          de: '${player}: ${count}',
+          fr: '${player}: ${count}',
+          ja: '${player}: ${count}',
+          cn: '${player}生命计算法: ${count}',
+          ko: '${player}: ${count}',
+        },
       },
     },
     {
@@ -255,9 +253,7 @@
     {
       id: 'A6S Ice Marker',
       netRegex: NetRegexes.headMarker({ id: '0043' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -272,9 +268,7 @@
     {
       id: 'A6S Fire Beam',
       netRegex: NetRegexes.headMarker({ id: '0019' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       // TODO: maybe this should say "hit tornado / avoid ice" but that's wordy.
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -290,9 +284,7 @@
     {
       id: 'A6S Compressed Water Initial',
       netRegex: NetRegexes.gainsEffect({ effectId: '3FF' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       run: function(data) {
         data.haveWater = true;
@@ -311,9 +303,7 @@
     {
       id: 'A6S Compressed Water Lose',
       netRegex: NetRegexes.losesEffect({ effectId: '3FF' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.haveWater = false;
       },
@@ -321,32 +311,31 @@
     {
       id: 'A6S Compressed Water Explode',
       netRegex: NetRegexes.gainsEffect({ effectId: '3FF' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       delaySeconds: function(data, matches) {
         // 5 second warning.
         return parseFloat(matches.duration) - 5;
       },
-      alertText: function(data) {
+      alertText: function(data, _, output) {
         if (!data.haveWater)
           return;
-        return {
+        return output.text();
+      },
+      outputStrings: {
+        text: {
           en: 'Drop Water Soon',
           de: 'Gleich Wasser ablegen',
           fr: 'Déposez l\'eau bientôt',
           ja: '水来るよ',
           cn: '马上水分摊',
           ko: '곧 물징 폭발',
-        };
+        },
       },
     },
     {
       id: 'A6S Compressed Lightning Initial',
       netRegex: NetRegexes.gainsEffect({ effectId: '400' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       run: function(data) {
         data.haveLightning = true;
@@ -365,9 +354,7 @@
     {
       id: 'A6S Compressed Lightning Lose',
       netRegex: NetRegexes.losesEffect({ effectId: '400' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.haveLightning = false;
       },
@@ -375,24 +362,25 @@
     {
       id: 'A6S Compressed Lightning Explode',
       netRegex: NetRegexes.gainsEffect({ effectId: '400' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       delaySeconds: function(data, matches) {
         // 5 second warning.
         return parseFloat(matches.duration) - 5;
       },
-      alertText: function(data) {
+      alertText: function(data, _, output) {
         if (!data.haveLightning)
           return;
-        return {
+        return output.text();
+      },
+      outputStrings: {
+        text: {
           en: 'Drop Lightning Soon',
           de: 'Gleich Blitz ablegen',
           fr: 'Déposez l\'éclair bientôt',
           ja: '雷来るよ',
           cn: '马上雷分摊',
           ko: '곧 번개징 폭발',
-        };
+        },
       },
     },
   ],
@@ -638,4 +626,4 @@
       },
     },
   ],
-}];
+};

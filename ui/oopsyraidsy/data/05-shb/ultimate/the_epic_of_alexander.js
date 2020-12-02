@@ -1,4 +1,5 @@
-'use strict';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // TODO: FIX luminous aetheroplasm warning not working
 // TODO: FIX doll death not working
@@ -16,7 +17,7 @@
 // TODO: failures of plaint of solidarity (shared sentence)
 // TODO: ordained capital punishment hitting non-tanks
 
-[{
+export default {
   zoneId: ZoneId.TheEpicOfAlexanderUltimate,
   damageWarn: {
     'TEA Sluice': '49B1',
@@ -68,7 +69,7 @@
       id: 'TEA Exhaust',
       damageRegex: '481F',
       condition: function(e, data) {
-        return e.targetName == e.attackerName;
+        return e.targetName === e.attackerName;
       },
       mistake: function(e, data) {
         return {
@@ -158,11 +159,11 @@
       damageRegex: '488D',
       condition: function(e, data) {
         // Single Tap
-        return e.type == '15';
+        return e.type === '15';
       },
       mistake: function(e, data) {
         return { type: 'fail', blame: e.targetName, text: e.abilityName };
       },
     },
   ],
-}];
+};

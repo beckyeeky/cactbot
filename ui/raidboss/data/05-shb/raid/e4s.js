@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.EdensGateSepultureSavage,
   timelineFile: 'e4s.txt',
   timelineTriggers: [
@@ -9,7 +12,7 @@
       regex: /Earthen Anguish/,
       beforeSeconds: 3,
       condition: function(data) {
-        return data.role == 'healer' || data.role == 'tank';
+        return data.role === 'healer' || data.role === 'tank';
       },
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -60,7 +63,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '4116', source: '泰坦' }),
       netRegexKo: NetRegexes.startsUsing({ id: '4116', source: '타이탄' }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'tank' || data.role == 'healer';
+        return matches.target === data.me || data.role === 'tank' || data.role === 'healer';
       },
       // As this seems to usually seems to be invulned,
       // don't make a big deal out of it.
@@ -69,9 +72,7 @@
     {
       id: 'E4S Pulse of the Land',
       netRegex: NetRegexes.headMarker({ id: '00B9' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.spread('alert'),
     },
     {
@@ -98,9 +99,7 @@
     {
       id: 'E4S Force of the Land',
       netRegex: NetRegexes.headMarker({ id: '00BA' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.stackMarker(),
     },
     {
@@ -111,9 +110,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '4114', source: 'タイタン', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '4114', source: '泰坦', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '4114', source: '타이탄', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -179,9 +176,7 @@
     {
       id: 'E4S Crumbling Down',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -208,35 +203,23 @@
         return !data.printedBury;
       },
       durationSeconds: 7,
-      alertText: function(data, matches) {
-        let x = matches.x;
-        let y = matches.y;
+      alertText: function(data, matches, output) {
+        const x = matches.x;
+        const y = matches.y;
 
-        if (data.phase == 'armor') {
+        if (data.phase === 'armor') {
           // Three line bombs (middle, e/w, w/e), with seismic wave.
           if (x < 95) {
             data.printedBury = true;
-            return {
-              en: 'Hide Behind East',
-              de: 'Im Osten vestecken',
-              fr: 'Cachez-vous derrière à l\'est',
-              cn: '右边躲避',
-              ko: '동쪽으로',
-            };
+            return output.hideBehindEast();
           } else if (x > 105) {
             data.printedBury = true;
-            return {
-              en: 'Hide Behind West',
-              de: 'Im Westen vestecken',
-              fr: 'Cachez-vous derrière à l\'ouest',
-              cn: '左边躲避',
-              ko: '서쪽으로',
-            };
+            return output.hideBehindWest();
           }
-        } else if (data.phase == 'landslide') {
+        } else if (data.phase === 'landslide') {
           // Landslide cardinals/corners + middle, followed by remaining 4.
-          let xMiddle = x < 105 && x > 95;
-          let yMiddle = y < 105 && y > 95;
+          const xMiddle = x < 105 && x > 95;
+          const yMiddle = y < 105 && y > 95;
           // Ignore middle point, which may come first.
           if (xMiddle && yMiddle)
             return;
@@ -244,24 +227,42 @@
           data.printedBury = true;
           if (!xMiddle && !yMiddle) {
             // Corners dropped first.  Cardinals safe.
-            return {
-              en: 'Go Cardinals First',
-              de: 'Zuerst zu den Seiten gehen',
-              fr: 'Allez aux cardinaux en premier',
-              ja: '十字',
-              cn: '十字',
-              ko: '먼저 측면으로 이동',
-            };
+            return output.goCardinalsFirst();
           }
           // Cardinals dropped first.  Corners safe.
-          return {
-            en: 'Go Corners First',
-            de: 'Zuerst in die Ecken gehen',
-            fr: 'Allez dans les coins en premier',
-            cn: '先去角落',
-            ko: '먼저 구석으로 이동',
-          };
+          return output.goCornersFirst();
         }
+      },
+      outputStrings: {
+        hideBehindEast: {
+          en: 'Hide Behind East',
+          de: 'Im Osten vestecken',
+          fr: 'Cachez-vous derrière à l\'est',
+          cn: '右边躲避',
+          ko: '동쪽으로',
+        },
+        hideBehindWest: {
+          en: 'Hide Behind West',
+          de: 'Im Westen vestecken',
+          fr: 'Cachez-vous derrière à l\'ouest',
+          cn: '左边躲避',
+          ko: '서쪽으로',
+        },
+        goCardinalsFirst: {
+          en: 'Go Cardinals First',
+          de: 'Zuerst zu den Seiten gehen',
+          fr: 'Allez aux cardinaux en premier',
+          ja: '十字',
+          cn: '十字',
+          ko: '먼저 측면으로 이동',
+        },
+        goCornersFirst: {
+          en: 'Go Corners First',
+          de: 'Zuerst in die Ecken gehen',
+          fr: 'Allez dans les coins en premier',
+          cn: '先去角落',
+          ko: '먼저 구석으로 이동',
+        },
       },
     },
     {
@@ -323,7 +324,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '4124', source: '极大泰坦', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '4124', source: '거대 타이탄', capture: false }),
       condition: function(data) {
-        return data.role == 'healer';
+        return data.role === 'healer';
       },
       response: Responses.bigAoe(),
     },
@@ -420,51 +421,52 @@
     {
       id: 'E4S Weight of the World',
       netRegex: NetRegexes.headMarker({ id: '00BB' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.getOut(),
     },
     {
       id: 'E4S Megalith',
       netRegex: NetRegexes.headMarker({ id: '005D' }),
-      alertText: function(data, matches) {
-        if (data.role != 'tank') {
-          return {
-            en: 'Away from Tanks',
-            de: 'Weg von den Tanks',
-            fr: 'Éloignez-vous des tanks',
-            ja: 'タンクから離れ',
-            cn: '远离坦克',
-            ko: '탱커에서 멀어지기',
-          };
-        }
-        if (matches.target == data.me) {
-          return {
-            en: 'Stack on YOU',
-            de: 'Auf DIR sammeln',
-            fr: 'Package sur VOUS',
-            ja: '自分にシェア',
-            cn: '集合分摊',
-            ko: '쉐어징 대상자',
-          };
-        }
-        return {
-          en: 'Stack on ' + data.ShortName(matches.target),
-          de: 'Auf ' + data.ShortName(matches.target) + ' sammeln',
-          fr: 'Packez-vous sur ' + data.ShortName(matches.target),
-          ja: data.ShortName(matches.target) + 'にシェア',
-          cn: '与 ' + data.ShortName(matches.target) + ' 集合',
-          ko: '"' + data.ShortName(matches.target) + '" 쉐어징',
-        };
+      alertText: function(data, matches, output) {
+        if (data.role !== 'tank')
+          return output.awayFromTanks();
+
+        if (matches.target === data.me)
+          return output.stackOnYou();
+
+        return output.stackOn({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        awayFromTanks: {
+          en: 'Away from Tanks',
+          de: 'Weg von den Tanks',
+          fr: 'Éloignez-vous des tanks',
+          ja: 'タンクから離れ',
+          cn: '远离坦克',
+          ko: '탱커에서 멀어지기',
+        },
+        stackOnYou: {
+          en: 'Stack on YOU',
+          de: 'Auf DIR sammeln',
+          fr: 'Package sur VOUS',
+          ja: '自分にシェア',
+          cn: '集合分摊',
+          ko: '쉐어징 대상자',
+        },
+        stackOn: {
+          en: 'Stack on ${player}',
+          de: 'Auf ${player} sammeln',
+          fr: 'Packez-vous sur ${player}',
+          ja: '${player}にシェア',
+          cn: '与 ${player} 集合',
+          ko: '"${player}" 쉐어징',
+        },
       },
     },
     {
       id: 'E4S Granite Gaol',
       netRegex: NetRegexes.headMarker({ id: '00BF' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -571,9 +573,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '412A', source: 'マキシタイタン', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '412A', source: '极大泰坦', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '412A', source: '거대 타이탄', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
   ],
@@ -771,4 +771,4 @@
       },
     },
   ],
-}];
+};

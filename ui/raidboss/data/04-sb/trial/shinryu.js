@@ -1,7 +1,10 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // Shinryu Normal
-[{
+export default {
   zoneId: ZoneId.TheRoyalMenagerie,
   timelineFile: 'shinryu.txt',
   triggers: [
@@ -13,41 +16,45 @@
       netRegexJa: NetRegexes.startsUsing({ id: '1FA4', source: '神龍' }),
       netRegexCn: NetRegexes.startsUsing({ id: '1FA4', source: '神龙' }),
       netRegexKo: NetRegexes.startsUsing({ id: '1FA4', source: '신룡' }),
-      alertText: function(data, matches) {
-        if (matches.target == data.me) {
-          return {
-            en: 'Akh Morn on YOU',
-            de: 'Akh Morn auf DIR',
-            fr: 'Akh Morn sur VOUS',
-            ja: '自分にアク・モーン',
-            cn: '死亡轮回点名',
-            ko: '아크몬 대상자',
-          };
-        } else if (data.role == 'tank') {
-          return {
-            en: 'Akh Morn on ' + data.ShortName(matches.target),
-            de: 'Akh Morn auf ' + data.ShortName(matches.target),
-            fr: 'Akh Morn sur ' + data.ShortName(matches.target),
-            ja: data.ShortName(matches.target) + 'にアク・モーン',
-            cn: '死亡轮回点' + data.ShortName(matches.target),
-            ko: '"' + data.ShortName(matches.target) + '" 아크몬',
-          };
-        }
+      alertText: function(data, matches, output) {
+        if (matches.target === data.me)
+          return output.akhMornOnYou();
+        else if (data.role === 'tank')
+          return output.akhMornOn({ player: data.ShortName(matches.target) });
       },
-      infoText: function(data, matches) {
+      infoText: function(data, matches, output) {
         // Nobody with Akh Morn is a direct target for Akh Rai,
         // and tanks should never be targeted for it.
         // Additionally, Akh Rai happens only after the intermission.
-        if (matches.target == data.me || data.role == 'tank' || !data.finalPhase)
+        if (matches.target === data.me || data.role === 'tank' || !data.finalPhase)
           return;
-        return {
+        return output.akhRhaiSpreadAndMove();
+      },
+      outputStrings: {
+        akhRhaiSpreadAndMove: {
           en: 'Akh Rhai: spread and move',
           de: 'Akh Rhai: Verteilen und bewegen',
           fr: 'Akh Rhai: Dispersion et bougez',
           ja: 'アク・ラーイ: 散開 動け',
           cn: '天光轮回：散开和移动',
           ko: '아크 라이: 산개, 이동',
-        };
+        },
+        akhMornOnYou: {
+          en: 'Akh Morn on YOU',
+          de: 'Akh Morn auf DIR',
+          fr: 'Akh Morn sur VOUS',
+          ja: '自分にアク・モーン',
+          cn: '死亡轮回点名',
+          ko: '아크몬 대상자',
+        },
+        akhMornOn: {
+          en: 'Akh Morn on ${player}',
+          de: 'Akh Morn auf ${player}',
+          fr: 'Akh Morn sur ${player}',
+          ja: '${player}にアク・モーン',
+          cn: '死亡轮回点${player}',
+          ko: '"${player}" 아크몬',
+        },
       },
     },
     {
@@ -202,7 +209,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '1FA2', source: '左翼' }),
       netRegexKo: NetRegexes.startsUsing({ id: '1FA2', source: '왼쪽 날개' }),
       condition: function(data) {
-        return data.role == 'healer';
+        return data.role === 'healer';
       },
       delaySeconds: function(data, matches) {
         return matches.castTime - 4;
@@ -454,4 +461,4 @@
       },
     },
   ],
-}];
+};

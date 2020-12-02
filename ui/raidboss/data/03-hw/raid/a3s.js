@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.AlexanderTheArmOfTheFatherSavage,
   timelineFile: 'a3s.txt',
   timelineTriggers: [
@@ -24,7 +27,7 @@
       regex: /Hand of Prayer\/Parting/,
       beforeSeconds: 5,
       condition: function(data) {
-        return data.role == 'tank' || data.job == 'BLU';
+        return data.role === 'tank' || data.job === 'BLU';
       },
       suppressSeconds: 1,
       infoText: (data, _, output) => output.text(),
@@ -133,9 +136,7 @@
       netRegexJa: NetRegexes.tether({ id: '0005', target: 'リビングリキッド' }),
       netRegexCn: NetRegexes.tether({ id: '0005', target: '有生命活水' }),
       netRegexKo: NetRegexes.tether({ id: '0005', target: '살아있는 액체' }),
-      condition: function(data, matches) {
-        return data.source == data.me;
-      },
+      condition: (data, matches) => matches.source === data.me,
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -157,7 +158,7 @@
       netRegexCn: NetRegexes.tether({ id: '0005', target: '有生命活水', capture: false }),
       netRegexKo: NetRegexes.tether({ id: '0005', target: '살아있는 액체', capture: false }),
       condition: function(data) {
-        return data.role == 'tank';
+        return data.role === 'tank';
       },
       suppressSeconds: 1,
       infoText: (data, _, output) => output.text(),
@@ -198,35 +199,37 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'リビングリキッド', id: 'F01' }),
       netRegexCn: NetRegexes.startsUsing({ source: '有生命活水', id: 'F01' }),
       netRegexKo: NetRegexes.startsUsing({ source: '살아있는 액체', id: 'F01' }),
-      alertText: function(data, matches) {
+      alertText: function(data, matches, output) {
         data.ferroTether = data.ferroTether || {};
         data.ferroMarker = data.ferroMarker || [];
-        let partner = data.ferroTether[data.me];
-        let marker1 = data.ferroMarker[data.me];
-        let marker2 = data.ferroMarker[partner];
+        const partner = data.ferroTether[data.me];
+        const marker1 = data.ferroMarker[data.me];
+        const marker2 = data.ferroMarker[partner];
 
         if (!partner || !marker1 || !marker2)
           return matches.ability + ' (???)';
 
-        if (marker1 == marker2) {
-          return {
-            en: 'Repel: close to ' + data.ShortName(partner),
-            de: 'Abstoß: nahe bei ' + data.ShortName(partner),
-            fr: 'Répulsion : Rapprochez-vous de ' + data.ShortName(partner),
-            ja: '同じ極: ' + data.ShortName(partner) + 'に近づく',
-            cn: '同极：靠近' + data.ShortName(partner),
-            ko: '반발: ' + data.ShortName(partner) + '와 가까이 붙기',
-          };
-        }
-
-        return {
-          en: 'Attract: away from ' + data.ShortName(partner),
-          de: 'Anziehung: weg von ' + data.ShortName(partner),
-          fr: 'Attraction : Eloignez-vous de ' + data.ShortName(partner),
-          ja: '異なる極: ' + data.ShortName(partner) + 'に離れ',
-          cn: '异极：远离' + data.ShortName(partner),
-          ko: '자력: ' + data.ShortName(partner) + '와 떨어지기',
-        };
+        if (marker1 === marker2)
+          return output.repel({ player: data.ShortName(partner) });
+        return output.attract({ player: data.ShortName(partner) });
+      },
+      outputStrings: {
+        repel: {
+          en: 'Repel: close to ${player}',
+          de: 'Abstoß: nahe bei ${player}',
+          fr: 'Répulsion : Rapprochez-vous de ${player}',
+          ja: '同じ極: ${player}に近づく',
+          cn: '同极：靠近${player}',
+          ko: '반발: ${player}와 가까이 붙기',
+        },
+        attract: {
+          en: 'Attract: away from ${player}',
+          de: 'Anziehung: weg von ${player}',
+          fr: 'Attraction : Eloignez-vous de ${player}',
+          ja: '異なる極: ${player}に離れ',
+          cn: '异极：远离${player}',
+          ko: '자력: ${player}와 떨어지기',
+        },
       },
     },
     {
@@ -252,43 +255,48 @@
       condition: function(data) {
         return data.CanCleanse();
       },
-      alertText: function(data, matches) {
-        return {
-          en: 'Throttle on ' + data.ShortName(matches.target),
-          de: 'Vollgas auf ' + data.ShortName(matches.target),
-          fr: 'Geôle liquide sur ' + data.ShortName(matches.target),
-          ja: data.ShortName(matches.target) + 'に窒息',
-          cn: '窒息点' + data.ShortName(matches.target),
-          ko: '"' + data.ShortName(matches.target) + '" 액체 감옥',
-        };
+      alertText: function(data, matches, output) {
+        return output.text({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        text: {
+          en: 'Throttle on ${player}',
+          de: 'Vollgas auf ${player}',
+          fr: 'Geôle liquide sur ${player}',
+          ja: '${player}に窒息',
+          cn: '窒息点${player}',
+          ko: '"${player}" 액체 감옥',
+        },
       },
     },
     {
       id: 'A3S Fluid Claw',
       netRegex: NetRegexes.headMarker({ id: '0010' }),
-      alarmText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: 'Claw on YOU',
-            de: 'Klaue auf DIR',
-            fr: 'Griffe sur VOUS',
-            ja: '自分にフルイドクロー',
-            cn: '抓奶手点名',
-            ko: '액체 발톱 대상자',
-          };
-        }
+      alarmText: function(data, matches, output) {
+        if (data.me === matches.target)
+          return output.clawOnYou();
       },
-      infoText: function(data, matches) {
-        if (data.me != matches.target) {
-          return {
-            en: 'Claw on ' + data.ShortName(matches.target),
-            de: 'Klaue auf ' + data.ShortName(matches.target),
-            fr: 'Griffe sur ' + data.ShortName(matches.target),
-            ja: data.ShortName(matches.target) + 'にフルイドクロー',
-            cn: '抓奶手点' + data.ShortName(matches.target),
-            ko: '"' + data.ShortName(matches.target) + '" 액체 발톱',
-          };
-        }
+      infoText: function(data, matches, output) {
+        if (data.me !== matches.target)
+          return output.clawOn({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        clawOn: {
+          en: 'Claw on ${player}',
+          de: 'Klaue auf ${player}',
+          fr: 'Griffe sur ${player}',
+          ja: '${player}にフルイドクロー',
+          cn: '抓奶手点${player}',
+          ko: '"${player}" 액체 발톱',
+        },
+        clawOnYou: {
+          en: 'Claw on YOU',
+          de: 'Klaue auf DIR',
+          fr: 'Griffe sur VOUS',
+          ja: '自分にフルイドクロー',
+          cn: '抓奶手点名',
+          ko: '액체 발톱 대상자',
+        },
       },
     },
     {
@@ -301,7 +309,7 @@
       netRegexCn: NetRegexes.ability({ source: '有生命活水', id: 'F1B', capture: false }),
       netRegexKo: NetRegexes.ability({ source: '살아있는 액체', id: 'F1B', capture: false }),
       condition: function(data) {
-        return data.role == 'tank' || data.job == 'BLU';
+        return data.role === 'tank' || data.job === 'BLU';
       },
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -482,4 +490,4 @@
       },
     },
   ],
-}];
+};

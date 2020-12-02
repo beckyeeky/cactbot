@@ -1,4 +1,7 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // The Copied Factory
 // TODO: Tell people where to stand for Engels wall saws
@@ -6,7 +9,7 @@
 // TODO: Tell people where to go for 9S divebombs
 // TODO: Tell people where to go for 9S tethered tank
 
-[{
+export default {
   zoneId: ZoneId.TheCopiedFactory,
   timelineFile: 'the_copied_factory.txt',
   timelineTriggers: [
@@ -14,20 +17,23 @@
       id: 'Copied Flight Unit Lightfast',
       regex: /Lightfast Blade/,
       beforeSeconds: 15,
-      infoText: function(data) {
+      infoText: function(data, _, output) {
         // The third lightfast blade comes very close to second,
         // so suppress its message.
         data.lightfastCount = (data.lightfastCount || 0) + 1;
-        if (data.lightfastCount != 3)
+        if (data.lightfastCount !== 3)
           return;
-        return {
+        return output.text();
+      },
+      outputStrings: {
+        text: {
           en: 'Be Near Boss',
           de: 'sei in der Nähe des Bosses',
           fr: 'Près du boss',
           ja: 'ボスと貼りつく',
           cn: '靠近Boss',
           ko: '보스 근처로',
-        };
+        },
       },
     },
     {
@@ -56,9 +62,7 @@
       netRegexFr: NetRegexes.startsUsing({ id: '48CF', source: 'Modèle Multiarticulé : Commandant', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '48CF', source: '多関節型：司令機', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '48CF', source: '다관절형: 사령기', capture: false }),
-      condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -140,9 +144,7 @@
       netRegexFr: NetRegexes.startsUsing({ id: '4805', source: 'Hobbes', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '4805', source: 'ホッブス', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '4805', source: '홉스', capture: false }),
-      condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -250,9 +252,7 @@
     {
       id: 'Copied Hobbes Short Missile',
       netRegex: NetRegexes.headMarker({ id: '00C4' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.spread('alert'),
     },
     {
@@ -360,9 +360,7 @@
       netRegexFr: NetRegexes.tether({ id: '0011', source: 'Unité Kamikaze Moyenne' }),
       netRegexJa: NetRegexes.tether({ id: '0011', source: '中型自爆' }),
       netRegexKo: NetRegexes.tether({ id: '0011', source: '중형 자폭' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -383,17 +381,13 @@
       netRegexFr: NetRegexes.startsUsing({ id: '4941', source: 'Module De Vol', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '4941', source: '飛行ユニット', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '4941', source: '비행 유닛', capture: false }),
-      condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
       id: 'Copied Flight Unit Ballistic Impact',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.spread('alert'),
     },
     {
@@ -479,9 +473,7 @@
     {
       id: 'Copied Engels Precision Guided Missile',
       netRegex: NetRegexes.headMarker({ id: '00C6' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.tankBuster('info'),
     },
     {
@@ -492,9 +484,7 @@
       netRegexFr: NetRegexes.startsUsing({ id: '4755', source: 'Engels', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '4755', source: 'エンゲルス', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '4755', source: '엥겔스', capture: false }),
-      condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -544,33 +534,33 @@
     {
       id: 'Copied Engels Incendiary Bombing',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      alertText: function(data, matches) {
-        if (matches.target == data.me) {
-          return {
-            en: 'Puddle on YOU',
-            de: 'Fläche auf dir',
-            fr: 'Flaques sur VOUS',
-            ja: '自分に水溜り',
-            cn: '水圈点名',
-            ko: '징 대상자',
-          };
-        }
+      condition: Conditions.targetIsYou(),
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Puddle on YOU',
+          de: 'Fläche auf dir',
+          fr: 'Flaques sur VOUS',
+          ja: '自分に水溜り',
+          cn: '水圈点名',
+          ko: '징 대상자',
+        },
       },
     },
     {
       id: 'Copied Engels Guided Missile',
       netRegex: NetRegexes.headMarker({ id: '00C5' }),
-      alertText: function(data, matches) {
-        if (matches.target == data.me) {
-          return {
-            en: 'Get Out + Dodge Homing AoE',
-            de: 'Geh Raus + Zielsuch-AoE ausweichen',
-            fr: 'Dehors + Evitez l\'AoE',
-            ja: '外 + AoE',
-            cn: '远离 + 躲避弹幕',
-            ko: '바깥으로 빠지고 따라오는 장판 피하기',
-          };
-        }
+      condition: Conditions.targetIsYou(),
+      alertText: (data, _, output) => output.text(),
+      outputStrings: {
+        text: {
+          en: 'Get Out + Dodge Homing AoE',
+          de: 'Geh Raus + Zielsuch-AoE ausweichen',
+          fr: 'Dehors + Evitez l\'AoE',
+          ja: '外 + AoE',
+          cn: '远离 + 躲避弹幕',
+          ko: '바깥으로 빠지고 따라오는 장판 피하기',
+        },
       },
     },
     {
@@ -644,7 +634,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '48F5', source: '９Ｓ：多脚戦車従属' }),
       netRegexKo: NetRegexes.startsUsing({ id: '48F5', source: '9S: 다각전차 종속' }),
       condition: function(data, matches) {
-        return data.me == matches.target || data.role == 'healer';
+        return data.me === matches.target || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -656,9 +646,7 @@
       netRegexFr: NetRegexes.startsUsing({ id: '48F6', source: '9S : Avec Multipède Esclave', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '48F6', source: '９Ｓ：多脚戦車従属', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '48F6', source: '9S: 다각전차 종속', capture: false }),
-      condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -674,17 +662,13 @@
     {
       id: 'Copied 9S Ballistic Impact',
       netRegex: NetRegexes.headMarker({ id: '008B' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.spread('alert'),
     },
     {
       id: 'Copied 9S Goliath Laser Turret',
       netRegex: NetRegexes.headMarker({ id: '00A4' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -1262,4 +1246,4 @@
       },
     },
   ],
-}];
+};

@@ -1,7 +1,11 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import Regexes from '../../../../../resources/regexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // UCU - The Unending Coil Of Bahamut (Ultimate)
-[{
+export default {
   zoneId: ZoneId.TheUnendingCoilOfBahamutUltimate,
   timelineFile: 'unending_coil_ultimate.txt',
   triggers: [
@@ -9,9 +13,7 @@
     {
       id: 'UCU Firescorched Gain',
       netRegex: NetRegexes.gainsEffect({ effectId: '1D0' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.fireDebuff = true;
       },
@@ -19,9 +21,7 @@
     {
       id: 'UCU Firescorched Lose',
       netRegex: NetRegexes.losesEffect({ effectId: '1D0' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.fireDebuff = false;
       },
@@ -29,9 +29,7 @@
     {
       id: 'UCU Icebitten Gain',
       netRegex: NetRegexes.gainsEffect({ effectId: '1D1' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.iceDebuff = true;
       },
@@ -39,9 +37,7 @@
     {
       id: 'UCU Icebitten Lose',
       netRegex: NetRegexes.losesEffect({ effectId: '1D1' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.iceDebuff = false;
       },
@@ -202,9 +198,7 @@
     {
       id: 'UCU Hatch Marker YOU',
       netRegex: NetRegexes.headMarker({ id: '0076' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -608,9 +602,7 @@
       netRegexJa: NetRegexes.ability({ source: 'サンダーウィング', id: '26C7' }),
       netRegexCn: NetRegexes.ability({ source: '雷翼', id: '26C7' }),
       netRegexKo: NetRegexes.ability({ source: '번개날개', id: '26C7' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -631,7 +623,7 @@
         // https://github.com/ravahn/FFXIV_ACT_Plugin/issues/223
         if (matches.duration > 1000)
           return false;
-        return data.me == matches.target;
+        return data.me === matches.target;
       },
       // FIXME: temporary workaround for multiple gains effects messages.
       // https://github.com/ravahn/FFXIV_ACT_Plugin/issues/223#issuecomment-513486275
@@ -892,10 +884,10 @@
       netRegexCn: NetRegexes.ability({ source: '诸神黄昏', id: '26B8', capture: false }),
       netRegexKo: NetRegexes.ability({ source: '라그나로크', id: '26B8', capture: false }),
       preRun: function(data) {
-        let tookTwo = data.fireballs[1].filter(function(p) {
+        const tookTwo = data.fireballs[1].filter((p) => {
           return data.fireballs[2].includes(p);
         });
-        let tookThree = tookTwo.filter(function(p) {
+        const tookThree = tookTwo.filter((p) => {
           return data.fireballs[3].includes(p);
         });
         data.tookThreeFireballs = tookThree.includes(data.me);
@@ -951,22 +943,22 @@
         data.seenDragon = data.seenDragon || [];
         data.seenDragon[matches.source] = true;
 
-        let x = parseFloat(matches.x);
-        let y = parseFloat(matches.y);
+        const x = parseFloat(matches.x);
+        const y = parseFloat(matches.y);
         // Positions are the 8 cardinals + numerical slop on a radius=24 circle.
         // N = (0, -24), E = (24, 0), S = (0, 24), W = (-24, 0)
         // Map N = 0, NE = 1, ..., NW = 7
-        let dir = Math.round(4 - 4 * Math.atan2(x, y) / Math.PI) % 8;
+        const dir = Math.round(4 - 4 * Math.atan2(x, y) / Math.PI) % 8;
 
         // naelDragons[direction 0-7 (N-NW)] => boolean
         data.naelDragons = data.naelDragons || [0, 0, 0, 0, 0, 0, 0, 0];
         data.naelDragons[dir] = 1;
 
-        if (Object.keys(data.seenDragon).length != 5)
+        if (Object.keys(data.seenDragon).length !== 5)
           return;
 
-        let output = data.findDragonMarks(data.naelDragons);
-        let langMap = {
+        const output = data.findDragonMarks(data.naelDragons);
+        const langMap = {
           en: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'],
           de: ['N', 'NO', 'O', 'SO', 'S', 'SW', 'W', 'NW'],
           fr: ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'],
@@ -974,8 +966,8 @@
           ko: ['북', '북동', '동', '남동', '남', '남서', '서', '북서'],
         };
 
-        let dirNames = langMap[data.displayLang] || langMap['en'];
-        data.naelMarks = output.marks.map(function(i) {
+        const dirNames = langMap[data.displayLang] || langMap['en'];
+        data.naelMarks = output.marks.map((i) => {
           return dirNames[i];
         });
         data.wideThirdDive = output.wideThirdDive;
@@ -1048,7 +1040,9 @@
         data.naelDiveMarkerCount = data.naelDiveMarkerCount || 0;
         if (matches.target !== data.me)
           return;
-        const dir = data.naelMarks[data.naelDiveMarkerCount];
+        const dir = data.naelMarks ? data.naelMarks[data.naelDiveMarkerCount] : undefined;
+        if (!dir)
+          return output.text({ dir: output.unknownDir() });
         return output.text({ dir: dir });
       },
       outputStrings: {
@@ -1056,6 +1050,14 @@
           en: 'Go To ${dir} with marker',
           de: 'Gehe nach ${dir} mit dem Marker',
           ko: '${dir}으로 이동',
+        },
+        unknownDir: {
+          en: '???',
+          de: '???',
+          fr: '???',
+          ja: '???',
+          cn: '???',
+          ko: '???',
         },
       },
     },
@@ -1096,21 +1098,21 @@
       id: 'UCU Octet Marker Tracking',
       netRegex: NetRegexes.headMarker({ id: ['0077', '0014', '0029'] }),
       condition: function(data) {
-        return data.trio == 'octet';
+        return data.trio === 'octet';
       },
       run: function(data, matches) {
         data.octetMarker = data.octetMarker || [];
         data.octetMarker.push(matches.target);
-        if (data.octetMarker.length != 7)
+        if (data.octetMarker.length !== 7)
           return;
 
-        let partyList = Object.keys(data.partyList);
+        const partyList = Object.keys(data.partyList);
 
-        if (partyList.length != 8) {
+        if (partyList.length !== 8) {
           console.error('Octet error: bad party list size: ' + JSON.stringify(partyList));
           return;
         }
-        let uniqDict = {};
+        const uniqDict = {};
         for (let i = 0; i < data.octetMarker.length; ++i) {
           uniqDict[data.octetMarker[i]] = true;
           if (!partyList.includes(data.octetMarker[i])) {
@@ -1118,16 +1120,16 @@
             return;
           }
         }
-        let uniq = Object.keys(uniqDict);
+        const uniq = Object.keys(uniqDict);
         // If the number of unique folks who took markers is not 7, then
         // somebody has died and somebody took two.  Could be on anybody.
-        if (uniq.length != 7)
+        if (uniq.length !== 7)
           return;
 
-        let remainingPlayers = partyList.filter(function(p) {
+        const remainingPlayers = partyList.filter((p) => {
           return !data.octetMarker.includes(p);
         });
-        if (remainingPlayers.length != 1) {
+        if (remainingPlayers.length !== 1) {
           // This could happen if the party list wasn't unique.
           console.error('Octet error: failed to find player, ' + JSON.stringify(partyList) + ' ' + JSON.stringify(data.octetMarker));
           return;
@@ -1294,9 +1296,7 @@
     {
       id: 'UCU Megaflare Stack Me',
       netRegex: NetRegexes.headMarker({ id: '0027' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -1470,7 +1470,7 @@
         },
       },
       run: function(data) {
-        if (data.trio == 'tenstrike' && data.shakers.length == 4)
+        if (data.trio === 'tenstrike' && data.shakers.length === 4)
           data.shakers = [];
       },
     },
@@ -1594,41 +1594,41 @@
         };
 
         // Begin copy and paste from dragon_test.js.
-        let modDistance = function(mark, dragon) {
-          let oneWay = (dragon - mark + 8) % 8;
-          let otherWay = (mark - dragon + 8) % 8;
-          let distance = Math.min(oneWay, otherWay);
+        const modDistance = function(mark, dragon) {
+          const oneWay = (dragon - mark + 8) % 8;
+          const otherWay = (mark - dragon + 8) % 8;
+          const distance = Math.min(oneWay, otherWay);
           console.assert(distance >= 0);
           return distance;
         };
 
-        let badSpots = function(mark, dragon) {
+        const badSpots = function(mark, dragon) {
           // All spots between mark and dragon are bad.  If distance == 1,
           // then the dragon hits the spot behind the mark too.  e.g. N
           // mark, NE dragon will also hit NW.
-          let bad = [];
-          let distance = modDistance(mark, dragon);
+          const bad = [];
+          const distance = modDistance(mark, dragon);
           console.assert(distance > 0);
           console.assert(distance <= 2);
-          if ((mark + distance + 8) % 8 == dragon) {
+          if ((mark + distance + 8) % 8 === dragon) {
             // Clockwise.
             for (let i = 0; i <= distance; ++i)
               bad.push((mark + i) % 8);
-            if (distance == 1)
+            if (distance === 1)
               bad.push((mark - 1 + 8) % 8);
           } else {
             // Widdershins.
             for (let i = 0; i <= distance; ++i)
               bad.push((mark - i + 8) % 8);
-            if (distance == 1)
+            if (distance === 1)
               bad.push((mark + 1) % 8);
           }
           return bad;
         };
 
-        let findDragonMarks = function(array) {
-          let marks = [-1, -1, -1];
-          let ret = {
+        const findDragonMarks = function(array) {
+          const marks = [-1, -1, -1];
+          const ret = {
             // Third drive is on a dragon three squares away and will cover
             // more of the middle than usual, e.g. SE dragon, SW dragon,
             // mark W (because S is unsafe from 2nd dive).
@@ -1640,17 +1640,17 @@
             marks: ['error', 'error', 'error'],
           };
 
-          let dragons = [];
+          const dragons = [];
           for (let i = 0; i < 8; ++i) {
             if (array[i])
               dragons.push(i);
           }
 
-          if (dragons.length != 5)
+          if (dragons.length !== 5)
             return ret;
 
           // MARK 1: counterclockwise of #1 if adjacent, clockwise if not.
-          if (dragons[0] + 1 == dragons[1]) {
+          if (dragons[0] + 1 === dragons[1]) {
             // If the first two dragons are adjacent, they *must* go CCW.
             // In the scenario of N, NE, SE, S, W dragons, the first marker
             // could be E, but that forces the second mark to be S (instead
@@ -1666,7 +1666,7 @@
           }
 
           // MARK 2: go counterclockwise, unless dragon 2 is adjacent to 3.
-          if (dragons[1] == dragons[2] - 1) {
+          if (dragons[1] === dragons[2] - 1) {
             // Go clockwise.
             marks[1] = dragons[2] + 1;
           } else {
@@ -1675,7 +1675,7 @@
           }
 
           // MARK 3: if split, between 4 & 5.  If adjacent, clockwise of 5.
-          if (dragons[3] + 1 == dragons[4]) {
+          if (dragons[3] + 1 === dragons[4]) {
             // Adjacent dragons.
             // Clockwise is always ok.
             marks[2] = (dragons[4] + 1) % 8;
@@ -1688,14 +1688,14 @@
             // hole between #3 and #4, otherwise need all three holes.
             // e.g. N, NE, E, W, NW dragon pattern should prefer third
             // mark SW instead of N.
-            let distance = marks[1] == dragons[2] - 1 ? 2 : 4;
+            const distance = marks[1] === dragons[2] - 1 ? 2 : 4;
             if (dragons[3] >= dragons[2] + distance)
               marks[2] = dragons[3] - 1;
           } else {
             // Split dragons.  Common case: bias towards last dragon, in case
             // 2nd charge is going towards this pair.
             marks[2] = Math.ceil((dragons[3] + dragons[4]) / 2);
-            if (marks[1] == dragons[3] && marks[2] == marks[1] + 1) {
+            if (marks[1] === dragons[3] && marks[2] === marks[1] + 1) {
               // Tricksy edge case, e.g. N, NE, E, SE, SW.  S not safe for
               // third mark because second mark is at SE, and E dragon will
               // clip S.  Send all dragons CW even if this means eating more
@@ -1705,7 +1705,7 @@
             }
           }
 
-          let bad = badSpots(marks[0], dragons[0]);
+          const bad = badSpots(marks[0], dragons[0]);
           bad.concat(badSpots(marks[0], dragons[1]));
           ret.unsafeThirdMark = bad.includes(marks[2]);
 
@@ -2135,4 +2135,4 @@
       },
     },
   ],
-}];
+};

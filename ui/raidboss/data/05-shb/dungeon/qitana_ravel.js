@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.TheQitanaRavel,
   timelineFile: 'qitana_ravel.txt',
   triggers: [
@@ -13,7 +16,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3C89', source: '洛查特尔' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3C89', source: '로차틀' }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'healer';
+        return matches.target === data.me || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -25,9 +28,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3C8B', source: 'ロツァトル', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3C8B', source: '洛查特尔', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3C8B', source: '로차틀', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -45,8 +46,8 @@
           en: 'Look for pillar',
           de: 'Auf die Pfeiler schauen',
           fr: 'Cherchez les piliers',
-          ja: '光った像見ながら身を隠して',
-          cn: '找柱子躲',
+          ja: '光った像に避ける',
+          cn: '躲开发光石像的半场',
           ko: '빛나는 기둥 위치확인',
         },
       },
@@ -68,7 +69,7 @@
           de: 'Auf seiner linken Seite stehen',
           fr: 'Restez sur le flanc gauche',
           ja: 'ボスの左側へ',
-          cn: '左侧翼躲避',
+          cn: 'Boss左边躲避',
           ko: '보스 왼쪽 측면으로',
         },
       },
@@ -90,7 +91,7 @@
           de: 'Auf seiner rechten Seite stehen',
           fr: 'Restez sur le flanc droit',
           ja: 'ボスの右側へ',
-          cn: '右侧翼躲避',
+          cn: 'Boss右边躲避',
           ko: '보스 오른쪽 측면으로',
         },
       },
@@ -104,7 +105,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3C91', source: '大脚野蝠' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3C91', source: '배츠콰치' }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'healer';
+        return matches.target === data.me || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -116,9 +117,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3C92', source: 'バッツカッチ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3C92', source: '大脚野蝠', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3C92', source: '배츠콰치', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -129,9 +128,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3C93', source: 'バッツカッチ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3C93', source: '大脚野蝠', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3C93', source: '배츠콰치', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -143,7 +140,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3C99', source: '艾洛斯' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3C99', source: '에로스' }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'healer';
+        return matches.target === data.me || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -155,9 +152,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3C9B', source: 'エロース', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3C9B', source: '艾洛斯', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3C9B', source: '에로스', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -168,16 +163,14 @@
       netRegexJa: NetRegexes.tether({ id: '0039', source: 'エロース' }),
       netRegexCn: NetRegexes.tether({ id: '0039', source: '艾洛斯' }),
       netRegexKo: NetRegexes.tether({ id: '0039', source: '에로스' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Run Away From Boss',
           de: 'Renn weg vom Boss',
           fr: 'Courez loin du boss',
-          ja: 'ボスから離れ',
+          ja: 'ボスに離れ',
           cn: '远离Boss',
           ko: '보스와 거리 벌리기',
         },
@@ -186,16 +179,14 @@
     {
       id: 'Qitana Viper Poison',
       netRegex: NetRegexes.headMarker({ id: '00AB' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Drop Poison Outside',
           de: 'Gift am Rand ablegen',
           fr: 'Déposez le poison à l\'extérieur',
-          ja: '遠くに捨て',
+          ja: '外周に捨て',
           cn: '远处放毒',
           ko: '독 장판을 바깥 쪽에 버리기',
         },
@@ -384,4 +375,4 @@
       },
     },
   ],
-}];
+};

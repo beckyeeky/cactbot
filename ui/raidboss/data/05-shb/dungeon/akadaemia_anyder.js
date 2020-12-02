@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.AkadaemiaAnyder,
   timelineFile: 'akadaemia_anyder.txt',
   timelineTriggers: [
@@ -9,7 +12,7 @@
       regex: /Lash/,
       beforeSeconds: 5,
       condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer';
+        return data.role === 'tank' || data.role === 'healer';
       },
       suppressSeconds: 10,
       response: Responses.miniBuster(),
@@ -25,9 +28,7 @@
     {
       id: 'Anyder Aquatic Lance',
       netRegex: NetRegexes.headMarker({ id: '0087' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -49,7 +50,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3E04', source: ['裂口鲨', '原祖鲨'] }),
       netRegexKo: NetRegexes.startsUsing({ id: '3E04', source: ['클라도셀라케', '돌리오두스'] }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'healer';
+        return matches.target === data.me || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -101,17 +102,13 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3E06', source: ['クラドセラケ', 'ドリオドゥス'], capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3E06', source: ['裂口鲨', '原祖鲨'], capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3E06', source: ['클라도셀라케', '돌리오두스'], capture: false }),
-      condition: function(data) {
-        return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
       id: 'Anyder Sap Shower',
       netRegex: NetRegexes.headMarker({ id: '0078' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.spread(),
     },
     {
@@ -122,9 +119,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3E17', source: 'マーカス・モルボル', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3E17', source: '侯爵魔界花', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3E17', source: '몰볼 후작', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -149,7 +144,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3E23', source: '克察尔科亚特尔' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3E23', source: '케찰코아틀' }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'healer';
+        return matches.target === data.me || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -161,9 +156,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3E24', source: 'ケツァクウァトル', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3E24', source: '克察尔科亚特尔', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3E24', source: '케찰코아틀', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer' || data.role == 'tank' || data.CanAddle();
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -355,4 +348,4 @@
       },
     },
   ],
-}];
+};

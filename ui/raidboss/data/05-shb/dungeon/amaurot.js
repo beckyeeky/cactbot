@@ -1,54 +1,58 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.Amaurot,
   timelineFile: 'amaurot.txt',
   triggers: [
     {
       id: 'Amaurot Meteor',
       netRegex: NetRegexes.headMarker({ id: '0039' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       preRun: function(data) {
         data.meteor = (data.meteor || 0) + 1;
       },
-      infoText: function(data) {
-        if (data.meteor == 1) {
-          return {
-            en: 'Drop Meteor West',
-            de: 'Meteor im Westen ablegen',
-            fr: 'Déposez le météore à l\'ouest',
-            ja: 'メテオを西に',
-            cn: '西侧放陨石',
-            ko: '메테오 서쪽으로 빼기',
-          };
-        } else if (data.meteor == 2) {
-          return {
-            en: 'Drop Meteor East',
-            de: 'Meteor im Osten ablegen',
-            fr: 'Déposez le météore à l\'est',
-            ja: 'メテオを東に',
-            cn: '陨石放东边',
-            ko: '메테오 동쪽으로 빼기',
-          };
-        }
-        return {
+      infoText: function(data, _, output) {
+        if (data.meteor === 1)
+          return output.dropMeteorWest();
+        else if (data.meteor === 2)
+          return output.dropMeteorEast();
+
+        return output.meteor();
+      },
+      outputStrings: {
+        dropMeteorWest: {
+          en: 'Drop Meteor West',
+          de: 'Meteor im Westen ablegen',
+          fr: 'Déposez le météore à l\'ouest',
+          ja: 'メテオを西に',
+          cn: '西侧放陨石',
+          ko: '메테오 서쪽으로 빼기',
+        },
+        dropMeteorEast: {
+          en: 'Drop Meteor East',
+          de: 'Meteor im Osten ablegen',
+          fr: 'Déposez le météore à l\'est',
+          ja: 'メテオを東に',
+          cn: '陨石放东边',
+          ko: '메테오 동쪽으로 빼기',
+        },
+        meteor: {
           en: 'Meteor',
           de: 'Meteor',
           fr: 'Météore',
           ja: 'メテオ',
           cn: '陨石',
           ko: '메테오',
-        };
+        },
       },
     },
     {
       id: 'Amaurot Spread',
       netRegex: NetRegexes.headMarker({ id: '008B' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.spread(),
     },
     {
@@ -79,9 +83,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3CE3', source: 'メガセリオン', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3CE3', source: '至大灾兽', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3CE3', source: '메가테리온', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -272,4 +274,4 @@
       },
     },
   ],
-}];
+};

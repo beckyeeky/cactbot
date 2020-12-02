@@ -1,7 +1,9 @@
-'use strict';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // O11S - Alphascape 3.0 Savage
-[{
+export default {
   zoneId: ZoneId.AlphascapeV30Savage,
   timelineFile: 'o11s.txt',
   triggers: [
@@ -79,25 +81,29 @@
       condition: function(data) {
         return data.lastWasStarboard !== undefined;
       },
-      alertText: function(data) {
-        if (data.lastWasStarboard) {
-          return {
-            en: 'Move (Left)',
-            de: 'Bewegen (Links)',
-            fr: 'Bougez (Gauche)',
-            ja: '反対へ (左)',
-            cn: '移动 (左)',
-            ko: '오른쪽으로',
-          };
-        }
-        return {
+      alertText: function(data, _, output) {
+        if (data.lastWasStarboard)
+          return output.moveLeft();
+
+        return output.stayLeft();
+      },
+      outputStrings: {
+        moveLeft: {
+          en: 'Move (Left)',
+          de: 'Bewegen (Links)',
+          fr: 'Bougez (Gauche)',
+          ja: '反対へ (左)',
+          cn: '移动 (左)',
+          ko: '오른쪽으로',
+        },
+        stayLeft: {
           en: 'Stay (Left)',
           de: 'Stehenbleiben (Links)',
           fr: 'Restez ici (Gauche)',
           ja: 'そのまま (左)',
           cn: '不动 (左)',
           ko: '대기 (오른쪽)',
-        };
+        },
       },
     },
     {
@@ -111,25 +117,29 @@
       condition: function(data) {
         return data.lastWasStarboard !== undefined;
       },
-      alertText: function(data) {
-        if (data.lastWasStarboard) {
-          return {
-            en: 'Stay (Right)',
-            de: 'Stehenbleiben (Rechts)',
-            fr: 'Restez ici (Droite)',
-            ja: 'そのまま (右)',
-            cn: '不动 (右)',
-            ko: '대기 (왼쪽)',
-          };
-        }
-        return {
+      alertText: function(data, _, output) {
+        if (data.lastWasStarboard)
+          return output.stayRight();
+
+        return output.moveRight();
+      },
+      outputStrings: {
+        stayRight: {
+          en: 'Stay (Right)',
+          de: 'Stehenbleiben (Rechts)',
+          fr: 'Restez ici (Droite)',
+          ja: 'そのまま (右)',
+          cn: '不动 (右)',
+          ko: '대기 (왼쪽)',
+        },
+        moveRight: {
           en: 'Move (Right)',
           de: 'Bewegen (Rechts)',
           fr: 'Bougez (Droite)',
           ja: '反対へ (右)',
           cn: '移动 (右)',
           ko: '왼쪽으로',
-        };
+        },
       },
     },
     {
@@ -432,4 +442,4 @@
       },
     },
   ],
-}];
+};

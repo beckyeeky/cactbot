@@ -1,4 +1,7 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // In your cactbot/user/raidboss.js file, add the line:
 //   Options.cactbote8sUptimeKnockbackStrat = true;
@@ -22,7 +25,7 @@
 // TODO: callouts for the stack group mirrors?
 // TODO: icelit dragonsong callouts?
 
-[{
+export default {
   zoneId: ZoneId.EdensVerseRefulgenceSavage,
   timelineFile: 'e8s.txt',
   timelineTriggers: [
@@ -50,16 +53,19 @@
       id: 'E8S Rush',
       regex: /Rush \d/,
       beforeSeconds: 5,
-      infoText: function(data) {
+      infoText: function(data, _, output) {
         data.rushCount = data.rushCount || 0;
         data.rushCount++;
-        return {
-          en: 'Tether ' + data.rushCount,
-          de: 'Verbindung ' + data.rushCount,
-          fr: 'Lien ' + data.rushCount,
-          cn: '和' + data.rushCount + '连线',
-          ko: '선: ' + data.rushCount,
-        };
+        return output.text({ num: data.rushCount });
+      },
+      outputStrings: {
+        text: {
+          en: 'Tether ${num}',
+          de: 'Verbindung ${num}',
+          fr: 'Lien ${num}',
+          cn: '和${num}连线',
+          ko: '선: ${num}',
+        },
       },
     },
   ],
@@ -181,26 +187,30 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'シヴァ', id: '4D6[67]', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '希瓦', id: '4D6[67]', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '시바', id: '4D6[67]', capture: false }),
-      condition: (data) => data.role == 'tank',
+      condition: (data) => data.role === 'tank',
       delaySeconds: 43,
       suppressSeconds: 80,
-      infoText: function(data) {
-        if (data.firstFrost == 'driving') {
-          return {
-            en: 'Biting Frost Next',
-            de: 'Frosthieb als nächstes',
-            fr: 'Taillade de givre bientôt',
-            cn: '下次攻击前侧面',
-            ko: '다음: 서리 참격',
-          };
-        }
-        return {
+      infoText: function(data, _, output) {
+        if (data.firstFrost === 'driving')
+          return output.bitingFrostNext();
+
+        return output.drivingFrostNext();
+      },
+      outputStrings: {
+        bitingFrostNext: {
+          en: 'Biting Frost Next',
+          de: 'Frosthieb als nächstes',
+          fr: 'Taillade de givre bientôt',
+          cn: '下次攻击前侧面',
+          ko: '다음: 서리 참격',
+        },
+        drivingFrostNext: {
           en: 'Driving Frost Next',
           de: 'Froststoß als nächstes',
           fr: 'Percée de givre bientôt',
           cn: '下次攻击后面',
           ko: '다음: 서리 일격',
-        };
+        },
       },
     },
     {
@@ -223,24 +233,28 @@
       netRegexCn: NetRegexes.abilityFull({ source: '希瓦', id: '4DA0' }),
       netRegexKo: NetRegexes.abilityFull({ source: '시바', id: '4DA0' }),
       suppressSeconds: 20,
-      infoText: function(data, matches) {
-        let x = parseFloat(matches.x);
-        if (x >= 99 && x <= 101) {
-          return {
-            en: 'North / South',
-            de: 'Norden / Süden',
-            fr: 'Nord / Sud',
-            cn: '南北站位',
-            ko: '남 / 북',
-          };
-        }
-        return {
+      infoText: function(data, matches, output) {
+        const x = parseFloat(matches.x);
+        if (x >= 99 && x <= 101)
+          return output.northSouth();
+
+        return output.eastWest();
+      },
+      outputStrings: {
+        northSouth: {
+          en: 'North / South',
+          de: 'Norden / Süden',
+          fr: 'Nord / Sud',
+          cn: '南北站位',
+          ko: '남 / 북',
+        },
+        eastWest: {
           en: 'East / West',
           de: 'Osten / Westen',
           fr: 'Est / Ouest',
           cn: '东西站位',
           ko: '동 / 서',
-        };
+        },
       },
     },
     {
@@ -371,34 +385,35 @@
         data.akhMornTargets = data.akhMornTargets || [];
         data.akhMornTargets.push(matches.target);
       },
-      response: function(data, matches) {
-        if (data.me == matches.target) {
-          let onYou = {
+      response: function(data, matches, output) {
+        // cactbot-builtin-response
+        output.responseOutputStrings = {
+          akhMornOnYou: {
             en: 'Akh Morn on YOU',
             de: 'Akh Morn auf DIR',
             fr: 'Akh Morn sur VOUS',
             cn: '死亡轮回点名',
             ko: '아크몬 대상자',
-          };
+          },
+          akhMornOn: {
+            en: 'Akh Morn: ${players}',
+            de: 'Akh Morn: ${players}',
+            fr: 'Akh Morn : ${players}',
+            ko: '아크몬 : ${players}',
+            cn: '死亡轮回: ${players}',
+          },
+        };
+        if (data.me === matches.target) {
           // It'd be nice to have this be an alert, but it mixes with a lot of
           // other alerts (akh rhai "move" and worm's lament numbers).
-          if (data.role == 'tank')
-            return { infoText: onYou };
-          return { alarmText: onYou };
+          return { [data.role === 'tank' ? 'infoText' : 'alarmText']: output.akhMornOnYou() };
         }
-        if (data.akhMornTargets.length != 2)
+        if (data.akhMornTargets.length !== 2)
           return;
         if (data.akhMornTargets.includes(data.me))
           return;
-        return {
-          infoText: {
-            en: 'Akh Morn: ' + data.akhMornTargets.map((x) => data.ShortName(x)).join(', '),
-            de: 'Akh Morn: ' + data.akhMornTargets.map((x) => data.ShortName(x)).join(', '),
-            fr: 'Akh Morn : ' + data.akhMornTargets.map((x) => data.ShortName(x)).join(', '),
-            ko: '아크몬 : ' + data.akhMornTargets.map((x) => data.ShortName(x)).join(', '),
-            cn: '死亡轮回: ' + data.akhMornTargets.map((x) => data.ShortName(x)).join(', '),
-          },
-        };
+        const players = data.akhMornTargets.map((x) => data.ShortName(x)).join(', ');
+        return { infoText: akhMornOn({ players: players }) };
       },
     },
     {
@@ -422,25 +437,28 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'シヴァ', id: '4D7B' }),
       netRegexCn: NetRegexes.startsUsing({ source: '希瓦', id: '4D7B' }),
       netRegexKo: NetRegexes.startsUsing({ source: '시바', id: '4D7B' }),
-      alertText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: 'Morn Afah on YOU',
-            de: 'Morn Afah auf DIR',
-            fr: 'Morn Afah sur VOUS',
-            cn: '无尽顿悟点名',
-            ko: '몬아파 대상자',
-          };
-        }
-        if (data.role == 'tank' || data.role == 'healer' || data.CanAddle()) {
-          return {
-            en: 'Morn Afah on ' + data.ShortName(matches.target),
-            de: 'Morn Afah auf ' + data.ShortName(matches.target),
-            fr: 'Morn Afah sur ' + data.ShortName(matches.target),
-            cn: '无尽顿悟点 ' + data.ShortName(matches.target),
-            ko: '"' + data.ShortName(matches.target) + '" 몬 아파',
-          };
-        }
+      alertText: function(data, matches, output) {
+        if (data.me === matches.target)
+          return output.mornAfahOnYou();
+
+        if (data.role === 'tank' || data.role === 'healer' || data.CanAddle())
+          return output.mornAfahOn({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        mornAfahOnYou: {
+          en: 'Morn Afah on YOU',
+          de: 'Morn Afah auf DIR',
+          fr: 'Morn Afah sur VOUS',
+          cn: '无尽顿悟点名',
+          ko: '몬아파 대상자',
+        },
+        mornAfahOn: {
+          en: 'Morn Afah on ${player}',
+          de: 'Morn Afah auf ${player}',
+          fr: 'Morn Afah sur ${player}',
+          cn: '无尽顿悟点 ${player}',
+          ko: '"${player}" 몬 아파',
+        },
       },
     },
     {
@@ -508,7 +526,7 @@
       netRegex: NetRegexes.gainsEffect({ effectId: '8D2' }),
       condition: Conditions.targetIsYou(),
       preRun: function(data, matches) {
-        if (data.wyrmsLament == 1) {
+        if (data.wyrmsLament === 1) {
           data.wyrmclawNumber = {
             '14': 1,
             '22': 2,
@@ -525,14 +543,17 @@
       durationSeconds: function(data, matches) {
         return matches.duration;
       },
-      alertText: function(data) {
-        return {
-          en: 'Red #' + data.wyrmclawNumber,
-          de: 'Rot #' + data.wyrmclawNumber,
-          fr: 'Rouge #' + data.wyrmclawNumber,
-          cn: '红色 #' + data.wyrmclawNumber,
-          ko: '빨강 ' + data.wyrmclawNumber + '번',
-        };
+      alertText: function(data, _, output) {
+        return output.text({ num: data.wyrmclawNumber });
+      },
+      outputStrings: {
+        text: {
+          en: 'Red #${num}',
+          de: 'Rot #${num}',
+          fr: 'Rouge #${num}',
+          cn: '红色 #${num}',
+          ko: '빨강 ${num}번',
+        },
       },
     },
     {
@@ -540,7 +561,7 @@
       netRegex: NetRegexes.gainsEffect({ effectId: '8D3' }),
       condition: Conditions.targetIsYou(),
       preRun: function(data, matches) {
-        if (data.wyrmsLament == 1) {
+        if (data.wyrmsLament === 1) {
           data.wyrmfangNumber = {
             '20': 1,
             '28': 2,
@@ -557,14 +578,17 @@
       durationSeconds: function(data, matches) {
         return matches.duration;
       },
-      alertText: function(data) {
-        return {
-          en: 'Blue #' + data.wyrmfangNumber,
-          de: 'Blau #' + data.wyrmfangNumber,
-          fr: 'Bleu #' + data.wyrmfangNumber,
-          cn: '蓝色 #' + data.wyrmfangNumber,
-          ko: '파랑 ' + data.wyrmfangNumber + '번',
-        };
+      alertText: function(data, _, output) {
+        return output.text({ num: data.wyrmfangNumber });
+      },
+      outputStrings: {
+        text: {
+          en: 'Blue #${num}',
+          de: 'Blau #${num}',
+          fr: 'Bleu #${num}',
+          cn: '蓝色 #${num}',
+          ko: '파랑 ${num}번',
+        },
       },
     },
     {
@@ -678,7 +702,7 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'シヴァ', id: '4D7E', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '希瓦', id: '4D7E', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '시바', id: '4D7E', capture: false }),
-      condition: (data) => data.role == 'tank',
+      condition: (data) => data.role === 'tank',
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -698,7 +722,7 @@
       netRegexJa: NetRegexes.startsUsing({ source: 'シヴァ', id: '4D7F', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '希瓦', id: '4D7F', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '시바', id: '4D7F', capture: false }),
-      condition: (data) => data.role == 'tank',
+      condition: (data) => data.role === 'tank',
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -965,7 +989,7 @@
         'Banish(?! )': '放逐',
         'Inescapable Illumination': '曝露光',
         'The House Of Light': '光之海啸',
-        'Reflected Frost Armor \\(G\\)': '连锁反冰甲(绿)',
+        'Reflected Frost Armor \\(R\\)': '连锁反冰甲(红)',
       },
     },
     {
@@ -1028,8 +1052,8 @@
         'Banish(?! )': '배니시',
         'Inescapable Illumination': '폭로광',
         'The House Of Light': '빛의 해일',
-        'Reflected Frost Armor \\(G\\)': '반사된 서리 갑옷 (초록)',
+        'Reflected Frost Armor \\(R\\)': '반사된 서리 갑옷 (빨강)',
       },
     },
   ],
-}];
+};

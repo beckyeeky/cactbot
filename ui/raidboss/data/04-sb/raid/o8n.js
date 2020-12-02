@@ -1,7 +1,10 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // O8N - Sigmascape 4.0 Normal
-[{
+export default {
   zoneId: ZoneId.SigmascapeV40,
   timelineFile: 'o8n.txt',
   triggers: [
@@ -99,9 +102,7 @@
     {
       id: 'O8N Flagrant Fire Single',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      condition: function(data, matches) {
-        return matches.target == data.me;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -359,4 +360,4 @@
       },
     },
   ],
-}];
+};

@@ -1,4 +1,7 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // TODO: stun call for True Heart sprint ability?
 
@@ -39,7 +42,7 @@
 //     red tether / white prey
 //     green tether / purple prey
 
-[{
+export default {
   zoneId: ZoneId.AlexanderTheArmOfTheSonSavage,
   timelineNeedsFixing: true,
   timelineFile: 'a7s.txt',
@@ -60,29 +63,31 @@
     {
       id: 'A7S Sizzlebeam',
       netRegex: NetRegexes.headMarker({ id: '0018' }),
-      alertText: function(data, matches) {
-        if (matches.target === data.me) {
-          return {
-            en: 'Sizzlebeam on YOU',
-            de: 'Gobpartikelstrahl auf DIR',
-            fr: 'Gobrayon sur VOUS',
-            ja: '自分にゴブ式波動砲',
-            cn: '波动炮点名',
-            ko: '고블린식 파동포 대상자',
-          };
-        }
+      alertText: function(data, matches, output) {
+        if (matches.target === data.me)
+          return output.sizzlebeamOnYou();
       },
-      infoText: function(data, matches) {
-        if (matches.target !== data.me) {
-          return {
-            en: 'Sizzlebeam on ' + data.ShortName(matches.target),
-            de: 'Gobpartikelstrahl auf ' + data.ShortName(matches.target),
-            fr: 'Gobrayon sur ' + data.ShortName(matches.target),
-            ja: data.ShortName(matches.target) + 'にゴブ式波動砲',
-            cn: '波动炮点' + data.ShortName(matches.target),
-            ko: '"' + data.ShortName(matches.target) + '" 고블린식 파동포',
-          };
-        }
+      infoText: function(data, matches, output) {
+        if (matches.target !== data.me)
+          return output.sizzlebeamOn({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        sizzlebeamOn: {
+          en: 'Sizzlebeam on ${player}',
+          de: 'Gobpartikelstrahl auf ${player}',
+          fr: 'Gobrayon sur ${player}',
+          ja: '${player}にゴブ式波動砲',
+          cn: '波动炮点${player}',
+          ko: '"${player}" 고블린식 파동포',
+        },
+        sizzlebeamOnYou: {
+          en: 'Sizzlebeam on YOU',
+          de: 'Gobpartikelstrahl auf DIR',
+          fr: 'Gobrayon sur VOUS',
+          ja: '自分にゴブ式波動砲',
+          cn: '波动炮点名',
+          ko: '고블린식 파동포 대상자',
+        },
       },
     },
     {
@@ -401,6 +406,8 @@
         'Quickthinx Allthoughts': '만능의 퀵싱크스',
         'Shanoa': '샤노아',
         'Sturm Doll': '인형 폭기병',
+        'Electrocution Gallery': '공개처형 광장',
+        'Pyretic': '열병',
       },
       'replaceText': {
         'Big Doll': '큰 인형',
@@ -423,4 +430,4 @@
       },
     },
   ],
-}];
+};

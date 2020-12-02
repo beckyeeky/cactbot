@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.TheForbiddenLandEurekaAnemos,
   resetWhenOutOfCombat: false,
   triggers: [
@@ -132,9 +135,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '29C3', source: 'ヴォイドスケイル' }),
       netRegexCn: NetRegexes.startsUsing({ id: '29C3', source: '虚无鳞龙' }),
       netRegexKo: NetRegexes.startsUsing({ id: '29C3', source: '보이드비늘' }),
-      condition: function(data, matches) {
-        return matches.target == data.me;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -165,9 +166,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '289F', source: 'パズズ' }),
       netRegexCn: NetRegexes.startsUsing({ id: '289F', source: '帕祖祖' }),
       netRegexKo: NetRegexes.startsUsing({ id: '289F', source: '파주주' }),
-      condition: function(data, matches) {
-        return matches.target == data.me;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.tankBuster(),
     },
     {
@@ -209,17 +208,20 @@
       netRegexCn: NetRegexes.wasDefeated({ target: '暗影幽灵', capture: false }),
       netRegexKo: NetRegexes.wasDefeated({ target: '그림자 망령', capture: false }),
       soundVolume: 0,
-      infoText: function(data) {
+      infoText: function(data, _, output) {
         data.wraithCount = data.wraithCount || 0;
         data.wraithCount++;
-        return {
-          en: 'wraiths: ' + data.wraithCount,
-          de: 'Geister: ' + data.wraithCount,
-          fr: 'spectres: ' + data.wraithCount,
-          ja: 'レイス: ' + data.wraithCount,
-          cn: '幽灵击杀: ' + data.wraithCount,
-          ko: '망령: ' + data.wraithCount,
-        };
+        return output.text({ num: data.wraithCount });
+      },
+      outputStrings: {
+        text: {
+          en: 'wraiths: ${num}',
+          de: 'Geister: ${num}',
+          fr: 'spectres: ${num}',
+          ja: 'レイス: ${num}',
+          cn: '幽灵击杀: ${num}',
+          ko: '망령: ${num}',
+        },
       },
     },
     {
@@ -239,9 +241,10 @@
       netRegex: NetRegexes.gameLog({ line: '7 minutes have elapsed since your last activity..*?', capture: false }),
       netRegexDe: NetRegexes.gameLog({ line: 'Seit deiner letzten Aktivität sind 7 Minuten vergangen..*?', capture: false }),
       netRegexFr: NetRegexes.gameLog({ line: 'Votre personnage est inactif depuis 7 minutes.*?', capture: false }),
+      netRegexJa: NetRegexes.gameLog({ line: '操作がない状態になってから7分が経過しました。.*?', capture: false }),
       netRegexCn: NetRegexes.gameLog({ line: '已经7分钟没有进行任何操作.*?', capture: false }),
       netRegexKo: NetRegexes.gameLog({ line: '7분 동안 아무 조작을 하지 않았습니다..*?', capture: false }),
       response: Responses.wakeUp(),
     },
   ],
-}];
+};

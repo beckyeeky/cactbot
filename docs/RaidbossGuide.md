@@ -4,8 +4,13 @@
 
 ## File Structure
 
+Each trigger file is a module that exports a single trigger set.
+
 ```javascript
-[{
+import ZoneId from '../path/to/resources/zone_id.js';
+// Other imports here.
+
+export default {
   zoneId: ZoneId.TheWeaponsRefrainUltimate,
   overrideTimelineFile: false,
   timelineFile: 'filename.txt',
@@ -27,18 +32,10 @@
     { /* ..trigger 2.. */ },
     { /* ..trigger 3.. */ },
   ]
-},
-{
-  zoneRegex: /Eureka Hydatos/,
-  triggers: [
-    { /* ..trigger 1.. */ },
-    { /* ..trigger 2.. */ },
-    { /* ..trigger 3.. */ },
-  ]
-}]
+};
 ```
 
-### Elements
+### Trigger Set Properties
 
 **zoneId**
 A shortened name for the zone to use these triggers in.
@@ -57,7 +54,10 @@ specified in this trigger set override all timelines previously found.
 This is a way to replace timelines in user files and is not used inside cactbot itself.
 
 **timelineFile**
-An optional timeline file to load for this zone. These files live alongside their parent trigger file in the appropriate folder. (As for example `raidboss/data/04-sb/raid/`).
+An optional timeline file to load for this zone.
+Timeline files in cactbot should be named the same as the `.js` file they come from,
+but with a `.txt` extension instead.
+These files live alongside their parent trigger file in the appropriate folder. (As for example `raidboss/data/04-sb/raid/`).
 
 **timeline**
 Optional extra lines to include as part of the timeline.
@@ -122,7 +122,7 @@ For such functions:
   for triggers that don't output anything, e.g. `preRun` or `run`,
   the output field is largely meaningless.
 
-### Trigger Elements
+### Trigger Properties
 
 **id string**
  An id string for the trigger.
@@ -187,14 +187,15 @@ Generally speaking it's best to use one of these if it fits the situation.)
 **preRun: function(data, matches, output)**
 If the trigger activates, the function will run as the first action after the activation condition is met.
 
-**promise: function(data, matches, output)**
-If present and a function which returns a promise,
-will wait for promise to resolve before continuing with trigger.
-This runs after `preRun` and before the `delaySeconds` delay.
-
 **delaySeconds**
 An amount of time, in seconds, to wait from the time the regex match is detected until the trigger activates.
 May be a number or a `function(data, matches, output)` that returns a number.
+This runs after `preRun` and before the `promise`.
+
+**promise: function(data, matches, output)**
+If present and a function which returns a promise,
+will wait for promise to resolve before continuing with trigger.
+This runs after the delay from `delaySeconds`.
 
 **durationSeconds**
 Time, in seconds, to display the trigger text.
@@ -356,7 +357,6 @@ Trigger elements are evaluated in this order, and must be listed in this order:
 - alarmText
 - alertText
 - infoText
-- groupTTS
 - tts
 - run
 - outputStrings

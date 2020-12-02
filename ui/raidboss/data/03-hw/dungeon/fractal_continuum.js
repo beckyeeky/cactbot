@@ -1,7 +1,10 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // Fractal Continuum
-[{
+export default {
   zoneId: ZoneId.TheFractalContinuum,
   timelineFile: 'fractal_continuum.txt',
   timelineTriggers: [
@@ -9,9 +12,7 @@
       id: 'Fractal Atmospheric Displacement',
       regex: /Atmospheric Displacement/,
       beforeSeconds: 5,
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -24,9 +25,7 @@
       id: 'Fractal Unholy',
       regex: /Unholy/,
       beforeSeconds: 5,
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
   ],
@@ -284,4 +283,4 @@
       },
     },
   ],
-}];
+};

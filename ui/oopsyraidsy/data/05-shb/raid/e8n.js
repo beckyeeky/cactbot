@@ -1,6 +1,7 @@
-'use strict';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.EdensVerseRefulgence,
   damageWarn: {
     'E8N Biting Frost': '4DDB', // 270-degree frontal AoE, Shiva
@@ -37,6 +38,7 @@
             de: 'Runter gestoßen!',
             ja: 'ノックバック',
             cn: '击退坠落',
+            ko: '넉백됨!',
           },
         };
       },
@@ -54,9 +56,10 @@
             de: 'runtergerutscht!',
             ja: '滑った',
             cn: '滑落',
+            ko: '미끄러짐!',
           },
         };
       },
     },
   ],
-}];
+};

@@ -1,4 +1,9 @@
-'use strict';
+import PartyTracker from '../../resources/party.js';
+import Regexes from '../../resources/regexes.js';
+import { triggerOutputFunctions } from '../../resources/responses.js';
+import UserConfig from '../../resources/user_config.js';
+import { Util } from '../../resources/common.js';
+import raidbossFileData from './data/manifest.txt';
 
 const kOptionKeys = {
   output: 'Output',
@@ -7,7 +12,7 @@ const kOptionKeys = {
 };
 
 // No sound only option, because that's silly.
-let kTriggerOptions = {
+const kTriggerOptions = {
   default: {
     label: {
       en: '✔ Defaults',
@@ -70,7 +75,7 @@ let kTriggerOptions = {
   },
 };
 
-let kDetailKeys = {
+const kDetailKeys = {
   'triggerRegex': {
     label: {
       en: 'regex',
@@ -217,6 +222,8 @@ const kMiscTranslations = {
     en: '(default)',
     de: '(Standard)',
     fr: '(Défaut)',
+    ja: '(初期値)',
+    cn: '(默认值)',
     ko: '(기본값)',
   },
 };
@@ -294,20 +301,21 @@ class RaidbossConfigurator {
   buildUI(container, raidbossFiles) {
     const fileMap = this.processRaidbossFiles(raidbossFiles);
 
-    let expansionDivs = {};
+    const expansionDivs = {};
 
-    for (const [key, info] of Object.entries(fileMap)) {
+    for (const key in fileMap) {
+      const info = fileMap[key];
       const expansion = info.prefix;
 
-      if (Object.keys(info.triggers).length == 0)
+      if (Object.keys(info.triggers).length === 0)
         continue;
 
       if (!expansionDivs[expansion]) {
-        let expansionContainer = document.createElement('div');
+        const expansionContainer = document.createElement('div');
         expansionContainer.classList.add('trigger-expansion-container', 'collapsed');
         container.appendChild(expansionContainer);
 
-        let expansionHeader = document.createElement('div');
+        const expansionHeader = document.createElement('div');
         expansionHeader.classList.add('trigger-expansion-header');
         expansionHeader.onclick = () => {
           expansionContainer.classList.toggle('collapsed');
@@ -318,21 +326,21 @@ class RaidbossConfigurator {
         expansionDivs[expansion] = expansionContainer;
       }
 
-      let triggerContainer = document.createElement('div');
+      const triggerContainer = document.createElement('div');
       triggerContainer.classList.add('trigger-file-container', 'collapsed');
       expansionDivs[expansion].appendChild(triggerContainer);
 
-      let headerDiv = document.createElement('div');
+      const headerDiv = document.createElement('div');
       headerDiv.classList.add('trigger-file-header');
       headerDiv.onclick = () => {
         triggerContainer.classList.toggle('collapsed');
       };
 
-      let parts = [info.title, info.type, expansion];
+      const parts = [info.title, info.type, expansion];
       for (let i = 0; i < parts.length; ++i) {
         if (!parts[i])
           continue;
-        let partDiv = document.createElement('div');
+        const partDiv = document.createElement('div');
         partDiv.classList.add('trigger-file-header-part');
         partDiv.innerText = parts[i];
         headerDiv.appendChild(partDiv);
@@ -340,16 +348,16 @@ class RaidbossConfigurator {
 
       triggerContainer.appendChild(headerDiv);
 
-      let triggerOptions = document.createElement('div');
+      const triggerOptions = document.createElement('div');
       triggerOptions.classList.add('trigger-file-options');
       triggerContainer.appendChild(triggerOptions);
 
-      for (let id in info.triggers) {
-        let trig = info.triggers[id];
+      for (const id in info.triggers) {
+        const trig = info.triggers[id];
 
         // Don't construct triggers that won't show anything.
         let detailCount = 0;
-        for (let detailKey in kDetailKeys) {
+        for (const detailKey in kDetailKeys) {
           if (!this.base.developerOptions && kDetailKeys[detailKey].debugOnly)
             continue;
           if (!trig[detailKey] && !trig.output[detailKey])
@@ -360,13 +368,13 @@ class RaidbossConfigurator {
           continue;
 
         // Build the trigger label.
-        let triggerDiv = document.createElement('div');
+        const triggerDiv = document.createElement('div');
         triggerDiv.innerHTML = trig.id;
         triggerDiv.classList.add('trigger');
         triggerOptions.appendChild(triggerDiv);
 
         // Container for the right side ui (select boxes, all of the info).
-        let triggerDetails = document.createElement('div');
+        const triggerDetails = document.createElement('div');
         triggerDetails.classList.add('trigger-details');
         triggerOptions.appendChild(triggerDetails);
 
@@ -380,15 +388,15 @@ class RaidbossConfigurator {
             continue;
           if (!trig[detailKey] && !trig.output[detailKey])
             continue;
-          let label = document.createElement('div');
+          const label = document.createElement('div');
           label.innerText = this.base.translate(kDetailKeys[detailKey].label);
           label.classList.add('trigger-label');
           triggerDetails.appendChild(label);
 
-          let detail = document.createElement('div');
+          const detail = document.createElement('div');
           detail.classList.add('trigger-detail');
 
-          let output = trig.output[detailKey];
+          const output = trig.output[detailKey];
           detail.classList.add(kDetailKeys[detailKey].cls);
           if (trig.output[detailKey]) {
             detail.innerText = trig.output[detailKey];
@@ -402,27 +410,35 @@ class RaidbossConfigurator {
           triggerDetails.appendChild(detail);
         }
 
+        let hasOutputFunc = false;
+        for (const func of triggerOutputFunctions) {
+          if (trig[func]) {
+            hasOutputFunc = true;
+            break;
+          }
+        }
+
         // Add duration manually with an input to override.
-        {
+        if (hasOutputFunc) {
           const detailKey = 'duration';
           const optionKey = kOptionKeys.duration;
 
-          let label = document.createElement('div');
+          const label = document.createElement('div');
           label.innerText = this.base.translate(kDetailKeys[detailKey].label);
           label.classList.add('trigger-label');
           triggerDetails.appendChild(label);
 
-          let div = document.createElement('div');
+          const div = document.createElement('div');
           div.classList.add('option-input-container', 'trigger-duration');
 
-          let input = document.createElement('input');
+          const input = document.createElement('input');
           div.appendChild(input);
           input.type = 'text';
           input.step = 'any';
           input.placeholder = this.base.translate(kMiscTranslations.valueDefault);
           input.value = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, '');
-          let setFunc = () => {
-            let val = validDurationOrUndefined(input.value) || '';
+          const setFunc = () => {
+            const val = validDurationOrUndefined(input.value) || '';
             this.base.setOption('raidboss', 'triggers', trig.id, optionKey, val);
           };
           input.onchange = setFunc;
@@ -436,22 +452,22 @@ class RaidbossConfigurator {
 
         for (const key in outputStrings) {
           const optionKey = kOptionKeys.outputStrings;
-          let template = this.base.translate(outputStrings[key]);
+          const template = this.base.translate(outputStrings[key]);
 
-          let label = document.createElement('div');
+          const label = document.createElement('div');
           label.innerText = key;
           label.classList.add('trigger-outputstring-label');
           triggerDetails.appendChild(label);
 
-          let div = document.createElement('div');
+          const div = document.createElement('div');
           div.classList.add('option-input-container', 'trigger-outputstring');
 
-          let input = document.createElement('input');
+          const input = document.createElement('input');
           div.appendChild(input);
           input.type = 'text';
           input.placeholder = template;
           input.value = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, key, '');
-          let setFunc = () => this.base.setOption('raidboss', 'triggers', trig.id, optionKey, key, input.value);
+          const setFunc = () => this.base.setOption('raidboss', 'triggers', trig.id, optionKey, key, input.value);
           input.onchange = setFunc;
           input.oninput = setFunc;
 
@@ -463,7 +479,7 @@ class RaidbossConfigurator {
 
   // This duplicates the raidboss function of the same name.
   valueOrFunction(f, data, matches, output) {
-    let result = (typeof f === 'function') ? f(data, matches, output) : f;
+    const result = (typeof f === 'function') ? f(data, matches, output) : f;
     if (result !== Object(result))
       return result;
     if (result[this.alertsLang])
@@ -483,7 +499,7 @@ class RaidbossConfigurator {
       Object.assign(trig.outputStrings, outputStrings);
     });
 
-    let kBaseFakeData = {
+    const kBaseFakeData = {
       party: new PartyTracker(),
       lang: this.base.lang,
       currentHP: 1000,
@@ -499,7 +515,7 @@ class RaidbossConfigurator {
       CanAddle: () => Util.canAddle(this.job),
     };
 
-    let kFakeData = [
+    const kFakeData = [
       {
         me: 'Tini Poutini',
         job: 'GNB',
@@ -531,7 +547,7 @@ class RaidbossConfigurator {
       kFakeData[i] = Object.assign({}, kFakeData[i], kBaseFakeData);
 
 
-    let kFakeMatches = {
+    const kFakeMatches = {
       // TODO: really should convert all triggers to use regexes.js.
       // Mooooost triggers use matches[1] to be a name.
       1: kFakeData[0].me,
@@ -557,14 +573,14 @@ class RaidbossConfigurator {
     };
 
 
-    let output = {};
-    let keys = ['alarmText', 'alertText', 'infoText', 'tts', 'sound'];
+    const output = {};
+    const keys = ['alarmText', 'alertText', 'infoText', 'tts', 'sound'];
 
     // Try to determine some sample output?
     // This could get much more complicated if we wanted it to.
-    let evalTrigger = (trig, key, idx) => {
+    const evalTrigger = (trig, key, idx) => {
       try {
-        let result = this.valueOrFunction(trig[key], kFakeData[idx], kFakeMatches, trig.output);
+        const result = this.valueOrFunction(trig[key], kFakeData[idx], kFakeMatches, trig.output);
         if (!result)
           return false;
 
@@ -584,14 +600,16 @@ class RaidbossConfigurator {
 
     // Handle 'response' first.
     if (trig.response) {
-      let r = trig.response;
+      const r = trig.response;
       for (let d = 0; d < kFakeData.length; ++d) {
         try {
           // Can't use ValueOrFunction here as r returns a non-localizable object.
           // FIXME: this hackily replicates some raidboss logic too.
           let response = r;
-          while (typeof response === 'function')
+          while (typeof response === 'function') {
+            // TODO: check if this has builtInResponseStr first.
             response = response(kFakeData[d], kFakeMatches, trig.output);
+          }
           if (!response)
             continue;
 
@@ -621,14 +639,14 @@ class RaidbossConfigurator {
 
     trig.output = output;
 
-    let lang = this.base.lang;
+    const lang = this.base.lang;
 
-    let getRegex = (baseField) => {
-      let shortLanguage = lang.charAt(0).toUpperCase() + lang.slice(1);
-      let langSpecificRegex = trig[baseField + shortLanguage] || trig[baseField];
+    const getRegex = (baseField) => {
+      const shortLanguage = lang.charAt(0).toUpperCase() + lang.slice(1);
+      const langSpecificRegex = trig[baseField + shortLanguage] || trig[baseField];
       if (!langSpecificRegex)
         return;
-      let baseRegex = Regexes.parse(langSpecificRegex);
+      const baseRegex = Regexes.parse(langSpecificRegex);
       if (!baseRegex)
         return;
       return Regexes.parse(baseRegex);
@@ -645,20 +663,19 @@ class RaidbossConfigurator {
   }
 
   processRaidbossFiles(files) {
-    let map = this.base.processFiles(files);
-    for (let [key, item] of Object.entries(map)) {
+    const map = this.base.processFiles(files);
+    for (const [key, item] of Object.entries(map)) {
       // TODO: maybe each trigger set needs a zone name, and we should
       // use that instead of the filename???
-      let rawTriggers = {
+      const rawTriggers = {
         trigger: [],
         timeline: [],
       };
-      for (const triggerSet of item.json) {
-        if (triggerSet.triggers)
-          rawTriggers.trigger.push(...triggerSet.triggers);
-        if (triggerSet.timelineTriggers)
-          rawTriggers.timeline.push(...triggerSet.timelineTriggers);
-      }
+      const triggerSet = item.triggerSet;
+      if (triggerSet.triggers)
+        rawTriggers.trigger.push(...triggerSet.triggers);
+      if (triggerSet.timelineTriggers)
+        rawTriggers.timeline.push(...triggerSet.timelineTriggers);
 
       item.triggers = {};
       for (const key in rawTriggers) {
@@ -678,29 +695,29 @@ class RaidbossConfigurator {
   }
 
   buildTriggerOptions(trig, labelDiv) {
-    let optionKey = kOptionKeys.output;
-    let div = document.createElement('div');
+    const optionKey = kOptionKeys.output;
+    const div = document.createElement('div');
     div.classList.add('trigger-options');
 
-    let updateLabel = (input) => {
+    const updateLabel = (input) => {
       if (input.value === 'hidden' || input.value === 'disabled')
         labelDiv.classList.add('disabled');
       else
         labelDiv.classList.remove('disabled');
     };
 
-    let input = document.createElement('select');
+    const input = document.createElement('select');
     div.appendChild(input);
 
-    let selectValue = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, 'default');
+    const selectValue = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, 'default');
 
-    for (let key in kTriggerOptions) {
+    for (const key in kTriggerOptions) {
       // Hide debug only options unless they are selected.
       // Otherwise, it will look weird to pick something like 'Disabled',
       // but then not show it when developer options are turned off.
       if (!this.base.developerOptions && kTriggerOptions[key].debugOnly && key !== selectValue)
         continue;
-      let elem = document.createElement('option');
+      const elem = document.createElement('option');
       elem.innerHTML = this.base.translate(kTriggerOptions[key].label);
       elem.value = key;
       elem.selected = key === selectValue;
@@ -723,8 +740,6 @@ class RaidbossConfigurator {
 
 // Raidboss needs to do some extra processing of user files.
 const userFileHandler = (name, files, options) => {
-  eval(files[name]);
-
   if (!options.Triggers)
     return;
 
@@ -753,16 +768,8 @@ const userFileHandler = (name, files, options) => {
 
 const templateOptions = {
   buildExtraUI: (base, container) => {
-    let raidbossUrl = new URL('../raidboss/raidboss.html', location.href);
-    callOverlayHandler({
-      call: 'cactbotReadDataFiles',
-      source: raidbossUrl,
-    }).then((e) => {
-      let files = e.detail.files;
-
-      let builder = new RaidbossConfigurator(base);
-      builder.buildUI(container, files);
-    });
+    const builder = new RaidbossConfigurator(base);
+    builder.buildUI(container, raidbossFileData);
   },
   processExtraOptions: (options, savedConfig) => {
     // raidboss will look up this.options.PerTriggerAutoConfig to find these values.
@@ -919,7 +926,7 @@ const templateOptions = {
           '德语 (de)': 'de',
           '法语 (fr)': 'fr',
           '日语 (ja)': 'ja',
-          '朝鲜语 (ko)': 'ko',
+          '韩语 (ko)': 'ko',
         },
         ko: {
           '주 사용 언어 사용': 'default',
@@ -994,7 +1001,7 @@ const templateOptions = {
           '德语 (de)': 'de',
           '法语 (fr)': 'fr',
           '日语 (ja)': 'ja',
-          '朝鲜语 (ko)': 'ko',
+          '韩语 (ko)': 'ko',
         },
         ko: {
           'FFXIV Plugin 언어 사용': 'default',

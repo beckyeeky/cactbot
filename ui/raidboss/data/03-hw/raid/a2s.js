@@ -1,4 +1,6 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // TODO: could consider keeping track of the gobbie driver?
 // Nothing in the logs for when you get in, other than removing combatanat.
@@ -7,7 +9,7 @@
 // There aren't many triggers, so maybe worth just keeping the global callouts
 // for bombs and stuns.
 
-[{
+export default {
   zoneId: ZoneId.AlexanderTheCuffOfTheFatherSavage,
   timelineFile: 'a2s.txt',
   timelineTriggers: [
@@ -59,18 +61,21 @@
       netRegexCn: NetRegexes.ability({ source: '9号哥布林黑寡妇', id: '1413' }),
       netRegexKo: NetRegexes.ability({ source: 'Ix호 고블린거미', id: '1413' }),
       condition: function(data) {
-        return data.role == 'healer' || data.job == 'BLU';
+        return data.role === 'healer' || data.job === 'BLU';
       },
       suppressSeconds: 10,
-      infoText: function(data, matches) {
-        return {
-          en: 'Keep ' + data.ShortName(matches.target) + ' topped',
-          de: 'Halte HP von ' + data.ShortName(matches.target) + ' oben',
-          fr: 'Maintenez ' + data.ShortName(matches.target) + ' Max PV',
-          ja: data.ShortName(matches.target) + 'のHPを満タンに保つ',
-          cn: '保持' + data.ShortName(matches.target) + '满血',
-          ko: '"' + data.ShortName(matches.target) + '" 풀피 유지',
-        };
+      infoText: function(data, matches, output) {
+        return output.text({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        text: {
+          en: 'Keep ${player} topped',
+          de: 'Halte HP von ${player} oben',
+          fr: 'Maintenez ${player} Max PV',
+          ja: '${player}のHPを満タンに保つ',
+          cn: '保持${player}满血',
+          ko: '"${player}" 풀피 유지',
+        },
       },
     },
     {
@@ -311,4 +316,4 @@
       },
     },
   ],
-}];
+};

@@ -1,17 +1,20 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.EdensGateResurrectionSavage,
   timelineFile: 'e1s.txt',
   timeline: [
     function(data) {
-      let chance = 0.4;
-      let time = '275';
+      const chance = 0.4;
+      const time = '275';
 
       if (Math.random() >= chance)
         return;
 
-      let goofs = {
+      const goofs = {
         en: [
           'brb',
           ':zzz:',
@@ -52,7 +55,7 @@
       if (!goofs)
         return;
 
-      let goof = goofs[Math.floor(Math.random() * goofs.length)];
+      const goof = goofs[Math.floor(Math.random() * goofs.length)];
       return time + ' "' + goof + '"';
     },
   ],
@@ -104,9 +107,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3D70', source: 'エデン・プライム', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3D70', source: '至尊伊甸', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3D70', source: '에덴 프라임', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -117,9 +118,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3D8B', source: 'エデン・プライム', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3D8B', source: '至尊伊甸', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3D8B', source: '에덴 프라임', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -130,9 +129,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '3D7F', source: 'エデン・プライム', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3D7F', source: '至尊伊甸', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3D7F', source: '에덴 프라임', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -144,7 +141,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3D88', source: '至尊伊甸' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3D88', source: '에덴 프라임' }),
       condition: function(data, matches) {
-        return matches.target == data.me || data.role == 'tank' || data.role == 'healer';
+        return matches.target === data.me || data.role === 'tank' || data.role === 'healer';
       },
       response: Responses.tankBusterSwap(),
     },
@@ -186,25 +183,29 @@
       netRegexJa: NetRegexes.startsUsing({ id: '44F8', source: 'エデン・プライム', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '44F8', source: '至尊伊甸', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '44F8', source: '에덴 프라임', capture: false }),
-      alertText: function(data) {
-        if (data.role == 'tank') {
-          return {
-            en: 'Get In, Spread',
-            de: 'Rein gehen, verteilen',
-            fr: 'Intérieur, dispersez-vous',
-            ja: '中で散開',
-            cn: '中间散开',
-            ko: '보스 가까이 탱 약산개',
-          };
-        }
-        return {
+      alertText: function(data, _, output) {
+        if (data.role === 'tank')
+          return output.getInSpread();
+
+        return output.inStackBehind();
+      },
+      outputStrings: {
+        getInSpread: {
+          en: 'Get In, Spread',
+          de: 'Rein gehen, verteilen',
+          fr: 'Intérieur, dispersez-vous',
+          ja: '中で散開',
+          cn: '中间散开',
+          ko: '보스 가까이 탱 약산개',
+        },
+        inStackBehind: {
           en: 'In, Stack Behind',
           de: 'Rein, hinten stacken',
           fr: 'Intérieur, packez derrière',
           ja: '背面集合',
           cn: '背面集合',
           ko: '보스 가까이, 뒤에서 쉐어',
-        };
+        },
       },
     },
     {
@@ -224,7 +225,7 @@
       run: function(data) {
         // Note: this happens *after* the marks, so is setting up vice for the next marks.
         data.viceCount++;
-        let viceMap = {
+        const viceMap = {
           1: 'dps',
           2: 'tank',
           3: 'healer',
@@ -309,7 +310,7 @@
       id: 'E1S Vice and Virtue DPS 1',
       netRegex: NetRegexes.headMarker({ id: '00AE' }),
       condition: function(data, matches) {
-        return !data.paradise && data.vice == 'dps' && data.me == matches.target;
+        return !data.paradise && data.vice === 'dps' && data.me === matches.target;
       },
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -347,7 +348,7 @@
       id: 'E1S Vice and Virtue Tank Mark',
       netRegex: NetRegexes.headMarker({ id: '00AE' }),
       condition: function(data, matches) {
-        return data.vice == 'tank' && data.me == matches.target;
+        return data.vice === 'tank' && data.me === matches.target;
       },
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -370,7 +371,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '3D78', source: '至尊伊甸', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3D78', source: '에덴 프라임', capture: false }),
       condition: function(data) {
-        return data.role != 'tank';
+        return data.role !== 'tank';
       },
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -387,37 +388,39 @@
     {
       id: 'E1S Vice and Virtue Healer Mark YOU',
       netRegex: NetRegexes.gainsEffect({ effectId: '840' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
+      condition: Conditions.targetIsYou(),
+      infoText: function(data, _, output) {
+        if (data.paradise)
+          return output.passPreyToDps();
+
+        return output.passPreyToTank();
       },
-      infoText: function(data) {
-        if (data.paradise) {
-          return {
-            en: 'Pass Prey to DPS',
-            de: 'Marker einem DPS geben',
-            fr: 'Passez la marque à un DPS',
-            ja: 'DPSに移して',
-            cn: '传毒DPS',
-            ko: '딜러한테 표식 넘기기',
-          };
-        }
-        return {
+      outputStrings: {
+        passPreyToDps: {
+          en: 'Pass Prey to DPS',
+          de: 'Marker einem DPS geben',
+          fr: 'Passez la marque à un DPS',
+          ja: 'DPSに移して',
+          cn: '传毒DPS',
+          ko: '딜러한테 표식 넘기기',
+        },
+        passPreyToTank: {
           en: 'Pass Prey to Tank',
           de: 'Marker einem Tank geben',
           fr: 'Passez la marque à un Tank',
           ja: 'タンクに移して',
           cn: '传毒坦克',
           ko: '탱커한테 표식 넘기기',
-        };
+        },
       },
     },
     {
       id: 'E1S Vice and Virtue Healer Mark Not You',
       netRegex: NetRegexes.gainsEffect({ effectId: '840', capture: false }),
       condition: function(data) {
-        if (data.role == 'dps')
+        if (data.role === 'dps')
           return data.paradise;
-        if (data.role == 'tank')
+        if (data.role === 'tank')
           return !data.paradise;
         return false;
       },
@@ -629,4 +632,4 @@
       },
     },
   ],
-}];
+};

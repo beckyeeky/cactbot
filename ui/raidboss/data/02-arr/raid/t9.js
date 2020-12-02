@@ -1,6 +1,84 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import Regexes from '../../../../../resources/regexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+const diveDirections = {
+  unknown: {
+    en: '?',
+    de: '?',
+    fr: '?',
+    ja: '?',
+    cn: '？',
+  },
+  north: {
+    en: 'N',
+    de: 'N',
+    fr: 'N',
+    ja: '北',
+    cn: '北',
+    ko: '북',
+  },
+  northeast: {
+    en: 'NE',
+    de: 'NO',
+    fr: 'NE',
+    ja: '北東',
+    cn: '东北',
+    ko: '북동',
+  },
+  east: {
+    en: 'E',
+    de: 'O',
+    fr: 'E',
+    ja: '東',
+    cn: '东',
+    ko: '동',
+  },
+  southeast: {
+    en: 'SE',
+    de: 'SO',
+    fr: 'SE',
+    cn: '南東',
+    ja: '東南',
+    ko: '남동',
+  },
+  south: {
+    en: 'S',
+    de: 'S',
+    fr: 'S',
+    ja: '南',
+    cn: '南',
+    ko: '남',
+  },
+  southwest: {
+    en: 'SW',
+    de: 'SW',
+    fr: 'SO',
+    ja: '南西',
+    cn: '西南',
+    ko: '남서',
+  },
+  west: {
+    en: 'W',
+    de: 'W',
+    fr: 'O',
+    ja: '西',
+    cn: '西',
+    ko: '서',
+  },
+  northwest: {
+    en: 'NW',
+    de: 'NW',
+    fr: 'NO',
+    ja: '北西',
+    cn: '西北',
+    ko: '북서',
+  },
+};
+
+export default {
   zoneId: ZoneId.TheSecondCoilOfBahamutTurn4,
   timelineFile: 't9.txt',
   timelineTriggers: [
@@ -8,9 +86,7 @@
       id: 'T9 Claw',
       regex: /Bahamut's Claw x5/,
       beforeSeconds: 5,
-      condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer' || data.job == 'BLU';
-      },
+      condition: (data) => data.role === 'tank' || data.role === 'healer' || data.job === 'BLU',
       response: Responses.tankBuster(),
     },
     {
@@ -51,9 +127,7 @@
       id: 'T9 Raven Blight You',
       netRegex: NetRegexes.gainsEffect({ effectId: '1CA' }),
       condition: Conditions.targetIsYou(),
-      delaySeconds: function(data, matches) {
-        return matches.duration - 5;
-      },
+      delaySeconds: (data, matches) => matches.duration - 5,
       durationSeconds: 5,
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
@@ -71,19 +145,18 @@
       id: 'T9 Raven Blight Not You',
       netRegex: NetRegexes.gainsEffect({ effectId: '1CA' }),
       condition: Conditions.targetIsNotYou(),
-      delaySeconds: function(data, matches) {
-        return matches.duration - 5;
-      },
+      delaySeconds: (data, matches) => matches.duration - 5,
       durationSeconds: 5,
-      infoText: function(data, matches) {
-        return {
-          en: 'Blight on ' + data.ShortName(matches.target),
-          de: 'Pestschwinge auf ' + data.ShortName(matches.target),
-          fr: 'Bile de rapace sur ' + data.ShortName(matches.target),
-          ja: data.ShortName(matches.target) + 'に凶鳥毒気',
-          cn: '毒气点' + data.ShortName(matches.target),
-          ko: '광역폭발 디버프 ' + data.ShortName(matches.target),
-        };
+      infoText: (data, matches, output) => output.text({ player: data.ShortName(matches.target) }),
+      outputStrings: {
+        text: {
+          en: 'Blight on ${player}',
+          de: 'Pestschwinge auf ${player}',
+          fr: 'Bile de rapace sur ${player}',
+          ja: '${player}に凶鳥毒気',
+          cn: '毒气点${player}',
+          ko: '광역폭발 디버프 ${player}',
+        },
       },
     },
     {
@@ -101,25 +174,29 @@
     {
       id: 'T9 Stack',
       netRegex: NetRegexes.headMarker({ id: '000F' }),
-      alertText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: 'Thermo on YOU',
-            de: 'Thermo auf DIR',
-            fr: 'Thermo sur VOUS',
-            ja: '自分に頭割り',
-            cn: '分摊点名',
-            ko: '쉐어징 대상자',
-          };
-        }
-        return {
-          en: 'Stack on ' + data.ShortName(matches.target),
-          de: 'Sammeln auf ' + data.ShortName(matches.target),
-          fr: 'Packez-vous sur ' + data.ShortName(matches.target),
-          ja: data.ShortName(matches.target) + 'と頭割り',
-          cn: '靠近' + data.ShortName(matches.target) + '分摊',
-          ko: '"' + data.ShortName(matches.target) + '" 쉐어징',
-        };
+      alertText: (data, matches, output) => {
+        if (data.me === matches.target)
+          return output.thermoOnYou();
+
+        return output.stackOn({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        thermoOnYou: {
+          en: 'Thermo on YOU',
+          de: 'Thermo auf DIR',
+          fr: 'Thermo sur VOUS',
+          ja: '自分に頭割り',
+          cn: '分摊点名',
+          ko: '쉐어징 대상자',
+        },
+        stackOn: {
+          en: 'Stack on ${player}',
+          de: 'Sammeln auf ${player}',
+          fr: 'Packez-vous sur ${player}',
+          ja: '${player}と頭割り',
+          cn: '靠近${player}分摊',
+          ko: '"${player}" 쉐어징',
+        },
       },
     },
     {
@@ -176,13 +253,9 @@
     {
       id: 'T9 Garotte Twist Gain',
       netRegex: NetRegexes.gainsEffect({ effectId: '1CE' }),
-      condition: function(data, matches) {
-        return data.me == matches.target && !data.garotte;
-      },
+      condition: (data, matches) => data.me === matches.target && !data.garotte,
       infoText: (data, _, output) => output.text(),
-      run: function(data) {
-        data.garotte = true;
-      },
+      run: (data) => data.garotte = true,
       outputStrings: {
         text: {
           en: 'Garotte on YOU',
@@ -202,9 +275,7 @@
       netRegexJa: NetRegexes.ability({ id: '7FA', source: 'メラシディアン・ゴースト', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '7FA', source: '美拉西迪亚幽龙', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '7FA', source: '메라시디아의 유령', capture: false }),
-      condition: function(data) {
-        return data.garotte;
-      },
+      condition: (data) => data.garotte,
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -220,12 +291,8 @@
     {
       id: 'T9 Garotte Twist Lose',
       netRegex: NetRegexes.losesEffect({ effectId: '1CE' }),
-      condition: function(data, matches) {
-        return data.me == matches.target && data.garotte;
-      },
-      run: function(data) {
-        delete data.garotte;
-      },
+      condition: (data, matches) => data.me === matches.target && data.garotte,
+      run: (data) => delete data.garotte,
     },
     {
       id: 'T9 Final Phase',
@@ -235,13 +302,9 @@
       netRegexJa: NetRegexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
-      condition: function(data) {
-        return !data.seenFinalPhase;
-      },
+      condition: (data) => !data.seenFinalPhase,
       sound: 'Long',
-      run: function(data) {
-        data.seenFinalPhase = true;
-      },
+      run: (data) => data.seenFinalPhase = true,
     },
     {
       id: 'T9 Dragon Locations',
@@ -251,9 +314,9 @@
       netRegexJa: NetRegexes.addedCombatantFull({ name: ['ファイアホーン', 'アイスクロウ', 'サンダーウィング'] }),
       netRegexCn: NetRegexes.addedCombatantFull({ name: ['火角', '冰爪', '雷翼'] }),
       netRegexKo: NetRegexes.addedCombatantFull({ name: ['화염뿔', '얼음발톱', '번개날개'] }),
-      run: function(data, matches) {
+      run: (data, matches) => {
         // Lowercase all of the names here for case insensitive matching.
-        let allNames = {
+        const allNames = {
           en: ['firehorn', 'iceclaw', 'thunderwing'],
           de: ['feuerhorn', 'eisklaue', 'donnerschwinge'],
           fr: ['corne-de-feu', 'griffe-de-glace ', 'aile-de-foudre'],
@@ -261,13 +324,13 @@
           cn: ['火角', '冰爪', '雷翼'],
           ko: ['화염뿔', '얼음발톱', '번개날개'],
         };
-        let names = allNames[data.parserLang];
-        let idx = names.indexOf(matches.name.toLowerCase());
-        if (idx == -1)
+        const names = allNames[data.parserLang];
+        const idx = names.indexOf(matches.name.toLowerCase());
+        if (idx === -1)
           return;
 
-        let x = parseFloat(matches.x);
-        let y = parseFloat(matches.y);
+        const x = parseFloat(matches.x);
+        const y = parseFloat(matches.y);
 
         // Most dragons are out on a circle of radius=~28.
         // Ignore spurious dragons like "Pos: (0.000919255,0.006120025,2.384186E-07)"
@@ -277,7 +340,7 @@
         // Positions are the 8 cardinals + numerical slop on a radius=28 circle.
         // N = (0, -28), E = (28, 0), S = (0, 28), W = (-28, 0)
         // Map N = 0, NE = 1, ..., NW = 7
-        let dir = Math.round(4 - 4 * Math.atan2(x, y) / Math.PI) % 8;
+        const dir = Math.round(4 - 4 * Math.atan2(x, y) / Math.PI) % 8;
 
         data.dragons = data.dragons || [0, 0, 0];
         data.dragons[idx] = dir;
@@ -291,14 +354,14 @@
       netRegexJa: NetRegexes.startsUsing({ id: '7E6', source: 'ネール・デウス・ダーナス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
-      run: function(data) {
+      run: (data) => {
         data.tetherCount = 0;
         data.naelDiveMarkerCount = 0;
 
         // Missing dragons??
-        if (!data.dragons || data.dragons.length != 3) {
-          data.naelMarks = ['?', '?'];
-          data.safeZone = '?';
+        if (!data.dragons || data.dragons.length !== 3) {
+          data.naelMarks = ['unknown', 'unknown'];
+          data.safeZone = 'unknown';
           return;
         }
 
@@ -306,17 +369,24 @@
         // The first two are always split, so A is the first dragon + 1.
         // The last one is single, so B is the last dragon + 1.
 
-        let dragons = data.dragons.sort();
-        let dirNames = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-        data.naelMarks = [dragons[0], dragons[2]].map(function(i) {
-          return dirNames[(i + 1) % 8];
-        });
+        const dragons = data.dragons.sort();
+        const dirNames = [
+          'north',
+          'northeast',
+          'east',
+          'southeast',
+          'south',
+          'southwest',
+          'west',
+          'northwest',
+        ];
+        data.naelMarks = [dragons[0], dragons[2]].map((i) => dirNames[(i + 1) % 8]);
 
         // Safe zone is one to the left of the first dragon, unless
         // the last dragon is diving there.  If that's true, use
         // one to the right of the second dragon.
         let possibleSafe = (dragons[0] - 1 + 8) % 8;
-        if ((dragons[2] + 2) % 8 == possibleSafe)
+        if ((dragons[2] + 2) % 8 === possibleSafe)
           possibleSafe = (dragons[1] + 1) % 8;
         data.safeZone = dirNames[possibleSafe];
       },
@@ -330,15 +400,20 @@
       netRegexCn: NetRegexes.startsUsing({ id: '7E6', source: '奈尔·神·达纳斯', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '7E6', source: '넬 데우스 다르누스', capture: false }),
       durationSeconds: 12,
-      infoText: function(data) {
-        return {
-          en: 'Marks: ' + data.naelMarks.join(', '),
-          de: 'Markierungen : ' + data.naelMarks.join(', '),
-          fr: 'Marque : ' + data.naelMarks.join(', '),
-          ja: 'マーカー: ' + data.naelMarks.join(', '),
-          cn: '标记： ' + data.naelMarks.join(', '),
-          ko: '카탈징: ' + data.naelMarks.join(', '),
-        };
+      infoText: (data, _, output) => output.marks({
+        dir1: output[data.naelMarks[0]](),
+        dir2: output[data.naelMarks[1]](),
+      }),
+      outputStrings: {
+        ...diveDirections,
+        marks: {
+          en: 'Marks: ${dir1}, ${dir2}',
+          de: 'Markierungen : ${dir1}, ${dir2}',
+          fr: 'Marque : ${dir1}, ${dir2}',
+          ja: 'マーカー: ${dir1}, ${dir2}',
+          cn: '标记： ${dir1}, ${dir2}',
+          ko: '카탈징: ${dir1}, ${dir2}',
+        },
       },
     },
     {
@@ -349,35 +424,55 @@
       netRegexJa: NetRegexes.tether({ id: '0005', source: 'ファイアホーン' }),
       netRegexCn: NetRegexes.tether({ id: '0005', source: '火角' }),
       netRegexKo: NetRegexes.tether({ id: '0005', source: '화염뿔' }),
-      preRun: function(data) {
+      preRun: (data) => {
         data.tetherCount = data.tetherCount || 0;
         data.tetherCount++;
+      },
+      alertText: (data, matches, output) => {
+        if (data.me !== matches.target)
+          return;
         // Out, In, Out, In
-        data.tetherDir = data.tetherCount % 2 ? 'Fire Out' : 'Fire In';
+        if (data.tetherCount % 2)
+          return output.fireOutOnYou();
+        return output.fireInOnYou;
       },
-      alertText: function(data, matches) {
-        if (data.me == matches.target) {
-          return {
-            en: data.tetherDir + ' (on YOU)',
-            de: data.tetherDir + ' (auf DIR)',
-            fr: data.tetherDir + ' (sur VOUS)',
-            ja: data.tetherDir + ' (自分)',
-            cn: data.tetherDir + ' (点名)',
-            ko: data.tetherDir + ' (대상자)',
-          };
-        }
+      infoText: (data, matches, output) => {
+        if (data.me === matches.target)
+          return;
+        // Out, In, Out, In
+        if (data.tetherCount % 2)
+          return output.fireOutOn({ player: data.ShortName(matches.target) });
+        return output.fireInOn({ player: data.ShortName(matches.target) });
       },
-      infoText: function(data, matches) {
-        if (data.me != matches.target) {
-          return {
-            en: data.tetherDir + ' (on ' + data.ShortName(matches.target) + ')',
-            de: data.tetherDir + ' (auf ' + data.ShortName(matches.target) + ')',
-            fr: data.tetherDir + ' (sur ' + data.ShortName(matches.target) + ')',
-            ja: data.tetherDir + ' (' + data.ShortName(matches.target) + 'に)',
-            cn: data.tetherDir + ' (点 ' + data.ShortName(matches.target) + ')',
-            ko: data.tetherDir + ' (on ' + data.ShortName(matches.target) + ')',
-          };
-        }
+      outputStrings: {
+        fireOutOnYou: {
+          en: 'Fire Out (on YOU)',
+          de: 'Feuer raus (auf DIR)',
+          fr: 'Feu dehors (sur VOUS)',
+          ja: 'ファイヤ、外に (自分)',
+          cn: '火球单吃点名',
+        },
+        fireInOnYou: {
+          en: 'Fire In (on YOU)',
+          de: 'Feuer rein (auf DIR)',
+          fr: 'Feu dedans (sur VOUS)',
+          ja: 'ファイヤ、頭割り (自分)',
+          cn: '火球集合点名',
+        },
+        fireOutOn: {
+          en: 'Fire Out (on ${player})',
+          de: 'Feuer raus (auf ${player})',
+          fr: 'Feu dehors (sur ${player})',
+          ja: 'ファイヤ、外に (${player})',
+          cn: '火球单吃点${player}',
+        },
+        fireInOn: {
+          en: 'Fire In (on ${player})',
+          de: 'Feuer rein (auf ${player})',
+          fr: 'Feu dedans (sur ${player})',
+          ja: 'ファイヤ、頭割り (${player})',
+          cn: '火球集合点${player}',
+        },
       },
     },
     {
@@ -407,41 +502,54 @@
       delaySeconds: 3,
       durationSeconds: 6,
       suppressSeconds: 20,
-      infoText: function(data) {
-        return 'Safe zone: ' + data.safeZone;
+      infoText: (data, _, output) => output.safeZone({ dir: output[data.safeZone]() }),
+      outputStrings: {
+        ...diveDirections,
+        safeZone: {
+          en: 'Safe zone: ${dir}',
+          de: 'Sichere Zone: ${dir}',
+          fr: 'Zone sûre : ${dir}',
+          ja: '安置: ${dir}',
+          cn: '安全点在：${dir}',
+          ko: '안전 지대: ${dir}',
+        },
       },
     },
     {
       id: 'T9 Dragon Marker',
       netRegex: NetRegexes.headMarker({ id: '0014' }),
       condition: Conditions.targetIsYou(),
-      alarmText: function(data, matches) {
+      alarmText: (data, matches, output) => {
         data.naelDiveMarkerCount = data.naelDiveMarkerCount || 0;
-        if (matches.target != data.me)
+        if (matches.target !== data.me)
           return;
-        let marker = ['A', 'B', 'C'][data.naelDiveMarkerCount];
-        let dir = data.naelMarks[data.naelDiveMarkerCount];
-        return {
-          en: 'Go To ' + marker + ' (in ' + dir + ')',
-          de: 'Gehe zu ' + marker + ' (im ' + dir + ')',
-          fr: 'Allez en ' + marker + ' (au ' + dir + ')',
-          ja: marker + 'に行く' + ' (あと ' + dir + '秒)',
-          cn: '去' + marker + ' (在 ' + dir + '秒)',
-          ko: marker + '로 이동' + ' (in ' + dir + ')',
-        };
+        const marker = ['A', 'B', 'C'][data.naelDiveMarkerCount];
+        const dir = data.naelMarks[data.naelDiveMarkerCount];
+        return output.goToMarkerInDir({ marker: marker, dir: dir });
       },
-      tts: function(data, matches) {
+      tts: (data, matches, output) => {
         data.naelDiveMarkerCount = data.naelDiveMarkerCount || 0;
-        if (matches.target != data.me)
+        if (matches.target !== data.me)
           return;
-        return {
-          en: 'Go To ' + ['A', 'B', 'C'][data.naelDiveMarkerCount],
-          de: 'Gehe zu ' + ['A', 'B', 'C'][data.naelDiveMarkerCount],
-          fr: 'Allez en ' + ['A', 'B', 'C'][data.naelDiveMarkerCount],
-          ja: ['A', 'B', 'C'][data.naelDiveMarkerCount] + '行くよ',
-          cn: '去' + ['A', 'B', 'C'][data.naelDiveMarkerCount],
-          ko: ['A', 'B', 'C'][data.naelDiveMarkerCount] + '로 이동',
-        };
+        return output.goToMarker({ marker: ['A', 'B', 'C'][data.naelDiveMarkerCount] });
+      },
+      outputStrings: {
+        goToMarkerInDir: {
+          en: 'Go To ${marker} (in ${dir})',
+          de: 'Gehe zu ${marker} (im ${dir})',
+          fr: 'Allez en ${marker} (au ${dir})',
+          ja: '${marker}に行く' + ' (あと ${dir}秒)',
+          cn: '去${marker} (在 ${dir}秒)',
+          ko: '${marker}로 이동' + ' (${dir}쪽)',
+        },
+        goToMarker: {
+          en: 'Go To ${marker}',
+          de: 'Gehe zu ${marker}',
+          fr: 'Allez en ${marker}',
+          ja: '${marker}行くよ',
+          cn: '去${marker}',
+          ko: '${marker}로 이동',
+        },
       },
     },
   ],
@@ -674,4 +782,4 @@
       },
     },
   ],
-}];
+};

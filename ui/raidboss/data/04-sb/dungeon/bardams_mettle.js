@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.BardamsMettle,
   timelineFile: 'bardams_mettle.txt',
   timelineTriggers: [
@@ -9,7 +12,7 @@
       regex: /Feathercut/,
       beforeSeconds: 4,
       condition: function(data) {
-        return data.role == 'tank' || data.role == 'healer';
+        return data.role === 'tank' || data.role === 'healer';
       },
       response: Responses.tankBuster(),
     },
@@ -104,7 +107,7 @@
           fr: '8x Zones au sol sur VOUS',
           ja: '8つ波動砲',
           cn: '躲避8连追踪AOE',
-          ko: '8장판 준비',
+          ko: '8연속 장판 준비',
         },
       },
     },
@@ -146,7 +149,7 @@
       id: 'Bardam\'s Mettle Flutterfall',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
       condition: function(data, matches) {
-        return data.me == matches.target && data.deadBardam;
+        return data.me === matches.target && data.deadBardam;
       },
       response: Responses.spread(),
     },
@@ -410,4 +413,4 @@
       },
     },
   ],
-}];
+};

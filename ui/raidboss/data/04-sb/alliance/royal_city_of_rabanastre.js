@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.TheRoyalCityOfRabanastre,
   timelineNeedsFixing: true,
   timelineFile: 'royal_city_of_rabanastre.txt',
@@ -31,56 +34,54 @@
       // using data.breathless to count the stacks.
       id: 'Rab Mateus Breathless Gain',
       netRegex: NetRegexes.gainsEffect({ effectId: '595' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
+      condition: Conditions.targetIsYou(),
+      alarmText: function(data, _, output) {
+        if (data.breathless === 6)
+          return output.getInBubble();
       },
-      alarmText: function(data) {
-        if (data.breathless == 6) {
-          return {
-            en: 'Get In Bubble',
-            de: 'Geh in die Blase',
-            fr: 'Allez dans une bulle',
-            ja: '泡に入る',
-            cn: '进气泡',
-            ko: '물방울 안으로',
-          };
-        }
+      infoText: function(data, _, output) {
+        if (data.breathless >= 7)
+          return output.breathless({ num: (data.breathless + 1) });
       },
-      infoText: function(data) {
-        if (data.breathless >= 7) {
-          return {
-            en: 'Breathless: ' + (data.breathless + 1),
-            de: 'Atemnot: ' + (data.breathless + 1),
-            fr: 'Suffocation :' + (data.breathless + 1),
-            ja: '呼吸困難 :' + (data.breathless + 1),
-            cn: '窒息层数:' + (data.breathless + 1),
-            ko: '호흡곤란: ' + (data.breathless + 1),
-          };
-        }
-      },
-      tts: function(data) {
-        if (data.breathless == 6) {
-          return {
-            en: 'bubble',
-            de: 'blase',
-            fr: 'bulle',
-            ja: '泡',
-            cn: '进气泡',
-            ko: '숨쉬어!',
-          };
-        }
+      tts: function(data, _, output) {
+        if (data.breathless === 6)
+          return output.bubble();
       },
       run: function(data) {
         data.breathless = data.breathless | 0;
         data.breathless++;
       },
+      outputStrings: {
+        breathless: {
+          en: 'Breathless: ${num}',
+          de: 'Atemnot: ${num}',
+          fr: 'Suffocation :${num}',
+          ja: '呼吸困難 :${num}',
+          cn: '窒息层数:${num}',
+          ko: '호흡곤란: ${num}',
+        },
+        getInBubble: {
+          en: 'Get In Bubble',
+          de: 'Geh in die Blase',
+          fr: 'Allez dans une bulle',
+          ja: '泡に入る',
+          cn: '进气泡',
+          ko: '물방울 안으로',
+        },
+        bubble: {
+          en: 'bubble',
+          de: 'blase',
+          fr: 'bulle',
+          ja: '泡',
+          cn: '进气泡',
+          ko: '숨쉬어!',
+        },
+      },
     },
     {
       id: 'Rab Mateus Breathless Lose',
       netRegex: NetRegexes.losesEffect({ effectId: '595' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       run: function(data) {
         data.breathless = 0;
       },
@@ -200,9 +201,7 @@
     {
       id: 'Rab Rofocale Chariot',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.getIn(),
     },
     {
@@ -252,55 +251,59 @@
     {
       id: 'Rab Argath Command Scatter',
       netRegex: NetRegexes.headMarker({ id: '007B' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
+      condition: Conditions.targetIsYou(),
+      infoText: function(data, _, output) {
+        if (data.maskValue)
+          return output.move();
+
+        return output.stop();
       },
-      infoText: function(data) {
-        if (data.maskValue) {
-          return {
-            en: 'Move',
-            de: 'Bewegen',
-            fr: 'Bougez',
-            ja: '動け',
-            cn: '动起来',
-            ko: '움직이기',
-          };
-        }
-        return {
+      outputStrings: {
+        move: {
+          en: 'Move',
+          de: 'Bewegen',
+          fr: 'Bougez',
+          ja: '動け',
+          cn: '动起来',
+          ko: '움직이기',
+        },
+        stop: {
           en: 'Stop',
           de: 'Stopp',
           fr: 'Stop',
           ja: '動かない',
           cn: '不要动',
           ko: '멈추기',
-        };
+        },
       },
     },
     {
       id: 'Rab Argath Command Turn',
       netRegex: NetRegexes.headMarker({ id: '007C' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
+      condition: Conditions.targetIsYou(),
+      infoText: function(data, _, output) {
+        if (data.maskValue)
+          return output.lookAway();
+
+        return output.lookTowards();
       },
-      infoText: function(data) {
-        if (data.maskValue) {
-          return {
-            en: 'Look Away',
-            de: 'Wegschauen',
-            fr: 'Regardez ailleurs',
-            ja: '見ない',
-            cn: '背对BOSS',
-            ko: '바라보지 말기',
-          };
-        }
-        return {
+      outputStrings: {
+        lookAway: {
+          en: 'Look Away',
+          de: 'Wegschauen',
+          fr: 'Regardez ailleurs',
+          ja: '見ない',
+          cn: '背对BOSS',
+          ko: '바라보지 말기',
+        },
+        lookTowards: {
           en: 'Look Towards',
           de: 'Anschauen',
           fr: 'Regardez le boss',
           ja: 'ボスを見て',
           cn: '面对BOSS',
           ko: '바라보기',
-        };
+        },
       },
     },
   ],
@@ -624,4 +627,4 @@
       },
     },
   ],
-}];
+};

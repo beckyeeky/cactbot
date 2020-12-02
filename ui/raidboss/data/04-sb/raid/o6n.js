@@ -1,7 +1,10 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // O6N - Sigmascape 2.0 Normal
-[{
+export default {
   zoneId: ZoneId.SigmascapeV20,
   timelineFile: 'o6n.txt',
   triggers: [
@@ -18,9 +21,7 @@
     {
       id: 'O6N Meteors',
       netRegex: NetRegexes.headMarker({ id: '0001' }),
-      condition: function(data, matches) {
-        return matches.target == data.me;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -176,4 +177,4 @@
       },
     },
   ],
-}];
+};

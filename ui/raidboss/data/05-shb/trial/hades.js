@@ -1,6 +1,9 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.TheDyingGasp,
   timelineFile: 'hades.txt',
   triggers: [
@@ -24,39 +27,43 @@
       netRegexJa: NetRegexes.startsUsing({ id: '4158', source: 'ハーデス' }),
       netRegexCn: NetRegexes.startsUsing({ id: '4158', source: '哈迪斯' }),
       netRegexKo: NetRegexes.startsUsing({ id: '4158', source: '하데스' }),
-      alertText: function(data, matches) {
-        if (matches.target == data.me) {
-          return {
-            en: 'Tank Buster on YOU',
-            de: 'Tankbuster auf DIR',
-            fr: 'Tank buster sur VOUS',
-            ja: '自分にタンクバスター',
-            cn: '死刑',
-            ko: '탱버 대상자',
-          };
-        }
-        if (data.role == 'healer') {
-          return {
-            en: 'Buster on ' + data.ShortName(matches.target),
-            de: 'Tankbuster auf ' + data.ShortName(matches.target),
-            fr: 'Tank buster sur ' + data.ShortName(matches.target),
-            ja: data.ShortName(matches.target) + 'にタンクバスター',
-            cn: '死刑 点' + data.ShortName(matches.target),
-            ko: '"' + data.ShortName(matches.target) + '" 탱버',
-          };
-        }
+      alertText: function(data, matches, output) {
+        if (matches.target === data.me)
+          return output.tankBusterOnYou();
+
+        if (data.role === 'healer')
+          return output.busterOn({ player: data.ShortName(matches.target) });
       },
-      infoText: function(data, matches) {
-        if (matches.target == data.me)
+      infoText: function(data, matches, output) {
+        if (matches.target === data.me)
           return;
-        return {
-          en: 'Away From ' + data.ShortName(matches.target),
-          de: 'Weg von ' + data.ShortName(matches.target),
-          fr: 'Éloignez-vous de ' + data.ShortName(matches.target),
-          ja: data.ShortName(matches.target) + ' から離れ',
-          cn: '远离 ' + data.ShortName(matches.target),
-          ko: data.ShortName(matches.target) + ' 한테서 피하세요',
-        };
+        return output.awayFromPlayer({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        awayFromPlayer: {
+          en: 'Away From ${player}',
+          de: 'Weg von ${player}',
+          fr: 'Éloignez-vous de ${player}',
+          ja: '${player} から離れ',
+          cn: '远离 ${player}',
+          ko: '${player} 한테서 피하세요',
+        },
+        tankBusterOnYou: {
+          en: 'Tank Buster on YOU',
+          de: 'Tankbuster auf DIR',
+          fr: 'Tank buster sur VOUS',
+          ja: '自分にタンクバスター',
+          cn: '死刑',
+          ko: '탱버 대상자',
+        },
+        busterOn: {
+          en: 'Buster on ${player}',
+          de: 'Tankbuster auf ${player}',
+          fr: 'Tank buster sur ${player}',
+          ja: '${player}にタンクバスター',
+          cn: '死刑 点${player}',
+          ko: '"${player}" 탱버',
+        },
       },
     },
     {
@@ -127,9 +134,7 @@
       netRegexJa: NetRegexes.startsUsing({ id: '4180', source: 'ハーデス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '4180', source: '哈迪斯', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '4180', source: '하데스', capture: false }),
-      condition: function(data) {
-        return data.role == 'healer';
-      },
+      condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
     {
@@ -155,9 +160,7 @@
     {
       id: 'Hades Doom',
       netRegex: NetRegexes.gainsEffect({ effectId: 'D2' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -219,7 +222,7 @@
       netRegexCn: NetRegexes.startsUsing({ id: '4161', source: '哈迪斯', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '4161', source: '하데스', capture: false }),
       condition: function(data) {
-        return data.role == 'healer';
+        return data.role === 'healer';
       },
       infoText: (data, _, output) => output.text(),
       outputStrings: {
@@ -237,7 +240,7 @@
       id: 'Hades Dual Strike',
       netRegex: NetRegexes.headMarker({ id: '0060' }),
       condition: function(data, matches) {
-        return data.neoHades && data.me == matches.target;
+        return data.neoHades && data.me === matches.target;
       },
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -254,9 +257,7 @@
     {
       id: 'Hades Hellborn Yawp',
       netRegex: NetRegexes.headMarker({ id: '0028' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -272,9 +273,7 @@
     {
       id: 'Hades Fetters',
       netRegex: NetRegexes.headMarker({ id: '0078' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       alarmText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
@@ -328,16 +327,14 @@
     {
       id: 'Hades Nether Blast / Dark Eruption',
       netRegex: NetRegexes.headMarker({ id: '008B' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.spread('alert'),
     },
     {
       id: 'Hades Ancient Darkness',
       netRegex: NetRegexes.headMarker({ id: '0060' }),
       condition: function(data, matches) {
-        return !data.neoHades && data.me == matches.target;
+        return !data.neoHades && data.me === matches.target;
       },
       alertText: (data, _, output) => output.text(),
       outputStrings: {
@@ -354,9 +351,7 @@
     {
       id: 'Hades Ancient Water III',
       netRegex: NetRegexes.headMarker({ id: '003E' }),
-      condition: function(data, matches) {
-        return data.me == matches.target;
-      },
+      condition: Conditions.targetIsYou(),
       response: Responses.stackMarkerOn(),
     },
     {
@@ -374,18 +369,21 @@
       id: 'Hades Ancient No Marker',
       netRegex: NetRegexes.headMarker({ id: '003E', capture: false }),
       delaySeconds: 0.5,
-      infoText: function(data) {
+      infoText: function(data, _, output) {
         if (data.ancient[data.me])
           return;
-        let name = Object.keys(data.ancient).find((key) => data.ancient[key] === '003E');
-        return {
-          en: 'Stack on ' + data.ShortName(name),
-          de: 'Sammeln auf ' + data.ShortName(name),
-          fr: 'Packez-vous sur ' + data.ShortName(name),
-          ja: data.ShortName(name) + ' に集合',
-          cn: '靠近 ' + data.ShortName(name) + ' 集合',
-          ko: '"' + data.ShortName(name) + '" 쉐어징',
-        };
+        const name = Object.keys(data.ancient).find((key) => data.ancient[key] === '003E');
+        return output.text({ player: data.ShortName(name) });
+      },
+      outputStrings: {
+        text: {
+          en: 'Stack on ${player}',
+          de: 'Sammeln auf ${player}',
+          fr: 'Packez-vous sur ${player}',
+          ja: '${player} に集合',
+          cn: '靠近 ${player} 集合',
+          ko: '"${player}" 쉐어징',
+        },
       },
     },
     {
@@ -584,4 +582,4 @@
       },
     },
   ],
-}];
+};

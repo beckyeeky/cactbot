@@ -1,9 +1,47 @@
-'use strict';
+import Conditions from '../../../../../resources/conditions.js';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import { Responses } from '../../../../../resources/responses.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
 // Notes:
 // Ignoring Gobsway Rumblerocks (1AA0) aoe trigger, as it is small and frequent.
 
-[{
+const chargeOutputStrings = {
+  getIn: {
+    en: 'In',
+    de: 'Rein',
+    fr: 'Intérieur',
+    ja: '中へ',
+    cn: '靠近',
+    ko: '안으로',
+  },
+  getOut: {
+    en: 'Out',
+    de: 'Raus',
+    ja: '外へ',
+    fr: 'Exterieur',
+    cn: '远离',
+    ko: '밖으로',
+  },
+  spread: {
+    en: 'Spread',
+    de: 'Verteilen',
+    fr: 'Dispersez-vous',
+    ja: '散開',
+    cn: '分散',
+    ko: '산개',
+  },
+  stackMarker: {
+    en: 'Stack',
+    de: 'Sammeln',
+    fr: 'Packez-vous',
+    ja: '頭割り',
+    cn: '分摊',
+    ko: '쉐어뎀',
+  },
+};
+
+export default {
   zoneId: ZoneId.AlexanderTheBreathOfTheCreatorSavage,
   timelineFile: 'a10s.txt',
   timelineTriggers: [
@@ -106,16 +144,20 @@
       preRun: function(data, matches) {
         data.charges = data.charges || [];
         data.charges.push({
-          '1AB8': Responses.getIn,
-          '1AB9': Responses.getOut,
-          '1ABA': Responses.spread,
-          '1ABB': Responses.stack,
+          '1AB8': 'getIn',
+          '1AB9': 'getOut',
+          '1ABA': 'spread',
+          '1ABB': 'stackMarker',
         }[matches.id]);
       },
-      response: function(data) {
+      response: function(data, _, output) {
+        // cactbot-builtin-response
+        output.responseOutputStrings = chargeOutputStrings;
+
         // Call the first one out with alert, the other two with info.
-        let severity = data.charges.length > 1 ? 'info' : 'alert';
-        return data.charges[data.charges.length - 1](severity);
+        data.charges = data.charges || [];
+        const severity = data.charges.length > 1 ? 'infoText' : 'alertText';
+        return { [severity]: output[data.charges[data.charges.length - 1]]() };
       },
     },
     {
@@ -140,11 +182,14 @@
       netRegexCn: NetRegexes.ability({ source: '佣兵雷姆普里克斯', id: '1A9[ABCE]', capture: false }),
       netRegexKo: NetRegexes.ability({ source: '용병 레임브릭스', id: '1A9[ABCE]', capture: false }),
       suppressSeconds: 0.5,
-      response: function(data) {
+      response: function(data, _, output) {
+        // cactbot-builtin-response
+        output.responseOutputStrings = chargeOutputStrings;
+
         if (!data.charges || !data.charges.length)
           return;
 
-        return data.charges.shift()('alert');
+        return { alertText: output[data.charges.shift()]() };
       },
     },
     {
@@ -180,41 +225,45 @@
       netRegexJa: NetRegexes.tether({ source: '傭兵のレイムプリクス', id: '0039' }),
       netRegexCn: NetRegexes.tether({ source: '佣兵雷姆普里克斯', id: '0039' }),
       netRegexKo: NetRegexes.tether({ source: '용병 레임브릭스', id: '0039' }),
-      alarmText: function(data, matches) {
-        if (data.me != matches.target)
+      alarmText: function(data, matches, output) {
+        if (data.me !== matches.target)
           return;
-        return {
+        return output.tankSwapGetAway();
+      },
+      alertText: function(data, matches, output) {
+        if (data.me === matches.target)
+          return;
+        if (data.role === 'tank')
+          return output.tankSwap();
+
+        if (data.role === 'healer' || data.job === 'BLU')
+          return output.shieldPlayer({ player: data.ShortName(matches.target) });
+      },
+      outputStrings: {
+        tankSwap: {
+          en: 'Tank Swap!',
+          de: 'Tankwechsel!',
+          fr: 'Tank swap !',
+          ja: 'タンクスイッチ!',
+          cn: '换T！',
+          ko: '탱 교대',
+        },
+        shieldPlayer: {
+          en: 'Shield ${player}',
+          de: 'Schild ${player}',
+          fr: 'Bouclier ${player}',
+          ja: '${player}にバリア',
+          cn: '单盾${player}',
+          ko: '"${player}" 보호막',
+        },
+        tankSwapGetAway: {
           en: 'Tank Swap, Get Away',
           de: 'Tankwechsel, geh weg',
           fr: 'Tank swap, éloignez-vous',
           ja: 'タンクスイッチ、離れ',
           cn: '换T并且远离',
           ko: '탱 교대, 멀리가기',
-        };
-      },
-      alertText: function(data, matches) {
-        if (data.me == matches.target)
-          return;
-        if (data.role == 'tank') {
-          return {
-            en: 'Tank Swap!',
-            de: 'Tankwechsel!',
-            fr: 'Tank swap !',
-            ja: 'タンクスイッチ!',
-            cn: '换T！',
-            ko: '탱 교대',
-          };
-        }
-        if (data.role == 'healer' || data.job == 'BLU') {
-          return {
-            en: 'Shield ' + data.ShortName(matches.target),
-            de: 'Schild ' + data.ShortName(matches.target),
-            fr: 'Bouclier ' + data.ShortName(matches.target),
-            ja: data.ShortName(matches.target) + 'にバリア',
-            cn: '单盾' + data.ShortName(matches.target),
-            ko: '"' + data.ShortName(matches.target) + '" 보호막',
-          };
-        }
+        },
       },
     },
     {
@@ -275,7 +324,7 @@
       netRegex: NetRegexes.headMarker({ id: '0029' }),
       condition: function(data, matches) {
         // Only need to pass on the first one.
-        return data.me == matches.target && !data.seenBrighteyes;
+        return data.me === matches.target && !data.seenBrighteyes;
       },
       delaySeconds: 5,
       infoText: (data, _, output) => output.text(),
@@ -573,4 +622,4 @@
       },
     },
   ],
-}];
+};

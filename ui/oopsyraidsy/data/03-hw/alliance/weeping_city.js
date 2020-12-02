@@ -1,6 +1,7 @@
-'use strict';
+import NetRegexes from '../../../../../resources/netregexes.js';
+import ZoneId from '../../../../../resources/zone_id.js';
 
-[{
+export default {
   zoneId: ZoneId.TheWeepingCityOfMhach,
   damageWarn: {
     'Weeping Critical Bite': '1848', // Sarsuchus cone aoe
@@ -103,7 +104,7 @@
       // This ability name is helpfully called "Attack" so name it something else.
       id: 'Weeping Ozma Tank Laser',
       netRegex: NetRegexes.ability({ id: '1831' }),
-      condition: (e) => e.type != 15,
+      condition: (e) => e.type !== '15',
       mistake: function(e, data, matches) {
         return {
           type: 'warn',
@@ -113,6 +114,7 @@
             de: 'Tank Laser',
             ja: 'タンクレザー',
             cn: '坦克激光',
+            ko: '탱커 레이저',
           },
         };
       },
@@ -129,9 +131,10 @@
             de: 'ist runtergerutscht!',
             ja: 'ノックバック',
             cn: '击退！',
+            ko: '넉백됨!',
           },
         };
       },
     },
   ],
-}];
+};
