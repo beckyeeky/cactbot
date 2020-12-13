@@ -782,7 +782,7 @@ export default {
           fr: 'Feu EN DEDANS',
           de: 'Feuer INNEN',
           ja: 'ファイアボールは密着',
-          cn: '火进',
+          cn: '火1 分摊',
           ko: '불 같이맞기',
         },
       },
@@ -816,7 +816,7 @@ export default {
           fr: 'Feu EN DEHORS',
           de: 'Feuer AUßEN',
           ja: 'ファイアボールは離れ',
-          cn: '火出',
+          cn: '火2 出人群',
           ko: '불 대상자 밖으로',
         },
         fireOutBeInIt: {
@@ -824,7 +824,7 @@ export default {
           fr: 'Feu EN DEHORS : Allez dessus',
           de: 'Feuer AUßEN: Drin sein',
           ja: 'ファイアボールは離れ: 自分に密着',
-          cn: '火出，踩火',
+          cn: '火2 补火',
           ko: '불 대상자 밖으로: 나는 같이 맞기',
         },
       },
@@ -867,20 +867,22 @@ export default {
           fr: 'Feu EN DEDANS',
           de: 'Feuer INNEN',
           ja: 'ファイアボールは密着',
-          cn: '火进',
+          cn: '火3 分摊',
           ko: '불 같이맞기',
         },
         fireInPlayersOut: {
           en: 'Fire IN (${players} out)',
           fr: 'Feu EN DEDANS (${players} raus)',
           de: 'Feuer INNEN (${players} éviter)',
+          cn: '火3 (${players}躲避)',
+          ko: '불 같이맞기 (${players} 는 피하기)',
         },
         fireInAvoid: {
           en: 'Fire IN: AVOID!',
           fr: 'Feu EN DEDANS : L\'ÉVITER !',
           de: 'Feuer INNEN: AUSWEICHEN!',
           ja: 'ファイアボールは密着: 自分に離れ',
-          cn: '火进：躲避！',
+          cn: '火3 躲避！',
           ko: '불 같이맞기: 나는 피하기',
         },
       },
@@ -924,7 +926,7 @@ export default {
           fr: 'Feu EN DEDANS',
           de: 'Feuer INNEN',
           ja: 'ファイアボール密着',
-          cn: '火进',
+          cn: '火4 分摊',
           ko: '불 같이맞기',
         },
         fireInAvoid: {
@@ -932,7 +934,7 @@ export default {
           fr: 'Feu EN DEDANS : L\'ÉVITER !',
           de: 'Feuer INNEN: AUSWEICHEN!',
           ja: 'ファイアボールは密着: 自分に離れ',
-          cn: '火进：躲避！',
+          cn: '火4 躲避！',
           ko: '불 같이맞기: 나는 피하기',
         },
       },
@@ -1062,6 +1064,7 @@ export default {
         text: {
           en: 'Go To ${dir} with marker',
           de: 'Gehe nach ${dir} mit dem Marker',
+          cn: '带着点名去${dir}',
           ko: '${dir}으로 이동',
         },
         unknownDir: {
@@ -1357,7 +1360,7 @@ export default {
       outputStrings: {
         blackfireTower: {
           en: 'Tower, bait hypernova',
-          fr: 'Tour, appâter Supernova',
+          fr: 'Tour, attirez Supernova',
           de: 'Turm, Hypernova ködern',
           ja: 'タワーやスーパーノヴァ',
           cn: '踩塔, 引导超新星',
@@ -1365,7 +1368,7 @@ export default {
         },
         octetTowerPlusTwin: {
           en: 'Bait Twin, then tower',
-          fr: 'Appâter Gémellia, puis tour',
+          fr: 'Attirez Gémellia, puis tour',
           de: 'Twintania in Turm locken',
           ja: 'タニアダイブやタワー',
           cn: '引导双塔, 踩塔',
@@ -1410,7 +1413,7 @@ export default {
         twinHasMegaflare: {
           en: '${player} (twin) has megaflare',
           de: '${player} (Twin) hat Megaflare',
-          cn: '${player} (双塔) 带百万核爆',
+          cn: '${player} (双塔) 分摊点名',
           ko: '${player} (트윈 징 대상자) => 쉐어',
         },
         twinHasTower: {
