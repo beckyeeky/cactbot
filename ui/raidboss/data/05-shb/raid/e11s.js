@@ -62,11 +62,16 @@ const boundOfFaithLightningTetherResponse = (data, _, output) => {
     onYou: {
       en: 'Take Lightning To Tanks',
       de: 'Bring Blitz zu den Tanks',
+      fr: 'Donnez l\'Éclair au tanks',
+      cn: '和T处理雷',
+      ko: '번개징 탱커쪽으로',
     },
     tetherInfo: {
       en: 'Lightning on ${player}',
       de: 'Blitz auf ${player}',
+      fr: 'Éclair sur ${player}',
       ko: '"${player}" 번개징 대상자',
+      cn: '雷点了${player}',
     },
     unknownTarget: unknownTarget,
   };
@@ -124,7 +129,9 @@ export default {
         text: {
           en: 'Protean -> Partner Stacks',
           de: 'Himmelsrichtung -> Auf Partner sammeln',
+          fr: 'Position -> Packez-vous avec votre partenaire',
           ko: '8산개 -> 파트너 쉐어뎀',
+          cn: '八方 -> 分摊',
         },
       },
     },
@@ -139,7 +146,9 @@ export default {
         text: {
           en: 'Protean -> Spread',
           de: 'Himmelsrichtung -> Verteilen',
+          fr: 'Position -> Écartez-vous',
           ko: '8산개 -> 산개',
+          cn: '八方 -> 分散',
         },
       },
     },
@@ -149,13 +158,14 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ source: 'Fusioniert(?:e|er|es|en) Ascian', id: '5668', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ source: 'Sabreur De Destins', id: '5668', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'フェイトブレイカー', id: '5668', capture: false }),
-
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Protean -> Holy Groups',
           de: 'Himmelsrichtung -> Sanctus Gruppen',
-          ko: '8산개 -> 홀리 그룹',
+          fr: 'Position -> Groupes',
+          cn: '八方 -> 光三向分摊',
+          ko: '8산개 -> 홀리 그룹 쉐어',
         },
       },
     },
@@ -170,7 +180,9 @@ export default {
         text: {
           en: 'Line Cleave -> Knockback',
           de: 'Linien AoE -> Rückstoß',
+          fr: 'AoE en ligne -> Poussée',
           ko: '직선 장판 -> 넉백',
+          cn: '直线 -> 击退',
         },
       },
     },
@@ -185,7 +197,9 @@ export default {
         text: {
           en: 'Line Cleave -> Out',
           de: 'Linien AoE -> Raus',
+          fr: 'AoE en ligne -> Extérieur',
           ko: '직선 장판 -> 바깥으로',
+          cn: '直线 -> 去外侧',
         },
       },
     },
@@ -200,7 +214,9 @@ export default {
         text: {
           en: 'Line Cleave + Bait',
           de: 'Linien AoE -> Ködern',
+          fr: 'AoE en ligne -> Appâtez',
           ko: '직선 장판 + 장판 유도',
+          cn: '直线 -> 放光点名',
         },
       },
     },
@@ -258,17 +274,23 @@ export default {
           fireTetherOnYou: {
             en: 'Stack With Fire Tether',
             de: 'Auf der Feuer-Verbindung sammeln',
+            fr: 'Packez-vous avec le lien de Feu',
             ko: '화염 선 대상자, 쉐어뎀',
+            cn: '和火连线分摊',
           },
           lightningTetherOnYou: {
             en: 'Take Lightning To Tanks',
             de: 'Bring Blitz zum Tank',
+            fr: 'Donnez l\'Éclair aux tanks',
             ko: '번개 탱커한테 넘기기',
+            cn: '和T分摊雷',
           },
           tetherInfo: {
             en: 'Lightning on ${player1}, Fire on ${player2}',
             de: 'Blitz auf ${player1}, Feuer auf ${player2}',
+            fr: 'Éclair sur ${player1}, Feu sur ${player2}',
             ko: '"${player1}" 번개, "${player2}" 화염',
+            cn: '雷点${player1}，火点${player2}',
           },
         };
 
@@ -318,7 +340,9 @@ export default {
           fireTetherOnYou: {
             en: 'Stack With Fire Tether',
             de: 'Auf der Feuer-Verbindung sammeln',
+            fr: 'Packez-vous avec le lien de Feu',
             ko: '화염 선 대상자, 쉐어뎀',
+            cn: '和火连线分摊',
           },
           holyTetherOnYou: {
             en: 'Away from Group',
@@ -331,7 +355,9 @@ export default {
           tetherInfo: {
             en: 'Holy on ${player1}, Fire on ${player2}',
             de: 'Sanctus auf ${player1}, Feuer auf ${player2}',
+            fr: 'Sacre sur ${player1}, Feu sur ${player2}',
             ko: '"${player1}" 홀리, "${player2}" 화염',
+            cn: '光点${player1}，火点${player2}',
           },
         };
 
@@ -420,7 +446,9 @@ export default {
         text: {
           en: 'Fire: Go to Blue',
           de: 'Feuer: Geh zu Blau',
+          fr: 'Feu: Allez sur le Bleu',
           ko: '화염: 파랑으로',
+          cn: '火：去蓝门',
         },
       },
     },
@@ -436,7 +464,9 @@ export default {
         text: {
           en: 'Lightning: Go to Red',
           de: 'Blitz: Geh zu Rot',
+          fr: 'Éclair : Allez sur le Rouge',
           ko: '번개: 빨강으로',
+          cn: '雷：去红门',
         },
       },
     },
@@ -460,7 +490,9 @@ export default {
         text: {
           en: 'Fire: Go to Blue',
           de: 'Feuer: Geh zu Blau',
+          fr: 'Feu: Allez sur le Bleu',
           ko: '화염: 파랑으로',
+          cn: '火：去蓝门',
         },
       },
     },
@@ -476,7 +508,9 @@ export default {
         text: {
           en: 'Lightning: Go to Red',
           de: 'Blitz: Geh zu Rot',
+          fr: 'Éclair : Allez sur le Rouge',
           ko: '번개: 빨강으로',
+          cn: '雷：去红门',
         },
       },
     },
@@ -492,7 +526,9 @@ export default {
         text: {
           en: 'Fire: Go to Blue',
           de: 'Feuer: Geh zu Blau',
+          fr: 'Feu: Allez sur le Bleu',
           ko: '화염: 파랑으로',
+          cn: '火：去蓝门',
         },
       },
     },
@@ -508,7 +544,9 @@ export default {
         text: {
           en: 'Lightning: Go to Red',
           de: 'Blitz: Geh zu Rot',
+          fr: 'Éclair : Allez sur le Rouge',
           ko: '화염: 빨강으로',
+          cn: '雷：去红门',
         },
       },
     },
@@ -524,7 +562,9 @@ export default {
         text: {
           en: 'Fire: Knockback To Red -> Go Blue',
           de: 'Feuer: Rückstoß zu Rot -> Geh zu Blau',
+          fr: 'Feu : Poussée sur le Rouge -> Allez sur le Bleu',
           ko: '화염: 빨강으로 넉백 -> 파랑으로 이동',
+          cn: '火：向红门击退 -> 去蓝门',
         },
       },
     },
@@ -540,7 +580,9 @@ export default {
         text: {
           en: 'Lightning: Knockback To Blue -> Go Red',
           de: 'Blitz: Rückstoß zu Blau -> Geh zu Rot',
+          fr: 'Éclair : Poussée sur le Bleu -> Allez sur le Rouge',
           ko: '번개: 파랑으로 넉백 -> 빨강으로 이동',
+          cn: '雷：向蓝门击退 -> 去红门',
         },
       },
     },
@@ -556,7 +598,9 @@ export default {
         text: {
           en: 'Protean -> Partner Stacks -> Line Cleave -> Knockback -> Stack',
           de: 'Himmelsrichtung -> Auf Partner sammeln -> Linien AoE -> Rückstoß -> Sammeln',
+          fr: 'Position -> Packagez-vous avec votre partenaire -> Aoe en ligne -> Poussée -> Package',
           ko: '8산개 -> 파트너 쉐어뎀 -> 직선 장판 -> 넉백 -> 모이기',
+          cn: '八方 -> 分摊 -> 直线 -> 击退 -> 集合',
         },
       },
     },
@@ -581,7 +625,9 @@ export default {
         text: {
           en: 'Protean -> Spread -> Line Cleave -> Out -> Tank Cleaves',
           de: 'Himmelsrichtung -> Verteilen -> Linien AoE -> Raus -> Tank AoEs',
+          fr: 'Position -> Écartez-vous -> AoE en ligne -> Extérieur -> Tank cleaves',
           ko: '8산개 -> 산개 -> 직선 장판 -> 밖으로 -> 광역 탱버',
+          cn: '八方 -> 分散 -> 直线 -> 远离直线 -> T接雷',
         },
       },
     },
@@ -606,7 +652,9 @@ export default {
         text: {
           en: 'Protean -> Holy Groups -> Line Cleave -> Bait -> Away',
           de: 'Himmelsrichtung -> Sanctus Gruppen -> Linien AoE -> Ködern -> Weg',
-          ko: '8산개 -> 홀리 그룹 -> 직선 장판 -> 장판 유도 -> 피하기',
+          fr: 'Position -> Groupes -> AoE en ligne -> Appâtez -> Éloignez-vous',
+          cn: '八方 -> 光三向分摊 -> 直线 -> 放光点名 -> 离开',
+          ko: '8산개 -> 홀리 그룹 쉐어 -> 직선 장판 -> 장판 유도 -> 피하기',
         },
       },
     },
@@ -625,13 +673,14 @@ export default {
       'locale': 'de',
       'replaceSync': {
         'Demi-Gukumatz': 'Demi-Gukumatz',
-        'Fatebreaker(?!\'s image)': 'fusioniert(?:e|er|es|en) Ascian',
         'Fatebreaker\'s image': 'Abbild des fusionierten Ascians',
+        'Fatebreaker(?!\'s image)': 'fusioniert(?:e|er|es|en) Ascian',
         'Halo of Flame': 'Halo der Flamme',
       },
       'replaceText': {
         'Ageless Serpent': 'Alterslose Schlange',
         'Blastburn': 'Brandstoß',
+        'Blasting Zone': 'Erda-Detonation',
         'Bound Of Faith': 'Sünden-Erdstoß',
         'Bow Shock': 'Schockpatrone',
         'Brightfire': 'Lichtflamme',
@@ -639,8 +688,10 @@ export default {
         'Burnished Glory': 'Leuchtende Aureole',
         'Burnout': 'Brandentladung',
         'Burnt Strike': 'Brandschlag',
+        'Cycle Of Faith': 'Mehrfache Vergeltung',
         'Cycle of Faith': 'Mehrfache Vergeltung',
         'Elemental Break': 'Elementarbruch',
+        'Floating Fetters': 'Schwebende Fesseln',
         'Mortal Burn Mark': 'Brandmal der Sterblichen',
         'Powder Mark': 'Pulvermal',
         'Prismatic Deception': 'Prismatische Unsichtbarkeit',
@@ -661,13 +712,14 @@ export default {
       'locale': 'fr',
       'replaceSync': {
         'Demi-Gukumatz': 'demi-Gukumatz',
-        'Fatebreaker(?!\'s image)': 'Sabreur de destins',
         'Fatebreaker\'s image': 'double du Sabreur de destins',
+        'Fatebreaker(?!\'s image)': 'Sabreur de destins',
         'Halo of Flame': 'halo de feu',
       },
       'replaceText': {
         'Ageless Serpent': 'Serpent éternel',
         'Blastburn': 'Explosion brûlante',
+        'Blasting Zone': 'Zone de destruction',
         'Bound Of Faith': 'Percée illuminée',
         'Bow Shock': 'Arc de choc',
         'Brightfire': 'Flammes de Lumière',
@@ -675,8 +727,10 @@ export default {
         'Burnished Glory': 'Halo luminescent',
         'Burnout': 'Combustion totale',
         'Burnt Strike': 'Frappe brûlante',
+        'Cycle Of Faith': 'Multi-taillade magique',
         'Cycle of Faith': 'Multi-taillade magique',
         'Elemental Break': 'Rupture élémentaire',
+        'Floating Fetters': 'Entraves flottantes',
         'Mortal Burn Mark': 'Marque de conflagration',
         'Powder Mark': 'Marquage fatal',
         'Prismatic Deception': 'Invisibilité prismatique',
@@ -697,13 +751,14 @@ export default {
       'locale': 'ja',
       'replaceSync': {
         'Demi-Gukumatz': 'デミグクマッツ',
-        'Fatebreaker(?!\'s image)': 'フェイトブレイカー',
         'Fatebreaker\'s image': 'フェイトブレイカーの幻影',
+        'Fatebreaker(?!\'s image)': 'フェイトブレイカー',
         'Halo of Flame': '焔の光輪',
       },
       'replaceText': {
         'Ageless Serpent': '龍頭龍尾',
         'Blastburn': 'バーンブラスト',
+        'Blasting Zone': 'ブラスティングゾーン',
         'Bound Of Faith': 'シンソイルスラスト',
         'Bow Shock': 'バウショック',
         'Brightfire': '光炎',
@@ -711,8 +766,10 @@ export default {
         'Burnished Glory': '光焔光背',
         'Burnout': 'バーンアウト',
         'Burnt Strike': 'バーンストライク',
+        'Cycle Of Faith': '魔装連続剣',
         'Cycle of Faith': '魔装連続剣',
         'Elemental Break': 'エレメンタルブレイク',
+        'Floating Fetters': '浮遊拘束',
         'Mortal Burn Mark': '大爆印',
         'Powder Mark': '爆印刻',
         'Prismatic Deception': 'プリズマチックインビジブル',
