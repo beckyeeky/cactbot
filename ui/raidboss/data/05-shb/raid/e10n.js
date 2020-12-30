@@ -1,5 +1,6 @@
 import Conditions from '../../../../../resources/conditions.js';
 import NetRegexes from '../../../../../resources/netregexes.js';
+import Outputs from '../../../../../resources/outputs.js';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -41,9 +42,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: '影の王', id: '56B7', capture: false }),
       alertText: (data, _, output) => output.text(),
       outputStrings: {
-        text: {
-          en: 'Go Front',
-        },
+        text: Outputs.goFront,
       },
     },
     {
@@ -57,8 +56,8 @@ export default {
         text: {
           en: 'Shadow Side',
           de: 'Schatten Seite',
-          fr: 'Ombre à côté',
-          ja: '影同じ側へ',
+          fr: 'Allez du côté de l\'ombre',
+          ja: '影と同じ側へ',
           cn: '影子同侧',
           ko: '그림자 쪽으로',
         },
@@ -75,7 +74,7 @@ export default {
         text: {
           en: 'Opposite Shadow',
           de: 'Gegenüber des Schattens',
-          fr: 'Ombre opposée',
+          fr: 'Allez du côté opposé à l\'ombre',
           ja: '影の反対側へ',
           cn: '影子异侧',
           ko: '그림자 반대쪽으로',
@@ -85,16 +84,25 @@ export default {
     {
       id: 'E10N Left Giga Slash',
       netRegex: NetRegexes.startsUsing({ id: '56B1', source: 'Shadowkeeper', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '56B1', source: 'Schattenkönig', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '56B1', source: 'Roi De L\'Ombre', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '56B1', source: '影の王', capture: false }),
       response: Responses.goRight(),
     },
     {
       id: 'E10N Right Giga Slash',
       netRegex: NetRegexes.startsUsing({ id: '56AE', source: 'Shadowkeeper', capture: false }),
+      netRegexDe: NetRegexes.startsUsing({ id: '56AE', source: 'Schattenkönig', capture: false }),
+      netRegexFr: NetRegexes.startsUsing({ id: '56AE', source: 'Roi De L\'Ombre', capture: false }),
+      netRegexJa: NetRegexes.startsUsing({ id: '56AE', source: '影の王', capture: false }),
       response: Responses.goLeft(),
     },
     {
       id: 'E10N Left Right Shadow Slash',
       netRegex: NetRegexes.startsUsing({ id: ['56AF', '56B2'], source: 'Shadowkeeper' }),
+      netRegexDe: NetRegexes.startsUsing({ id: ['56AF', '56B2'], source: 'Schattenkönig' }),
+      netRegexFr: NetRegexes.startsUsing({ id: ['56AF', '56B2'], source: 'Roi De L\'Ombre' }),
+      netRegexJa: NetRegexes.startsUsing({ id: ['56AF', '56B2'], source: '影の王' }),
       alertText: (data, matches, output) => matches.id === '56AF' ? output.left() : output.right(),
       outputStrings: {
         left: {
@@ -172,6 +180,10 @@ export default {
         text: {
           // TODO: this could be better if we knew where the shadow was
           en: 'Away From Black Lines',
+          de: 'Weg von den schwarzen Linien',
+          fr: 'Éloignez-vous des lignes noires',
+          ja: '黒い線から離れる',
+          cn: '远离黑线',
         },
       },
     },
@@ -194,6 +206,95 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Roi De L\'Ombre', id: '56C6', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: '影の王', id: '56C6', capture: false }),
       response: Responses.knockback('alert'),
+    },
+  ],
+  timelineReplace: [
+    {
+      'locale': 'de',
+      'replaceSync': {
+        'Shadowkeeper': 'Schattenkönig',
+      },
+      'replaceText': {
+        'Backward Implosion': 'Hintere Implosion',
+        'Backward Shadow Implosion': 'Hintere Schattenimplosion',
+        'Barbs Of Agony': 'Stacheln der Todesqualen',
+        'Cloak Of Shadows': 'Mantel des Schattens',
+        'Deepshadow Nova': 'Dunkelschatten-Nova',
+        'Distant Scream': 'Ferner Schrei',
+        'Fade To Shadow': 'Schattenimmersion',
+        'Forward Implosion': 'Vordere Implosion',
+        'Forward Shadow Implosion': 'Vordere Schattenimplosion',
+        'Front/Back Shadow Implosion': 'Vordere/Hintere Schattenimplosion',
+        'Left': 'Linker',
+        'Right Giga Slash': 'Rechter Giga-Schlag',
+        'Right Shadow Slash': 'Rechter Schattenschlag',
+        'Shadow Warrior': 'Schattenkrieger',
+        'Shadow\'s Edge': 'Schattenhieb',
+        'Shadowy Eruption': 'Schatteneruption',
+        'Spawn Shadow': 'Schattenerscheinung',
+        'Throne Of Shadow': 'Schattenthron',
+        'Umbra Smash': 'Schattenschlag',
+        'Void Pulse': 'Nichtspulsieren',
+        'Voidgate': 'Nichtsportal',
+      },
+    },
+    {
+      'locale': 'fr',
+      'missingTranslations': true,
+      'replaceSync': {
+        'Shadowkeeper': 'Ordre royal',
+      },
+      'replaceText': {
+        'Backward Implosion': 'Implosion dorsale',
+        'Backward Shadow Implosion': 'Implosion ombrale dorsale',
+        'Barbs Of Agony': 'Entrailles de l\'agonie',
+        'Cloak Of Shadows': 'Cape de l\'Ombre',
+        'Deepshadow Nova': 'Nova de la pleine-ombre',
+        'Distant Scream': 'Hurlement de l\'Ombre',
+        'Fade To Shadow': 'Immersion abyssale',
+        'Forward Implosion': 'Implosion frontale',
+        'Forward Shadow Implosion': 'Implosion ombrale frontale',
+        'Front/Back Shadow Implosion': 'Implosion ombrale devant/derrière',
+        'Left/Right Giga Slash': 'Giga taillade gauche/droite',
+        'Left/Right Shadow Slash': 'Giga taillade ombrale gauche/droite',
+        'Shadow Warrior': 'Ombre du roi',
+        'Shadow\'s Edge': 'Taillade ombrale',
+        'Shadowy Eruption': 'Éruption ombrale',
+        'Spawn Shadow': 'Ombres croissantes',
+        'Throne Of Shadow': 'Trône de l\'Ombre',
+        'Umbra Smash': 'Fracas ombral',
+        'Void Pulse': 'Pulsation du néant',
+        'Voidgate': 'Porte du néant',
+      },
+    },
+    {
+      'locale': 'ja',
+      'replaceSync': {
+        'Shadowkeeper': '影の王命',
+      },
+      'replaceText': {
+        '(?<!/)Backward Implosion': 'バックワード・インプロージョン',
+        'Backward Shadow Implosion': 'バックワード・シャドウインプロージョン',
+        'Barbs Of Agony': 'バーブス・オブ・アゴニー',
+        'Cloak Of Shadows': 'クローク・オブ・シャドウ',
+        'Deepshadow Nova': 'ディープシャドウノヴァ',
+        'Distant Scream': '影の遠吠え',
+        'Fade To Shadow': '影潜り',
+        'Forward Implosion': 'フォワード・インプロージョン',
+        'Forward/Backward Implosion': 'フォワード／バックワード・インプロージョン',
+        'Forward Shadow Implosion': 'フォワード・シャドウインプロージョン',
+        'Front/Back Shadow Implosion': 'フォワード／バックワード・シャドウインプロージョン',
+        'Left/Right Giga Slash': 'レフトサイド／ライトサイド・ギガスラッシュ',
+        'Left/Right Shadow Slash': 'レフトサイド／ライトサイド・シャドウギガスラッシュ',
+        'Shadow Warrior': '影武者',
+        'Shadow\'s Edge': 'シャドウスラッシュ',
+        'Shadowy Eruption': 'シャドウエラプション',
+        'Spawn Shadow': 'スポーンシャドウ',
+        'Throne Of Shadow': '影の王権',
+        'Umbra Smash': 'アンブラスマッシュ',
+        'Void Pulse': 'ヴォイドパルセーション',
+        'Voidgate': 'ヴォイドゲート',
+      },
     },
   ],
 };
