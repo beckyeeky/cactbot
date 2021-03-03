@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -42,6 +42,7 @@ export default {
         text: {
           en: 'Breath Wing: Be beside boss',
           de: 'Atemschwinge: Neben Boss gehen',
+          fr: 'Aile déferlante : Soyez à côté du boss',
           ja: 'ブレスウィング: ボスに近づく',
           cn: '站boss附近',
           ko: '날개바람: 보스 옆으로',

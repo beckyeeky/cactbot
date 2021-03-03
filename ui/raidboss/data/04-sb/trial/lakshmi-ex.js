@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -307,7 +307,7 @@ export default {
           en: 'Move Away',
           de: 'Weg da',
           fr: 'Éloignez-vous',
-          ja: '離れ',
+          ja: '離れる',
           cn: '远离大锤落点',
           ko: '피하기',
         },

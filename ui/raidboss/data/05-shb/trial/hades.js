@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -44,7 +44,7 @@ export default {
           en: 'Away From ${player}',
           de: 'Weg von ${player}',
           fr: 'Éloignez-vous de ${player}',
-          ja: '${player} から離れ',
+          ja: '${player} から離れる',
           cn: '远离 ${player}',
           ko: '${player} 한테서 피하세요',
         },
@@ -100,7 +100,7 @@ export default {
           en: 'Dodge Giant Circles',
           de: 'Weiche dem großen Kreis aus',
           fr: 'Évitez les cercles géants',
-          ja: '降ったサークルを避け',
+          ja: '降ったサークルを避ける',
           cn: '躲避大圈',
           ko: '대형장판피하기',
         },

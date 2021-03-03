@@ -1,6 +1,6 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
-import Outputs from '../../../../../resources/outputs.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -165,7 +165,7 @@ export default {
         text: {
           en: 'Line Cleave + Bait',
           de: 'Linien AoE -> Ködern',
-          fr: 'AoE en ligne + Attirez',
+          fr: 'AoE en ligne -> Déposez au sol',
           ja: '直線AoE -> 誘導',
           cn: '直线AoE+放置点名',
           ko: '직선 장판 + 장판 유도',
@@ -184,7 +184,7 @@ export default {
           en: 'Dodge Lightning First -> Rotate For Fire',
           de: 'Weiche zuerst Blitz aus -> Rotiere für Feuer',
           fr: 'Évitez l\'éclair d\'abord -> Tournez pour le Feu',
-          ja: '雷に避け -> 炎 準備',
+          ja: '雷を避ける -> 炎 準備',
           cn: '躲雷 -> 火击退',
           ko: '번개 먼저 피하고 -> 회전해서 화염 피하기',
         },

@@ -2,8 +2,8 @@ import AutoplayHelper from './autoplay_helper.js';
 import BrowserTTSEngine from './browser_tts_engine.js';
 import { addPlayerChangedOverrideListener } from '../../resources/player_override.js';
 import PartyTracker from '../../resources/party.js';
-import Regexes from '../../resources/regexes.js';
-import { Util } from '../../resources/common.js';
+import Regexes from '../../resources/regexes.ts';
+import Util from '../../resources/util.ts';
 import ZoneId from '../../resources/zone_id.js';
 
 // There should be (at most) six lines of instructions.
@@ -168,11 +168,11 @@ class TriggerOutputProxy {
           // Ideally, response provides everything and trigger provides nothing,
           // or there's no response and trigger provides everything.  Having
           // this well-defined smooths out the collision edge cases.
-          let str = target.getReplacement(target.overrideStrings[name], params);
+          let str = target.getReplacement(target.overrideStrings[name], params, name);
           if (str === null)
-            str = target.getReplacement(target.responseOutputStrings[name], params);
+            str = target.getReplacement(target.responseOutputStrings[name], params, name);
           if (str === null)
-            str = target.getReplacement(target.outputStrings[name], params);
+            str = target.getReplacement(target.outputStrings[name], params, name);
           if (str === null) {
             console.error(`Trigger ${target.trigger.id} has missing outputString ${name}.`);
             return target.unknownValue;
@@ -183,7 +183,7 @@ class TriggerOutputProxy {
     });
   }
 
-  getReplacement(template, params) {
+  getReplacement(template, params, name) {
     if (!template)
       return null;
     if (typeof template === 'object') {
@@ -198,8 +198,14 @@ class TriggerOutputProxy {
     }
 
     return template.replace(/\${\s*([^}\s]+)\s*}/g, (fullMatch, key) => {
-      if (params && key in params)
-        return params[key];
+      if (params && key in params) {
+        const str = params[key];
+        if (typeof str !== 'string' && typeof str !== 'number') {
+          console.error(`Trigger ${this.trigger.id} has non-string param value ${key}.`);
+          return this.unknownValue;
+        }
+        return str;
+      }
       console.error(`Trigger ${this.trigger.id} can't replace ${key} in ${template}.`);
       return this.unknownValue;
     });
@@ -411,10 +417,7 @@ export class PopupText {
       }
       // Adjust triggers for the parser language.
       if (set.triggers && this.options.AlertsEnabled) {
-        // Filter out disabled triggers
-        const enabledTriggers = set.triggers.filter((trigger) => !('disabled' in trigger && trigger.disabled));
-
-        for (const trigger of enabledTriggers) {
+        for (const trigger of set.triggers) {
           // Add an additional resolved regex here to save
           // time later.  This will clobber each time we
           // load this, but that's ok.
@@ -485,9 +488,10 @@ export class PopupText {
         this.resetWhenOutOfCombat &= set.resetWhenOutOfCombat;
     }
 
-    // Store all the collected triggers in order.
-    this.triggers = orderedTriggers.asList();
-    this.netTriggers = orderedNetTriggers.asList();
+    // Store all the collected triggers in order, and filter out disabled triggers.
+    const filterEnabled = (trigger) => !('disabled' in trigger && trigger.disabled);
+    this.triggers = orderedTriggers.asList().filter(filterEnabled);
+    this.netTriggers = orderedNetTriggers.asList().filter(filterEnabled);
 
     this.timelineLoader.SetTimelines(
         timelineFiles,

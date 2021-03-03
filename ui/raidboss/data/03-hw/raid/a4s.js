@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -93,7 +93,7 @@ export default {
           en: 'Laser Tethers',
           de: 'Laser Verbindungen',
           fr: 'Liens laser',
-          ja: 'レザー線',
+          ja: 'レーザー線',
           cn: '镭射连线',
           ko: '레이저 선',
         },

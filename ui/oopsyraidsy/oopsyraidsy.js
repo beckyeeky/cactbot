@@ -1,10 +1,10 @@
 import ContentType from '../../resources/content_type.js';
 import { LocaleNetRegex } from '../../resources/translations.js';
-import NetRegexes from '../../resources/netregexes.js';
+import NetRegexes from '../../resources/netregexes.ts';
 import PartyTracker from '../../resources/party.js';
-import Regexes from '../../resources/regexes.js';
+import Regexes from '../../resources/regexes.ts';
 import UserConfig from '../../resources/user_config.js';
-import { Util } from '../../resources/common.js';
+import Util from '../../resources/util.ts';
 import ZoneId from '../../resources/zone_id.js';
 import ZoneInfo from '../../resources/zone_info.js';
 
@@ -327,14 +327,16 @@ class OopsyLiveList {
     div.classList.add('mistake-row');
 
     // click-to-copy function
-    div.addEventListener('click', (e) => {
-      const str = e.target.childNodes[0].textContent;
+    div.addEventListener('click', () => {
+      const mistakeText = div.childNodes[1].textContent;
+      const mistakeTime = div.childNodes[2].textContent;
+      const str = mistakeTime ? `[${mistakeTime}] ${mistakeText}` : mistakeText;
       const el = document.createElement('textarea');
       el.value = str;
-      e.target.appendChild(el);
+      document.body.appendChild(el);
       el.select();
       document.execCommand('copy');
-      e.target.removeChild(el);
+      document.body.removeChild(el);
 
       // copied message
       const msg = document.createElement('div');
@@ -726,6 +728,7 @@ class DamageTracker {
     this.lastDamage = {};
     // Trigger ID -> { events: [], matches: [] }
     this.activeTriggers = {};
+    this.triggerSuppress = {};
 
     for (let i = 0; i < this.timers.length; ++i)
       window.clearTimeout(this.timers[i]);
@@ -928,13 +931,23 @@ class DamageTracker {
   }
 
   OnTrigger(trigger, evt, matches) {
+    const triggerTime = Date.now();
+
     // If using named groups, treat matches.groups as matches
     // so triggers can do things like matches.target.
     if (matches && matches.groups)
       matches = matches.groups;
 
-    if (trigger.id && !IsTriggerEnabled(this.options, trigger.id))
-      return;
+    if (trigger.id) {
+      if (!IsTriggerEnabled(this.options, trigger.id))
+        return;
+
+      if (trigger.id in this.triggerSuppress) {
+        if (this.triggerSuppress[trigger.id] > triggerTime)
+          return;
+        delete this.triggerSuppress[trigger.id];
+      }
+    }
 
     if ('condition' in trigger) {
       if (!trigger.condition(evt, this.data, matches))
@@ -958,8 +971,10 @@ class DamageTracker {
     else
       delay = 'delaySeconds' in trigger ? ValueOrFunction(trigger.delaySeconds, evt, matches) : 0;
 
+    const suppress = 'suppressSeconds' in trigger ? ValueOrFunction(trigger.suppressSeconds) : 0;
+    if (trigger.id && suppress > 0)
+      this.triggerSuppress[trigger.id] = triggerTime + (suppress * 1000);
 
-    const triggerTime = Date.now();
     const f = (function() {
       let eventParam = evt;
       let matchesParam = matches;

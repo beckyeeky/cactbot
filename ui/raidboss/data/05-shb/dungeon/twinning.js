@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -129,7 +129,7 @@ export default {
           en: 'cardinal lasers',
           de: 'Himmelrichtungs-Lasers',
           fr: 'Lasers cardinaux',
-          ja: '十字レザー',
+          ja: '十字レーザー',
           cn: '正点激光',
           ko: '십자 레이저',
         },
@@ -150,7 +150,7 @@ export default {
           en: 'outer lasers',
           de: 'Lasers am Rand',
           fr: 'Lasers extérieurs',
-          ja: '外周レザー',
+          ja: '外周レーザー',
           cn: '外侧激光',
           ko: '외곽 레이저',
         },

@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -156,7 +156,7 @@ export default {
           en: 'Avoid Roots',
           de: 'Ranken vermeiden',
           fr: 'Évitez les Racines',
-          ja: '根系から避け',
+          ja: '根っこを避ける',
           cn: '躲避树根',
           ko: '뿌리 피하기',
         },

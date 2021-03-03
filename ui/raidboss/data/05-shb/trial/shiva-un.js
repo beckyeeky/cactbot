@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -233,7 +233,7 @@ export default {
           en: 'Knockback Laser on YOU',
           de: 'Rückstoß-Laser auf DIR',
           fr: 'Poussée-Laser sur VOUS',
-          ja: '自分にノックバックレザー',
+          ja: '自分にノックバックレーザー',
           cn: '击退激光点名',
           ko: '넉백 레이저 대상자',
         },
@@ -249,7 +249,7 @@ export default {
           en: 'Avoid Laser',
           de: 'Laser ausweichen',
           fr: 'Évitez le laser',
-          ja: 'ノックバックレザーを避け',
+          ja: 'ノックバックレーザーを避ける',
           cn: '躲避击退激光',
           ko: '레이저 피하기',
         },

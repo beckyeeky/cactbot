@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -43,8 +43,8 @@ export default {
         text: {
           en: 'Spread + Avoid Crystals',
           de: 'Verteilen + Kristall meiden',
-          fr: 'Écartez-vous & évitez les cristaux',
-          ja: '散開 + 水晶に避け',
+          fr: 'Dispersez-vous + évitez les cristaux',
+          ja: '散開 + 水晶を避ける',
           cn: '散开并远离水晶',
           ko: '산개 + 크리스탈 피하기',
         },
@@ -163,7 +163,7 @@ export default {
           en: 'Avoid Rock Biters',
           de: 'Felsbeißer meiden',
           fr: 'Évitez le trancheur de pierre',
-          ja: 'ロックカッターに避け',
+          ja: 'ロックカッターを避ける',
           cn: '躲开电锯',
           ko: '톱니바퀴 피하기',
         },
@@ -203,7 +203,7 @@ export default {
           en: 'Avoid marker cone',
           de: 'Kegel-Markierung ausweichen',
           fr: 'Évitez le marqueur de cône',
-          ja: 'マークに避け',
+          ja: 'マーカーを避ける',
           cn: '远离锥形点名',
           ko: '표식 피하기',
         },

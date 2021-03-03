@@ -1,11 +1,10 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
-import Outputs from '../../../../../resources/outputs.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
 // TODO: Add N/S E/W callout to Rejuvenating Balm
-// TODO: Add Summon
 
 const phaserOutputStrings = {
   sides: Outputs.sides,
@@ -55,6 +54,134 @@ const artOfDarknessOutputStrings = {
     cn: '散开',
     ko: '산개',
   },
+};
+
+const summonDirectionOutputStrings = {
+  NNE: {
+    en: 'NNE',
+    de: 'NNO',
+    fr: 'NNE',
+    ja: '北北東(1時)',
+    cn: '上偏右(北偏东)',
+    ko: '1시',
+  },
+  ENE: {
+    en: 'ENE',
+    de: 'ONO',
+    fr: 'ENE',
+    ja: '東北東(2時)',
+    cn: '右偏上(东偏北)',
+    ko: '2시',
+  },
+  ESE: {
+    en: 'ESE',
+    de: 'OSO',
+    fr: 'ESE',
+    ja: '東南東(4時)',
+    cn: '右偏下(东偏南)',
+    ko: '4시',
+  },
+  SSE: {
+    en: 'SSE',
+    de: 'SSO',
+    fr: 'SSE',
+    ja: '南南東(5時)',
+    cn: '下偏右(南偏东)',
+    ko: '5시',
+  },
+  SSW: {
+    en: 'SSW',
+    de: 'SSW',
+    fr: 'SSO',
+    ja: '南南西(7時)',
+    cn: '下偏左(南偏西)',
+    ko: '7시',
+  },
+  WSW: {
+    en: 'WSW',
+    de: 'WSW',
+    fr: 'OSO',
+    ja: '西南西(8時)',
+    cn: '左偏下(西偏南)',
+    ko: '8시',
+  },
+  WNW: {
+    en: 'WNW',
+    de: 'WNW',
+    fr: 'ONO',
+    ja: '西北西(10時)',
+    cn: '左偏上(西偏北)',
+    ko: '10시',
+  },
+  NNW: {
+    en: 'NNW',
+    de: 'NNW',
+    fr: 'NNO',
+    ja: '北北西(11時)',
+    cn: '上偏左(北偏西)',
+    ko: '11시',
+  },
+  unknown: {
+    en: '???',
+    de: '???',
+    fr: '???',
+    ja: '???',
+    cn: '???',
+    ko: '???',
+  },
+};
+
+const convertBossHeadingToClonePosition = (boss) => {
+  // Snap heading to closest card/intercard (aka PI/4).  N = PI, E = PI/2.
+  const closestRad = Math.round(boss.Heading * 4 / Math.PI) / 4 * Math.PI;
+  // Find position opposite of the boss facing, centered on 100,100.
+  return {
+    PosX: 100 - 20 * Math.round(Math.sin(closestRad)),
+    PosY: 100 - 20 * Math.round(Math.cos(closestRad)),
+  };
+};
+
+const calculateSummonSafeZone = (boss, clone1, clone2, abilityId) => {
+  // Convert coordinates to 8 cardinal / intercardinal positions:
+  // N at 0, NE at 1, ... NW at 7
+  const b = Math.round(4 - 4 * Math.atan2(boss.PosX - 100, boss.PosY - 100) / Math.PI);
+  const c1 = Math.round(4 - 4 * Math.atan2(clone1.PosX - 100, clone1.PosY - 100) / Math.PI);
+  const c2 = Math.round(4 - 4 * Math.atan2(clone2.PosX - 100, clone2.PosY - 100) / Math.PI);
+
+  const directions = {
+    '0': 'NNE',
+    '1': 'ENE',
+    '2': 'ESE',
+    '3': 'SSE',
+    '4': 'SSW',
+    '5': 'WSW',
+    '6': 'WNW',
+    '7': 'NNW',
+  };
+
+  const badZones = [];
+  for (const position of [b, c1, c2]) {
+    for (let i = 0; i < 4; ++i) {
+      let newPosition;
+      // Swiping her right
+      if (abilityId === '561E') {
+        // Off by 1 here, since N is 0 for the Clone but NNE for the safe spot
+        newPosition = ((position - i % 8) + 7) % 8;
+      } else {
+        newPosition = (position + i) % 8;
+      }
+      if (!badZones.includes(newPosition))
+        badZones.push(newPosition);
+    }
+  }
+  const safeZones = [0, 1, 2, 3, 4, 5, 6, 7]
+    .filter((pos) => !badZones.includes(pos))
+    .map((pos) => directions[pos]);
+
+  if (safeZones.length !== 1)
+    return 'unknown';
+
+  return safeZones[0];
 };
 
 export default {
@@ -490,8 +617,15 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ id: '5A95', source: '暗黑之云', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '5A95', source: '어둠의 구름', capture: false }),
       durationSeconds: 8,
-      alertText: (data, _, output) => output['goLeft'](),
-      outputStrings: artOfDarknessOutputStrings,
+      alertText: (data, _, output) => {
+        if (!data.summon)
+          return output.text();
+      },
+      infoText: (data, _, output) => {
+        if (data.summon)
+          return output.text();
+      },
+      outputStrings: { text: artOfDarknessOutputStrings.goLeft },
     },
     {
       id: 'E9S The Art Of Darkness Left',
@@ -502,8 +636,15 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ id: '5A96', source: '暗黑之云', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '5A96', source: '어둠의 구름', capture: false }),
       durationSeconds: 8,
-      alertText: (data, _, output) => output['goRight'](),
-      outputStrings: artOfDarknessOutputStrings,
+      alertText: (data, _, output) => {
+        if (!data.summon)
+          return output.text();
+      },
+      infoText: (data, _, output) => {
+        if (data.summon)
+          return output.text();
+      },
+      outputStrings: { text: artOfDarknessOutputStrings.goRight },
     },
     {
       id: 'E9S Full-Perimeter Particle Beam',
@@ -603,12 +744,89 @@ export default {
         },
       },
     },
+    {
+      id: 'E9S Summon',
+      netRegex: NetRegexes.ability({ id: '5019', source: 'Cloud Of Darkness', capture: false }),
+      netRegexDe: NetRegexes.ability({ id: '5019', source: 'Wolke Der Dunkelheit', capture: false }),
+      netRegexFr: NetRegexes.ability({ id: '5019', source: 'Nuage De Ténèbres', capture: false }),
+      netRegexJa: NetRegexes.ability({ id: '5019', source: '暗闇の雲', capture: false }),
+      netRegexCn: NetRegexes.ability({ id: '5019', source: '暗黑之云', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '5019', source: '어둠의 구름', capture: false }),
+      run: (data) => data.summon = true,
+    },
+    {
+      id: 'E9S Clone The Art Of Darkness',
+      netRegex: NetRegexes.startsUsing({ id: '561[EF]', source: 'Clone Of Darkness' }),
+      netRegexDe: NetRegexes.startsUsing({ id: '561[EF]', source: 'Klon der Dunkelheit' }),
+      netRegexFr: NetRegexes.startsUsing({ id: '561[EF]', source: 'Nuée de Ténèbres' }),
+      netRegexJa: NetRegexes.startsUsing({ id: '561[EF]', source: '幻影の雲' }),
+      netRegexCn: NetRegexes.startsUsing({ id: '561[EF]', source: '幻影之云' }),
+      suppressSeconds: 1,
+      promise: async (data) => {
+        const cloudOfDarknessLocaleNames = {
+          en: 'Cloud Of Darkness',
+          de: 'Wolke Der Dunkelheit',
+          fr: 'Nuage De Ténèbres',
+          ja: '暗闇の雲',
+          cn: '暗黑之云',
+          ko: '어둠의 구름',
+        };
+
+        const bossData = await window.callOverlayHandler({
+          call: 'getCombatants',
+          names: [cloudOfDarknessLocaleNames[data.parserLang]],
+        });
+
+        if (bossData === null || !bossData.combatants || !bossData.combatants.length)
+          return;
+
+        // All of the fake bosses have a BNpcID of 9020, 12379 is the real one.
+        const boss = bossData.combatants.filter((boss) => boss.BNpcID === 12379)[0];
+
+        if (!boss)
+          return;
+
+        data.boss = convertBossHeadingToClonePosition(boss);
+
+        const cloneOfDarknessLocaleNames = {
+          en: 'Clone Of Darkness',
+          de: 'Klon Der Dunkelheit',
+          fr: 'Nuée de Ténèbres',
+          ja: '幻影の雲',
+          cn: '幻影之云',
+        };
+
+        const cloneData = await window.callOverlayHandler({
+          call: 'getCombatants',
+          names: [cloneOfDarknessLocaleNames[data.parserLang]],
+        });
+
+        if (cloneData === null || !cloneData.combatants || !cloneData.combatants.length)
+          return;
+
+        data.clones = cloneData.combatants;
+      },
+      alertText: (data, matches, output) => {
+        if (!data.boss || !data.clones)
+          return;
+
+        const [clone1, clone2] = data.clones;
+        return output[calculateSummonSafeZone(data.boss, clone1, clone2, matches.id)]();
+      },
+      outputStrings: summonDirectionOutputStrings,
+      run: (data) => delete data.summon,
+    },
   ],
   timelineReplace: [
     {
+      'locale': 'en',
+      'replaceText': {
+        'The Art Of Darkness(?! \\\\())': 'Art Of Dark (Clock/Stacks)',
+      },
+    },
+    {
       'locale': 'de',
       'replaceSync': {
-        'Hypercharged Cloud': 'pulsierend(?:e|er|es|en) Wolke',
         'Cloud Of Darkness': 'Wolke der Dunkelheit',
       },
       'replaceText': {
@@ -618,9 +836,7 @@ export default {
         'Summon': 'Rufen',
         'Rejuvenating Balm': 'Aktivierte Kugel',
         'Particle Concentration': 'Wellenkugel',
-        '(?<!(Full-Perimeter|Ground-Razing) )Particle Beam': 'Partikelstrahl',
         'Obscure Woods': 'Finsterer Wald',
-        'Hypercharged Dispersal': 'Elektrisierte Zerstreuung',
         'Hypercharged Condensation': 'Elektrisierte Kondensation',
         'Ground-Razing Particle Beam': 'Radialer Partikelstrahl',
         'Full-Perimeter Particle Beam': 'Partikelstrahl-Beschuss',
@@ -636,22 +852,18 @@ export default {
     {
       'locale': 'fr',
       'replaceSync': {
-        'Hypercharged Cloud': 'nuage palpitant',
         'Cloud Of Darkness': 'Nuage de Ténèbres',
       },
       'replaceText': {
         '\\(L/R\\)': '(G/D)',
-        '\\(P/S\\)': '(Po/Pa)',
         'The Third Art Of Darkness': 'Arts ténébreux triple',
         'The Second Art Of Darkness': 'Arts ténébreux double',
-        'The Art Of Darkness': 'Arts ténébreux',
+        'The Art Of Darkness(?! \\\\())': 'Arts ténébreux (Pos/Packs)',
         'Summon': 'Invocation',
         'Rejuvenating Balm': 'Tir vivifiant',
         'Particle Concentration': 'Rayon sphérique',
         'Phaser Unlimited': 'Faisceau de particules bondissant',
-        '(?<!(Full-Perimeter|Ground-Razing) )Particle Beam': 'Rayon explosif',
         'Obscure Woods': 'Forêt obscure',
-        'Hypercharged Dispersal': 'Dissipation',
         'Hypercharged Condensation': 'Aspiration particulaire',
         'Ground-Razing Particle Beam': 'Faisceau de particules radiant',
         'Full-Perimeter Particle Beam': 'Faisceau de particules balayant',
@@ -665,7 +877,6 @@ export default {
     {
       'locale': 'ja',
       'replaceSync': {
-        'Hypercharged Cloud': '波動雲',
         'Cloud Of Darkness': '暗闇の雲',
       },
       'replaceText': {
@@ -676,9 +887,7 @@ export default {
         'Rejuvenating Balm': '活性弾',
         'Phaser Unlimited': '跳躍波動砲',
         'Particle Concentration': '波動球',
-        '(?<!(Full-Perimeter|Ground-Razing) )Particle Beam': '波動爆発',
         'Obscure Woods': '暗黒森林',
-        'Hypercharged Dispersal': '被吸収',
         'Hypercharged Condensation': '波動雲吸引',
         'Ground-Razing Particle Beam': '放射式 波動砲',
         'Full-Perimeter Particle Beam': '掃射式 波動砲',

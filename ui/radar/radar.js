@@ -1,12 +1,11 @@
 import gMonster from '../../resources/hunt.js';
-import NetRegexes from '../../resources/netregexes.js';
+import NetRegexes from '../../resources/netregexes.ts';
 import UserConfig from '../../resources/user_config.js';
 
 import './radar_config.js';
-import '../../resources/common.js';
 
 const Options = {
-  PopSound: '../../resources/sounds/PowerAuras/sonar.ogg',
+  PopSound: '../../resources/sounds/freesound/sonar.ogg',
   RankOptions: {
     'S': {
       Type: 'mob',

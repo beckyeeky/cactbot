@@ -1,5 +1,6 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -1639,7 +1640,7 @@ export default {
           de: 'Köder Sprung mit Cooldowns',
           fr: 'Attirez le Saut avec des Cooldowns',
           ja: 'スパジャン誘導',
-          cn: '引导冷却跳跃',
+          cn: '减伤引导跳跃',
           ko: '슈퍼 점프 유도',
         },
       },
@@ -2002,7 +2003,7 @@ export default {
         de: 'Orange',
         fr: 'Orange',
         ja: '接触禁止',
-        cn: '接触禁止',
+        cn: '小光',
         ko: '접촉금지',
       },
       outputStrings: {
@@ -2011,7 +2012,7 @@ export default {
           de: 'Orange (Anziehen)',
           fr: 'Orange (Attraction)',
           ja: '接触禁止',
-          cn: '接触禁止',
+          cn: '小光',
           ko: '노랑/접촉금지',
         },
       },
@@ -2027,7 +2028,7 @@ export default {
           de: 'Orange locken: Geh Weg',
           fr: 'Attirez l\'orange : Éloignez-vous',
           ja: '接触保護',
-          cn: '接触保护',
+          cn: '大光: 远离人群',
           ko: '노랑/접촉보호; 유도역할/혼자 멀리 있기',
         },
       },
@@ -2042,7 +2043,7 @@ export default {
         de: 'Lila',
         fr: 'Violet',
         ja: '逃亡禁止',
-        cn: '逃亡禁止',
+        cn: '小暗',
         ko: '도망금지',
       },
       outputStrings: {
@@ -2051,7 +2052,7 @@ export default {
           de: 'Lila (Abstoßen)',
           fr: 'Violet (Répulsion)',
           ja: '逃亡禁止',
-          cn: '逃亡禁止',
+          cn: '小暗',
           ko: '보라/도망금지',
         },
       },
@@ -2067,7 +2068,7 @@ export default {
           de: 'Lila locken: Hinter der Gruppe sein',
           fr: 'Attirez le violet : Soyez derrière le groupe',
           ja: '逃亡監察',
-          cn: '逃亡监察',
+          cn: '大暗: 去人群后面',
           ko: '보라/도망감찰; 유도역할/사람들 뒤에 있기',
         },
       },
@@ -2930,23 +2931,11 @@ export default {
         return output[data.secondTrineResponse]();
       },
       outputStrings: {
-        north: {
-          en: 'North',
-          de: 'Norden',
-          fr: 'Nord',
-          ja: '北へ',
-          cn: '北',
-          ko: '북쪽으로',
-        },
-        east: {
-          en: 'East',
-          de: 'Osten',
-          fr: 'Est',
-          ja: '東へ',
-          cn: '东',
-          ko: '동쪽으로',
-        },
+        north: Outputs.north,
+        east: Outputs.east,
         south: {
+          // It is a bit different in JA/CN that players should go middle instead of south,
+          // so leave it alone.
           en: 'South',
           de: 'Süden',
           fr: 'Sud',
@@ -2954,14 +2943,7 @@ export default {
           cn: '中间',
           ko: '가운데로',
         },
-        west: {
-          en: 'West',
-          de: 'Westen',
-          fr: 'Ouest',
-          ja: '西へ',
-          cn: '西',
-          ko: '서쪽으로',
-        },
+        west: Outputs.west,
       },
     },
     {

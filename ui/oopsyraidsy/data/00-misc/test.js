@@ -1,4 +1,4 @@
-import NetRegexes from '../../../../resources/netregexes.js';
+import NetRegexes from '../../../../resources/netregexes.ts';
 import ZoneId from '../../../../resources/zone_id.js';
 
 // Test mistake triggers.
@@ -84,6 +84,7 @@ export default {
     {
       id: 'Test Oops',
       netRegex: NetRegexes.echo({ line: '.*oops.*' }),
+      suppressSeconds: 10,
       mistake: function(e, data, matches) {
         return { type: 'fail', blame: data.me, text: matches.line };
       },

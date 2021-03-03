@@ -1,14 +1,11 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
-import Outputs from '../../../../../resources/outputs.js';
+import Util from '../../../../../resources/util.ts';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
-// TODO: use headmarkers for limit cut number
-//       need to track tether bois
-//       HOWEVER this also uses TEA rules where the limit cut number has an offset.
-//       HOWEVER HOWEVER only the limit cut numbers use this offset
-//       the second 1B line is the #1 limit cut number, and they increment in hex by 1
+// TODO: Fix headmarkers for groups running multiple of the same job ?
 
 // Note: there's no headmarker ability line for cleaving shadows.
 
@@ -234,16 +231,16 @@ export default {
         let ret = '';
         switch (data.gigaSlashCleaveDebuffId) {
         case '973':
-          ret = output.west;
+          ret = output.west();
           break;
         case '974':
-          ret = output.east;
+          ret = output.east();
           break;
         case '975':
-          ret = output.north;
+          ret = output.north();
           break;
         case '976':
-          ret = output.south;
+          ret = output.south();
           break;
         }
 
@@ -258,8 +255,9 @@ export default {
       outputStrings: {
         dropShadow: {
           en: 'Drop Shadow ${dir}',
+          de: 'Schatten im ${dir} ablegen',
           fr: 'Déposez l\'ombre du côté ${dir}',
-          ja: '${dir}、影を捨てる',
+          ja: '${dir}へ、影を捨てる',
           cn: '${dir}放影子',
           ko: '${dir}에 그림자 놓기',
         },
@@ -285,16 +283,16 @@ export default {
         let ret = '';
         switch (data.gigaSlashCleaveDebuffId) {
         case '973':
-          ret = output.east;
+          ret = output.east();
           break;
         case '974':
-          ret = output.west;
+          ret = output.west();
           break;
         case '975':
-          ret = output.south;
+          ret = output.south();
           break;
         case '976':
-          ret = output.north;
+          ret = output.north();
           break;
         }
 
@@ -308,9 +306,10 @@ export default {
       infoText: (data, _, output) => output.rightCleave(),
       outputStrings: {
         dropShadow: {
-          en: 'Drop Shadow on ${dir}',
+          en: 'Drop Shadow ${dir}',
+          de: 'Schatten im ${dir} ablegen',
           fr: 'Déposez l\'ombre du côté ${dir}',
-          ja: '${dir}、影を捨てる',
+          ja: '${dir}へ、影を捨てる',
           cn: '${dir}放影子',
           ko: '${dir}에 그림자 놓기',
         },
@@ -360,9 +359,68 @@ export default {
           ko: '바깥쪽에 그림자 떨어뜨리기',
         },
       },
+      run: (data) => data.clones = true,
     },
     {
-      // TODO: use headmarkers for this
+      // This checks your shadow's job against your job, since your shadow has
+      // the same job as you. If there's multiple of one job, or a shadow has
+      // a job of 0 (player died), then return '?' for the affected players.
+      id: 'E10S Shadow Of A Hero',
+      netRegex: NetRegexes.addedCombatantFull({ name: 'Shadow Of A Hero' }),
+      netRegexDe: NetRegexes.addedCombatantFull({ name: 'Schatten Eines Helden' }),
+      netRegexFr: NetRegexes.addedCombatantFull({ name: 'Ombre De Héros' }),
+      netRegexJa: NetRegexes.addedCombatantFull({ name: '英雄の影' }),
+      condition: (data) => data.clones,
+      run: (data, matches) => {
+        data.myClone = data.myClone || [];
+        const clonesJob = parseInt(matches.job, 16).toString();
+        if (clonesJob === Util.jobToJobEnum(data.job))
+          data.myClone.push(matches.id.toUpperCase());
+      },
+    },
+    {
+      id: 'E10S Shadow Of A Hero Head Marker Map',
+      netRegex: NetRegexes.headMarker({ target: 'Shadow Of A Hero' }),
+      netRegexDe: NetRegexes.headMarker({ target: 'Schatten Eines Helden' }),
+      netRegexFr: NetRegexes.headMarker({ target: 'Ombre De Héros' }),
+      netRegexJa: NetRegexes.headMarker({ target: '英雄の影' }),
+      condition: (data) => !data.shadowMarkerMap,
+      suppressSeconds: 1,
+      run: (data, matches) => {
+        data.shadowMarkerMap = {};
+        const idPivot = parseInt(matches.id, 16);
+        for (let i = 0; i < 3; ++i) {
+          const hexPivot = (idPivot + i).toString(16).toUpperCase().padStart(4, '0');
+          data.shadowMarkerMap[hexPivot] = i + 1;
+        }
+      },
+    },
+    {
+      id: 'E10S Shadow Of A Hero Head Marker',
+      netRegex: NetRegexes.headMarker({ target: 'Shadow Of A Hero' }),
+      netRegexDe: NetRegexes.headMarker({ target: 'Schatten Eines Helden' }),
+      netRegexFr: NetRegexes.headMarker({ target: 'Ombre De Héros' }),
+      netRegexJa: NetRegexes.headMarker({ target: '英雄の影' }),
+      condition: (data) => !data.headMarkerTriggered,
+      durationSeconds: 7,
+      alertText: (data, matches, output) => {
+        if (!data.myClone || data.myClone.length !== 1) {
+          data.headMarkerTriggered = true;
+          return output.unknown();
+        }
+        if (matches.targetId === data.myClone[0]) {
+          data.headMarkerTriggered = true;
+          return output[data.shadowMarkerMap[matches.id]]();
+        }
+      },
+      outputStrings: {
+        '1': Outputs.num1,
+        '2': Outputs.num2,
+        '3': Outputs.num3,
+        'unknown': Outputs.unknownTarget,
+      },
+    },
+    {
       id: 'E10S Dualspell 1',
       netRegex: NetRegexes.startsUsing({ source: 'Shadowkeeper', id: '573A', capture: false }),
       netRegexDe: NetRegexes.startsUsing({ source: 'Schattenkönig', id: '573A', capture: false }),
@@ -381,7 +439,6 @@ export default {
       },
     },
     {
-      // TODO: use headmarkers for this
       id: 'E10S Dualspell 2',
       netRegex: NetRegexes.ability({ source: 'Shadowkeeper', id: '573A', capture: false }),
       netRegexDe: NetRegexes.ability({ source: 'Schattenkönig', id: '573A', capture: false }),
@@ -400,7 +457,6 @@ export default {
       },
     },
     {
-      // TODO: use headmarkers for this
       id: 'E10S Dualspell 3',
       netRegex: NetRegexes.ability({ source: 'Shadowkeeper', id: '573A', capture: false }),
       netRegexDe: NetRegexes.ability({ source: 'Schattenkönig', id: '573A', capture: false }),
@@ -429,14 +485,15 @@ export default {
       alertText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
-          en: 'Drop Shadow Max Melee',
-          de: 'Lege den Schatten im max Melee Bereich ab',
-          fr: 'Déposez l\'ombre au max de la portée',
-          ja: 'タゲサークル外側に影を捨てる',
-          cn: '把影子放到Boss目标圈外',
-          ko: '그림자 칼끝딜 위치에 떨어뜨리기',
+          en: 'Drop Shadow Out',
+          de: 'Schatten draußen ablegen',
+          fr: 'Déposez l\'ombre à l\'extérieur',
+          ja: '影を外周に捨てる',
+          cn: '影子放到外圈',
+          ko: '바깥쪽에 그림자 떨어뜨리기',
         },
       },
+      run: (data) => delete data.clones,
     },
     {
       id: 'E10S Swath of Silence',
@@ -445,7 +502,7 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Ombre De Héros', id: '5BBF', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: '英雄の影', id: '5BBF', capture: false }),
       suppressSeconds: 3,
-      response: Responses.getUnder(),
+      response: Responses.moveAway(),
     },
     {
       id: 'E10S Distant Scream',
@@ -507,7 +564,7 @@ export default {
           // TODO: this could be better if we knew where the shadow was
           // TODO: this also happens twice, with tethers
           en: 'Be On Squiggles',
-          de: 'Sei auf dem Kringel',
+          de: 'Sei auf den geschwungenen Linien',
           fr: 'Allez sur l\'ombre tordue',
           ja: '曲線上待機',
           cn: '站到连线为曲线的一侧',
@@ -523,13 +580,12 @@ export default {
       netRegexDe: NetRegexes.ability({ source: 'Schattenkönig', id: '5B13', capture: false }),
       netRegexFr: NetRegexes.ability({ source: 'Roi De L\'Ombre', id: '5B13', capture: false }),
       netRegexJa: NetRegexes.ability({ source: '影の王', id: '5B13', capture: false }),
-      delaySeconds: 4,
       suppressSeconds: 5,
       infoText: (data, _, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Away From Squiggles',
-          de: 'Weg vom Kringel',
+          de: 'Weg von den geschwungenen Linien',
           fr: 'Éloignez-vous de l\'ombre tordue',
           ja: '安置へ',
           cn: '远离连线为曲线的一侧',

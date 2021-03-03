@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -155,7 +155,7 @@ export default {
           en: 'Away From Tethered Walls',
           de: 'Weg von den verbundenen Wänden',
           fr: 'Éloignez-vous des murs liés',
-          ja: '線が繋がった外周に離れ',
+          ja: '線が繋がった外周から離れる',
           cn: '远离连线的墙壁',
           ko: '보스 선 연결된 방향 피하기',
         },

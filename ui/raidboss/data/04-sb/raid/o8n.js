@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -83,7 +83,7 @@ export default {
           en: 'Look Away From Statue',
           de: 'Von Statue wegschauen',
           fr: 'Ne regardez pas la statue',
-          ja: '神々の像を見ないで',
+          ja: '神々の像を見ない',
           cn: '背对神像',
           ko: '시선 피하기',
         },
@@ -155,7 +155,7 @@ export default {
           en: 'Fake Thunder',
           de: 'Falscher Blitz',
           fr: 'Fausse foudre',
-          ja: 'にせサンダガ',
+          ja: '偽サンダガ',
           cn: '假雷',
           ko: '거짓 선더가',
         },

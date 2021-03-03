@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import ZoneId from '../../../../../resources/zone_id.js';
 
 export default {
@@ -64,7 +64,7 @@ export default {
           en: 'Away from ${player}',
           de: 'Weg von ${player}',
           fr: 'Éloignez-vous de ${player}',
-          ja: '${player}に離れ',
+          ja: '${player}から離れる',
           cn: '远离${player}',
           ko: '"${player}"에게서 멀어지기',
         },
@@ -124,7 +124,7 @@ export default {
           en: 'Bluefire Away',
           de: 'Blaufeuer wegbringen',
           fr: 'Flamme bleue, éloignez-vous',
-          ja: '青碧の炎、離れ',
+          ja: '青碧の炎、離れる',
           cn: '蓝火远离',
           ko: '청벽의 불꽃 대상자',
         },
@@ -229,7 +229,7 @@ export default {
         'Flames Of Rebirth': '転生の炎',
         'Flames Of Unforgiveness': '煉獄の爆炎',
         'Fountain Of Fire': '霊泉の炎',
-        'Fountain Tick': '霊泉の炎: ',
+        'Fountain Tick ': '霊泉の炎: ',
         'Redfire Plume': '赤熱の炎柱',
         'Redfire(?! )': '紅蓮の炎',
         'Revelation': 'リヴァレーション',

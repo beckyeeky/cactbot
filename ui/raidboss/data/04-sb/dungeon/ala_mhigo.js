@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -61,7 +61,7 @@ export default {
           en: 'Out of blue circle',
           de: 'Raus aus dem blauen Kreis',
           fr: 'Hors du cercle bleu',
-          ja: '青い円に離れ',
+          ja: '青い円から離れる',
           cn: '离开蓝圈',
           ko: '파란 원 바깥으로',
         },
@@ -112,7 +112,7 @@ export default {
           en: 'Face tether out',
           de: 'Verbindung nach draußen richten',
           fr: 'Lien vers l\'extérieur',
-          ja: '外へ、線を向かない',
+          ja: '線を外へ向ける',
           cn: '离开人群背对连线',
           ko: '본진 바깥으로 유도하기',
         },

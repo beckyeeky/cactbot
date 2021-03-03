@@ -1,6 +1,6 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
-import Outputs from '../../../../../resources/outputs.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -185,7 +185,7 @@ export default {
         text: {
           en: 'Line Cleave + Bait',
           de: 'Linien AoE -> Ködern',
-          fr: 'AoE en ligne + Attirez',
+          fr: 'AoE en ligne -> Déposez au sol',
           ja: '直線範囲 -> AoE誘導',
           cn: '直线 -> 放光点名',
           ko: '직선 장판 + 장판 유도',
@@ -617,7 +617,7 @@ export default {
         text: {
           en: 'Protean -> Holy Groups -> Line Cleave -> Bait -> Away',
           de: 'Himmelsrichtung -> Sanctus Gruppen -> Linien AoE -> Ködern -> Weg',
-          fr: 'Position -> Groupes -> AoE en ligne -> Attirez -> Éloignez-vous',
+          fr: 'Position -> Groupes -> AoE en ligne -> Déposez au sol -> Éloignez-vous',
           ja: '8方向散開 -> 3方向頭割り -> 直線範囲 -> AoE誘導 -> 離れる',
           cn: '八方 -> 光三向分摊 -> 直线 -> 放光点名 -> 离开',
           ko: '8산개 -> 홀리 그룹 쉐어 -> 직선 장판 -> 장판 유도 -> 피하기',
@@ -655,7 +655,6 @@ export default {
         'Burnout': 'Brandentladung',
         'Burnt Strike': 'Brandschlag',
         'Cycle Of Faith': 'Mehrfache Vergeltung',
-        'Cycle of Faith': 'Mehrfache Vergeltung',
         'Elemental Break': 'Elementarbruch',
         'Floating Fetters': 'Schwebende Fesseln',
         'Mortal Burn Mark': 'Brandmal der Sterblichen',
@@ -695,7 +694,6 @@ export default {
         'Burnout': 'Combustion totale',
         'Burnt Strike': 'Frappe brûlante',
         'Cycle Of Faith': 'Multi-taillade magique',
-        'Cycle of Faith': 'Multi-taillade magique',
         'Elemental Break': 'Rupture élémentaire',
         'Floating Fetters': 'Entraves flottantes',
         'Mortal Burn Mark': 'Marque de conflagration',
@@ -734,7 +732,6 @@ export default {
         'Burnout': 'バーンアウト',
         'Burnt Strike': 'バーンストライク',
         'Cycle Of Faith': '魔装連続剣',
-        'Cycle of Faith': '魔装連続剣',
         'Elemental Break': 'エレメンタルブレイク',
         'Floating Fetters': '浮遊拘束',
         'Mortal Burn Mark': '大爆印',

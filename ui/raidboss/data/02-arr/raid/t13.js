@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -255,10 +255,11 @@ export default {
         'Gigaflare': 'ギガフレア',
         '2x Gust Adds': '雑魚: 2x ガスト',
         '3x Gust Adds': '雑魚: 3x ガスト',
+        '(?<= )Marker': 'マーカー',
         'MF Pepperoni': 'メガ: AoE',
         'MF Share': 'メガ: 頭割り',
         'MF Spread': 'メガ: 散開',
-        'MF Tower': 'メガ: 塔',
+        'MF Tower(\\(s\\))?': 'メガ: 塔',
         'Megaflare': 'メガフレア',
         '(?<! )Pain Add': '雑魚: ペイン',
         'Rage Of Bahamut': '龍神の咆吼',

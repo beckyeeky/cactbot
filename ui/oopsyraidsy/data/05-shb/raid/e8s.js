@@ -1,4 +1,4 @@
-import NetRegexes from '../../../../../resources/netregexes.js';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import ZoneId from '../../../../../resources/zone_id.js';
 
 // TODO: rush hitting the crystal
@@ -50,7 +50,6 @@ export default {
   },
   damageFail: {
     // Broken tether.
-    // TODO: add suppressSeconds to oopsy.
     'E8S Refulgent Fate': '4DA4',
     // Shared orb, correct is Bright Pulse (4D95)
     'E8S Blinding Pulse': '4D96',

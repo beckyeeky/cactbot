@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -68,7 +68,7 @@ export default {
           en: 'Away From Swimming Shark',
           de: 'Weg vom schwimmenden Hai',
           fr: 'Éloignez-vous du requin qui nage',
-          ja: '水中サメから離れ',
+          ja: '水中サメから離れる',
           cn: '远离水中BOSS',
           ko: '물 속 상어 멀리 떨어지기',
         },

@@ -1,5 +1,6 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -62,7 +63,7 @@ export default {
           en: 'Keep Bosses Apart',
           de: 'Bosse auseinander ziehen',
           fr: 'Séparez les boss',
-          ja: 'ボス離して',
+          ja: 'ボスを離して',
           cn: '拉开Boss',
           ko: '보스 떨어뜨리기',
         },
@@ -82,7 +83,7 @@ export default {
           en: 'Move Bosses Together',
           de: 'Bosse zusammenziehen',
           fr: 'Packez les boss',
-          ja: 'ボス重ねて',
+          ja: 'ボスを重ねて',
           cn: '拉近Boss',
           ko: '보스 붙이기',
         },
@@ -242,7 +243,7 @@ export default {
           en: 'Dodge Left',
           de: 'Links ausweichen',
           fr: 'Evitez à gauche',
-          ja: '左側に離れ',
+          ja: '左側に離れる',
           cn: '左侧躲闪',
           ko: '오른쪽으로',
         },
@@ -275,7 +276,7 @@ export default {
           en: 'Dodge Right',
           de: 'Rechts ausweichen',
           fr: 'Evitez à droite',
-          ja: '右側に離れ',
+          ja: '右側に離れる',
           cn: '右侧躲闪',
           ko: '왼쪽으로',
         },
@@ -494,7 +495,7 @@ export default {
           en: 'Move out for Defamation',
           de: 'Rausgehen für Urteil',
           fr: 'Ecartez-vous pour #médisance',
-          ja: 'サークル捨てる',
+          ja: 'サークルを捨てる',
           cn: '离开人群传毒',
           ko: '잠재적 오류: 전이',
         },
@@ -637,48 +638,12 @@ export default {
         }[v];
       },
       outputStrings: {
-        east: {
-          en: 'East',
-          de: 'Osten',
-          ja: '東',
-          cn: '东',
-          ko: '동쪽(3시)',
-        },
-        northeast: {
-          en: 'Northeast',
-          de: 'Nordosten',
-          ja: '北東',
-          cn: '东北',
-          ko: '북동쪽(1시)',
-        },
-        northwest: {
-          en: 'Northwest',
-          de: 'Nordwesten',
-          ja: '北西',
-          cn: '西北',
-          ko: '북서쪽(11시)',
-        },
-        southeast: {
-          en: 'Southeast',
-          de: 'Südosten',
-          ja: '南東',
-          cn: '东南',
-          ko: '남동쪽(5시)',
-        },
-        southwest: {
-          en: 'Southwest',
-          de: 'Südwesten',
-          ja: '南西',
-          cn: '西南',
-          ko: '남서쪽(7시)',
-        },
-        west: {
-          en: 'West',
-          de: 'Westen',
-          ja: '西',
-          cn: '西',
-          ko: '서쪽(9시)',
-        },
+        east: Outputs.east,
+        northeast: Outputs.northeast,
+        northwest: Outputs.northwest,
+        southeast: Outputs.southeast,
+        southwest: Outputs.southwest,
+        west: Outputs.west,
       },
     },
   ],

@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -260,7 +260,7 @@ export default {
           en: 'Tank Swap, Get Away',
           de: 'Tankwechsel, geh weg',
           fr: 'Tank swap, éloignez-vous',
-          ja: 'タンクスイッチ、離れ',
+          ja: 'タンクスイッチ、離れる',
           cn: '换T并且远离',
           ko: '탱 교대, 멀리가기',
         },

@@ -18,7 +18,7 @@
 // function that sets outputStrings and returns an object without doing
 // anything with data or matches.  See `responses_test.js`.
 
-import Outputs from './outputs.js';
+import Outputs from './outputs.ts';
 
 export const builtInResponseStr = 'cactbot-builtin-response';
 
@@ -43,13 +43,19 @@ export const triggerFunctions = [
   'outputStrings',
 ];
 
-// Trigger fields that can produce output.
-export const triggerOutputFunctions = [
+// Trigger fields that can produce text output.
+export const triggerTextOutputFunctions = [
   'alarmText',
   'alertText',
   'infoText',
   'response',
   'tts',
+];
+
+// If a trigger has any of these, then it has a visible/audio effect.
+export const triggerOutputFunctions = [
+  ...triggerTextOutputFunctions,
+  'sound',
 ];
 
 export const severityMap = {
@@ -206,11 +212,14 @@ export const Responses = {
     };
     return {
       [defaultInfoText(sev)]: (data, matches, output) => {
-        if (data.role === 'tank') {
-          const target = getTarget(matches);
-          if (target === data.me)
-            return output.cleaveOnYou();
+        const target = getTarget(matches);
+        if (target === data.me)
+          return output.cleaveOnYou();
+        if (data.role === 'tank' || data.job === 'BLU') {
           // targetless tank cleave
+          // BLU players should always get this generic cleave message.
+          // We have no robust way to determine whether they have tank Mimicry on,
+          // and it's really annoying for a BLU tank to be told to avoid cleaves when they can't.
           return output.cleaveNoTarget();
         }
         return output.avoidCleave();

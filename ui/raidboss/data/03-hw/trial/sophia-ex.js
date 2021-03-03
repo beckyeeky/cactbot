@@ -1,5 +1,6 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -32,6 +33,7 @@ const tiltOutputStrings = {
   goEastHardTilt: {
     en: 'Go East (Hard Tilt)',
     de: 'Nach Osten gehen (starke Neigung)',
+    fr: 'Allez à l\'Est (Inclinaison forte)',
     ja: '東へ (大きい斜め)',
     cn: '去东边（大倾斜）',
     ko: '동쪽으로 (크게 기울어짐)',
@@ -39,6 +41,7 @@ const tiltOutputStrings = {
   goEastSoftTilt: {
     en: 'Go East (Soft Tilt)',
     de: 'Nach Osten gehen (leichte Neigung)',
+    fr: 'Allez à l\'Est (Inclinaison douce)',
     ja: '東へ (小さい斜め)',
     cn: '去东边（小倾斜）',
     ko: '동쪽으로 (작게 기울어짐)',
@@ -46,6 +49,7 @@ const tiltOutputStrings = {
   goWestHardTilt: {
     en: 'Go West (Hard Tilt)',
     de: 'Nach Westen gehen (starke Neigung)',
+    fr: 'Allez à l\'Ouest (Inclinaison forte)',
     ja: '西へ (大きい斜め)',
     cn: '去西边（大倾斜）',
     ko: '서쪽으로 (크게 기울어짐)',
@@ -53,6 +57,7 @@ const tiltOutputStrings = {
   goWestSoftTilt: {
     en: 'Go West (Soft Tilt)',
     de: 'Nach Westen gehen (leichte Neigung)',
+    fr: 'Allez à l\'Ouest (Inclinaison douce)',
     ja: '西へ (小さい斜め)',
     cn: '去西边（小倾斜）',
     ko: '서쪽으로 (작게 기울어짐)',
@@ -105,7 +110,7 @@ export default {
           en: 'Stack With Partner',
           de: 'Mit Partner stacken',
           fr: 'Packez-vous avec votre partenaire',
-          ja: '白黒合わせて',
+          ja: '白と黒で重なる',
           cn: '黑白配',
           ko: '흑백 파트너랑 모이기',
         },
@@ -354,7 +359,7 @@ export default {
           en: 'Avoid head laser',
           de: 'Kopflaser ausweichen',
           fr: 'Évitez la tête laser',
-          ja: 'レザーに避け',
+          ja: 'レーザーを避ける',
           cn: '躲避人头炮',
           ko: '머리 레이저 피하기',
         },
@@ -388,54 +393,12 @@ export default {
         });
       },
       outputStrings: {
-        north: {
-          en: 'North',
-          de: 'Norde',
-          fr: 'Nord',
-          ja: '北',
-          cn: '北',
-          ko: '북쪽',
-        },
-        south: {
-          en: 'South',
-          de: 'Süden',
-          fr: 'Sud',
-          ja: '南',
-          cn: '南面',
-          ko: '남쪽',
-        },
-        northwest: {
-          en: 'NW',
-          de: 'NW',
-          fr: 'N-O',
-          ja: '北西',
-          cn: '西北',
-          ko: '북서',
-        },
-        northeast: {
-          en: 'NE',
-          de: 'NO',
-          fr: 'N-E',
-          ja: '北東',
-          cn: '东北',
-          ko: '북동',
-        },
-        southwest: {
-          en: 'SW',
-          de: 'SW',
-          fr: 'S-O',
-          ja: '南西',
-          cn: '西南',
-          ko: '남서',
-        },
-        southeast: {
-          en: 'SE',
-          de: 'SO',
-          fr: 'S-E',
-          ja: '南東',
-          cn: '东南',
-          ko: '남동',
-        },
+        north: Outputs.dirN,
+        south: Outputs.dirS,
+        northwest: Outputs.dirNW,
+        northeast: Outputs.dirNE,
+        southwest: Outputs.dirSW,
+        southeast: Outputs.dirSE,
         multiple: {
           en: '${dir1} / ${dir2}',
           de: '${dir1} / ${dir2}',
@@ -677,7 +640,7 @@ export default {
     {
       'locale': 'ja',
       'replaceSync': {
-        'Aion Teleos': 'Aion Teleos',
+        'Aion Teleos': 'アイオーン・ソフィア',
         'Barbelo': 'バルベロ',
         'Sophia': 'ソフィア',
         'The First Demiurge': '一の従者',
@@ -704,8 +667,9 @@ export default {
         'Quasar': 'クエーサー',
         'Ring of Pain': 'リング・オブ・ペイン',
         'The Scales Of Wisdom': 'バランス・オブ・ウィズダム',
+        '(?<= )Tethers': '線',
         'Thunder II\\/III': 'サンダー/サンダガ',
-        'Thunder II(?!(?:I|\\/))': 'サンダラ',
+        'Thunder II(?!(?:I|\\/I))': 'サンダラ',
         'Thunder III': 'サンダガ',
         'Vertical Kenoma': '前後堅守',
         'Zombification': 'ゾンビー',

@@ -1,5 +1,4 @@
 import './raidboss_config.js';
-import '../../resources/common.js';
 import '../../resources/timerbar.js';
 
 import { PopupText, PopupTextGenerator } from './popup-text.js';
@@ -9,28 +8,7 @@ import UserConfig from '../../resources/user_config.js';
 import { addRemotePlayerSelectUI } from '../../resources/player_override.js';
 import raidbossFileData from './data/manifest.txt';
 
-// See user/raidboss-example.js for documentation.
-const Options = {
-  // These options are ones that are not auto-defined by raidboss_config.js.
-  PlayerNicks: {},
-
-  InfoSound: '../../resources/sounds/freesound/percussion_hit.ogg',
-  AlertSound: '../../resources/sounds/BigWigs/Alert.ogg',
-  AlarmSound: '../../resources/sounds/BigWigs/Alarm.ogg',
-  LongSound: '../../resources/sounds/BigWigs/Long.ogg',
-  PullSound: '../../resources/sounds/PowerAuras/sonar.ogg',
-
-  AudioAllowed: true,
-
-  DisabledTriggers: {},
-
-  PerTriggerOptions: {},
-
-  Triggers: [],
-
-  PlayerNameOverride: null,
-  IsRemoteRaidboss: false,
-};
+import Options from './raidboss_options.js';
 
 UserConfig.getUserConfigLocation('raidboss', Options, (e) => {
   // Query params override default and user options.

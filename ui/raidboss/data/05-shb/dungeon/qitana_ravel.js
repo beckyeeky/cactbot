@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -46,7 +46,7 @@ export default {
           en: 'Look for pillar',
           de: 'Auf die Pfeiler schauen',
           fr: 'Cherchez les piliers',
-          ja: '光った像に避ける',
+          ja: '光った像を避ける',
           cn: '躲开发光石像的半场',
           ko: '빛나는 기둥 위치확인',
         },
@@ -170,7 +170,7 @@ export default {
           en: 'Run Away From Boss',
           de: 'Renn weg vom Boss',
           fr: 'Courez loin du boss',
-          ja: 'ボスに離れ',
+          ja: 'ボスから離れる',
           cn: '远离Boss',
           ko: '보스와 거리 벌리기',
         },
@@ -186,7 +186,7 @@ export default {
           en: 'Drop Poison Outside',
           de: 'Gift am Rand ablegen',
           fr: 'Déposez le poison à l\'extérieur',
-          ja: '外周に捨て',
+          ja: '外周に捨てる',
           cn: '远处放毒',
           ko: '독 장판을 바깥 쪽에 버리기',
         },

@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -67,7 +67,7 @@ export default {
           en: 'Frontal Laser',
           de: 'Frontaler Laser',
           fr: 'Laser frontal',
-          ja: 'ボス前方レザー',
+          ja: 'ボス前方レーザー',
           cn: '面前激光',
           ko: '정면 레이저 공격',
         },
@@ -99,7 +99,7 @@ export default {
           en: 'dodge wind cones',
           de: 'Wind-Fächerflächen ausweichen',
           fr: 'Esquivez les cônes de vent',
-          ja: '風の楔から離れ',
+          ja: '風の楔から離れる',
           cn: '躲风锥',
           ko: '부채꼴 공격 피하기',
         },

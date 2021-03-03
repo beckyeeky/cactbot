@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -284,6 +284,36 @@ export default {
         'Exalted Plumes': '羽化',
         'Drop Of Light': '落光',
         '--add Phase--': '--小怪--',
+      },
+    },
+    {
+      'locale': 'ko',
+      'replaceSync': {
+        'Sword of Condemnation': '단죄의 검',
+        'Innocence': '이노센스',
+      },
+      'replaceText': {
+        'Winged Reprobation': '단죄의 비상',
+        'Soul And Body': '영혼과 육신',
+        'Sinsphere': '죄의 구체',
+        'Shadowreaver': '그림자 강탈',
+        'Rightful Reprobation': '단죄의 선회',
+        'Righteous Bolt': '심판자의 번개',
+        '(?<! )Reprobation': '선회',
+        'Light Pillar': '빛의 기둥',
+        'Holy Trinity': '성 삼위일체',
+        'Guiding Light': '인도하는 빛',
+        'God Ray': '신의 광선',
+        'Flaming Sword': '회전 화염검',
+        'Beatific Vision': '지복직관',
+        'Realmrazer': '영토 지배자',
+        'Heavenly Host': '권력자의 한마디',
+        'Daybreak': '여명',
+        'Enthrall': '매혹의 눈',
+        'Exalted Wing': '고귀한 날개',
+        'Exalted Plumes': '탈피',
+        'Drop Of Light': '빛내림',
+        '--add Phase--': '--쫄 페이즈--',
       },
     },
   ],

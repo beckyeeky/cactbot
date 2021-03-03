@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -33,7 +33,7 @@ export default {
           en: 'Away From Meteor',
           de: 'Weg vom Meteor',
           fr: 'Éloignez-vous du météore',
-          ja: 'コメットから離れ',
+          ja: 'コメットから離れる',
           cn: '远离陨石',
           ko: '운석에게서 멀어지기',
         },
@@ -79,7 +79,7 @@ export default {
           en: 'Away from Lines',
           de: 'Weg von den Linien',
           fr: 'En dehors des sillons',
-          ja: '線から離れ',
+          ja: '線から離れる',
           cn: '远离线',
           ko: '선 피하기',
         },
@@ -209,7 +209,7 @@ export default {
           en: 'Avoid meteors with laser',
           de: 'Meteore mit Laser vermeiden',
           fr: 'Évitez les météores avec votre laser',
-          ja: 'レザーを避け',
+          ja: 'レザーを避ける',
           cn: '躲开激光点名',
           ko: '레이저 대상자 - 탱커 피하기',
         },

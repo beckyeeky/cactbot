@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -84,7 +84,7 @@ export default {
           en: 'Dodge Mirage Charge',
           de: 'Superladung ausweichen',
           fr: 'Esquivez la charge de la réplique',
-          ja: 'スーパーチャージに避け',
+          ja: 'スーパーチャージを避ける',
           cn: '躲开冲锋',
           ko: '환영 돌진 피하기',
         },
@@ -105,7 +105,7 @@ export default {
           en: 'Look Away from Mirage',
           de: 'Von Replikant wegschauen',
           fr: 'Ne regardez pas la réplique',
-          ja: 'ミラージュを見ないで',
+          ja: 'ミラージュを見ない',
           cn: '背对幻象',
           ko: '환영 쳐다보지 않기',
         },
@@ -126,7 +126,7 @@ export default {
           en: 'Look Towards Mirage',
           de: 'Von Replikant hinschauen',
           fr: 'Regardez la réplique',
-          ja: 'ミラージュを見て',
+          ja: 'ミラージュを見る',
           cn: '面向幻象',
           ko: '환영 쳐다보기',
         },

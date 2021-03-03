@@ -1,6 +1,6 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
-import Outputs from '../../../../../resources/outputs.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
+import Outputs from '../../../../../resources/outputs.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -184,6 +184,7 @@ export default {
           fr: 'Éloignez-vous des lignes noires',
           ja: '黒い線から離れる',
           cn: '远离黑线',
+          ko: '그림자 피하기',
         },
       },
     },
@@ -240,7 +241,6 @@ export default {
     },
     {
       'locale': 'fr',
-      'missingTranslations': true,
       'replaceSync': {
         'Shadowkeeper': 'Ordre royal',
       },

@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -86,7 +86,7 @@ export default {
           en: 'Out of middle',
           de: 'Raus aus der Mitte',
           fr: 'Sortez du milieu',
-          ja: '中央から離れ',
+          ja: '中央から離れる',
           cn: '离开中间',
           ko: '중앙 피하기',
         },
@@ -149,7 +149,7 @@ export default {
           en: 'out of water',
           de: 'Raus aus dem Wasser',
           fr: 'Sortez de l\'eau',
-          ja: '水から離れ',
+          ja: '水から離れる',
           cn: '离开水圈',
           ko: '물 장판 밖으로',
         },
@@ -267,7 +267,7 @@ export default {
           en: 'avoid divebomb',
           de: 'Divebomb ausweichen',
           fr: 'Évitez la bombe plongeante',
-          ja: 'ダイブボムに避け',
+          ja: 'ダイブボムを避ける',
           cn: '前方顺劈',
           ko: '급강하 폭격 피하기',
         },

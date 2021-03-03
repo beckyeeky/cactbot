@@ -1,5 +1,5 @@
-import Conditions from '../../../../../resources/conditions.js';
-import NetRegexes from '../../../../../resources/netregexes.js';
+import Conditions from '../../../../../resources/conditions.ts';
+import NetRegexes from '../../../../../resources/netregexes.ts';
 import { Responses } from '../../../../../resources/responses.js';
 import ZoneId from '../../../../../resources/zone_id.js';
 
@@ -291,7 +291,7 @@ export default {
         standInATower: {
           en: 'Stand in a tower',
           de: 'Im Turm stehen',
-          fr: 'Tenez-vous dans une tour',
+          fr: 'Placez-vous dans une tour',
           ja: '塔を踏む',
           cn: '踩塔',
           ko: '장판 들어가기',
