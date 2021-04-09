@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 // O4S - Deltascape 4.0 Savage
 export default {
@@ -1272,7 +1272,8 @@ export default {
       'locale': 'ja',
       'missingTranslations': true,
       'replaceSync': {
-        'Exdeath': 'エクスデス',
+        '(?<! )Exdeath': 'エクスデス',
+        'Neo Exdeath': 'ネオエクスデス',
       },
       'replaceText': {
         'Aero III': 'エアロガ',
@@ -1353,7 +1354,8 @@ export default {
       'locale': 'ko',
       'missingTranslations': true,
       'replaceSync': {
-        'Exdeath': '엑스데스',
+        '(?<! )Exdeath': '엑스데스',
+        'Neo Exdeath': '네오 엑스데스',
       },
       'replaceText': {
         'Aero III': '에어로가',

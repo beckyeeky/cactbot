@@ -1,8 +1,10 @@
-import gMonster from '../../resources/hunt.js';
-import NetRegexes from '../../resources/netregexes.ts';
-import UserConfig from '../../resources/user_config.js';
+import { callOverlayHandler, addOverlayListener } from '../../resources/overlay_plugin_api';
 
-import './radar_config.js';
+import gMonster from '../../resources/hunt';
+import NetRegexes from '../../resources/netregexes';
+import UserConfig from '../../resources/user_config';
+
+import './radar_config';
 
 const Options = {
   PopSound: '../../resources/sounds/freesound/sonar.ogg',

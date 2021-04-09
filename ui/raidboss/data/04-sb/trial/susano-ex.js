@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 // Susano Extreme
 export default {
@@ -233,7 +233,7 @@ export default {
         text: {
           en: 'Stun: ${player}',
           de: 'Paralyse ${player}',
-          fr: 'Stun ${player}',
+          fr: 'Étourdi(e) :  ${player}',
           ja: '${player}にスタン',
           cn: '击晕${player}',
           ko: '${player}스턴',

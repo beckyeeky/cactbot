@@ -1,23 +1,25 @@
-import EffectId from '../../resources/effect_id.js';
-import ContentType from '../../resources/content_type.js';
-import Regexes from '../../resources/regexes.ts';
-import UserConfig from '../../resources/user_config.js';
-import Util from '../../resources/util.ts';
-import ZoneInfo from '../../resources/zone_info.js';
-import ZoneId from '../../resources/zone_id.js';
-import { kWellFedContentTypes, kMPCombatRate, kMPNormalRate, kMPUI1Rate, kMPUI2Rate, kMPUI3Rate, kMPTickInterval } from './constants.js';
-import { BuffTracker } from './buff_tracker.js';
-import ComboTracker from './combo_tracker.js';
-import { RegexesHolder, computeBackgroundColorFrom, calcGCDFromStat, doesJobNeedMPBar, makeAuraTimerIcon } from './utils.js';
+import { addOverlayListener } from '../../resources/overlay_plugin_api';
 
-import { getSetup } from './components/index.js';
+import EffectId from '../../resources/effect_id';
+import ContentType from '../../resources/content_type';
+import Regexes from '../../resources/regexes';
+import UserConfig from '../../resources/user_config';
+import Util from '../../resources/util';
+import ZoneInfo from '../../resources/zone_info';
+import ZoneId from '../../resources/zone_id';
+import { kWellFedContentTypes, kMPCombatRate, kMPNormalRate, kMPUI1Rate, kMPUI2Rate, kMPUI3Rate, kMPTickInterval } from './constants';
+import { BuffTracker } from './buff_tracker';
+import ComboTracker from './combo_tracker';
+import { RegexesHolder, computeBackgroundColorFrom, calcGCDFromStat, doesJobNeedMPBar, makeAuraTimerIcon } from './utils';
 
-import './jobs_config.js';
-import '../../resources/resourcebar.js';
-import '../../resources/timerbar.js';
-import '../../resources/timerbox.js';
-import '../../resources/timericon.js';
-import '../../resources/widgetlist.js';
+import { getSetup } from './components/index';
+
+import './jobs_config';
+import '../../resources/resourcebar';
+import '../../resources/timerbar';
+import '../../resources/timerbox';
+import '../../resources/timericon';
+import '../../resources/widgetlist';
 
 // See user/jobs-example.js for documentation.
 const Options = {
@@ -102,6 +104,7 @@ class Bars {
     this.updateDotTimerFuncs = [];
     this.gainEffectFuncMap = {};
     this.mobGainEffectFromYouFuncMap = {};
+    this.mobLoseEffectFromYouFuncMap = {};
     this.loseEffectFuncMap = {};
     this.statChangeFuncMap = {};
     this.abilityFuncMap = {};
@@ -139,6 +142,7 @@ class Bars {
     this.changeZoneFuncs = [];
     this.gainEffectFuncMap = {};
     this.mobGainEffectFromYouFuncMap = {};
+    this.mobLoseEffectFromYouFuncMap = {};
     this.loseEffectFuncMap = {};
     this.statChangeFuncMap = {};
     this.abilityFuncMap = {};
@@ -467,19 +471,29 @@ class Bars {
   onMobGainsEffectFromYou(effectIds, callback) {
     if (Array.isArray(effectIds))
       effectIds.forEach((id) => this.mobGainEffectFromYouFuncMap[id] = callback);
-    this.mobGainEffectFromYouFuncMap[effectIds] = callback;
+    else
+      this.mobGainEffectFromYouFuncMap[effectIds] = callback;
+  }
+
+  onMobLosesEffectFromYou(effectIds, callback) {
+    if (Array.isArray(effectIds))
+      effectIds.forEach((id) => this.mobLoseEffectFromYouFuncMap[id] = callback);
+    else
+      this.mobLoseEffectFromYouFuncMap[effectIds] = callback;
   }
 
   onYouGainEffect(effectIds, callback) {
     if (Array.isArray(effectIds))
       effectIds.forEach((id) => this.gainEffectFuncMap[id] = callback);
-    this.gainEffectFuncMap[effectIds] = callback;
+    else
+      this.gainEffectFuncMap[effectIds] = callback;
   }
 
   onYouLoseEffect(effectIds, callback) {
     if (Array.isArray(effectIds))
       effectIds.forEach((id) => this.loseEffectFuncMap[id] = callback);
-    this.loseEffectFuncMap[effectIds] = callback;
+    else
+      this.loseEffectFuncMap[effectIds] = callback;
   }
 
   onJobDetailUpdate(callback) {
@@ -493,7 +507,8 @@ class Bars {
   onUseAbility(abilityIds, callback) {
     if (Array.isArray(abilityIds))
       abilityIds.forEach((id) => this.abilityFuncMap[id] = callback);
-    this.abilityFuncMap[abilityIds] = callback;
+    else
+      this.abilityFuncMap[abilityIds] = callback;
   }
 
   _onComboChange(skill) {
@@ -902,6 +917,9 @@ class Bars {
           if (index > -1)
             this.dotTarget.splice(index, 1);
         }
+        const f = this.mobLoseEffectFromYouFuncMap[effectId];
+        if (f)
+          f(effectId, m.groups);
       }
     } else if (type === '21' || type === '22') {
       let m = log.match(this.regexes.YouUseAbilityRegex);

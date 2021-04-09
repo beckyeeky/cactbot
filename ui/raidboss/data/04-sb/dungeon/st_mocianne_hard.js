@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 export default {
   zoneId: ZoneId.SaintMociannesArboretumHard,
@@ -220,6 +220,7 @@ export default {
         'The Soil Bed': 'Das Beet',
         'Tokkapchi': 'Tokkapchi',
         'Zymology': 'Zymologie',
+        'Withered Belladonna': 'verwittert(?:e|er|es|en) Belladonna',
       },
       'replaceText': {
         '\\(inner\\)': '(innen)',
@@ -258,6 +259,7 @@ export default {
         'The Soil Bed': 'La Litière',
         'Tokkapchi': 'Tokkapchi',
         'Zymology': 'Zymologie',
+        'Withered Belladonna': 'belladone flétrie',
       },
       'replaceText': {
         'Bog Bequest': 'Sotomusô-gadoue',
@@ -293,6 +295,7 @@ export default {
         'The Soil Bed': '沃土の寝室',
         'Tokkapchi': 'トカップチ',
         'Zymology': '腐臭の庭',
+        'Withered Belladonna': 'ウィザード・ベラドンナ',
       },
       'replaceText': {
         '\\(inner\\)': '(中)',
@@ -330,6 +333,7 @@ export default {
         'The Soil Bed': '沃土寝室',
         'Tokkapchi': '枯腐泥妖',
         'Zymology': '腐臭庭园',
+        'Withered Belladonna': '枯萎剧毒美人',
       },
       'replaceText': {
         '\\(inner\\)': '(内)',
@@ -368,6 +372,7 @@ export default {
         'The Soil Bed': '비옥토 침실',
         'Tokkapchi': '진흙장사',
         'Zymology': '썩은 내 정원',
+        'Withered Belladonna': '시든 벨라돈나',
       },
       'replaceText': {
         'Bog Bequest': '흙흙 밭다리',

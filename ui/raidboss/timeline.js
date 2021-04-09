@@ -1,6 +1,6 @@
-import { commonReplacement } from './common_replacement.js';
-import Regexes from '../../resources/regexes.ts';
-import { LocaleRegex } from '../../resources/translations.js';
+import { commonReplacement } from './common_replacement';
+import Regexes from '../../resources/regexes';
+import { LocaleRegex } from '../../resources/translations';
 
 const timelineInstructions = {
   en: [
@@ -53,6 +53,15 @@ const timelineInstructions = {
   ],
 };
 
+const activeText = {
+  en: 'Active:',
+  de: 'Aktiv:',
+  fr: 'Active :',
+  ja: '(進行):',
+  cn: '(进行中):',
+  ko: '시전중:',
+};
+
 function computeBackgroundColorFrom(element, classList) {
   const div = document.createElement('div');
   const classes = classList.split('.');
@@ -71,6 +80,9 @@ export class Timeline {
     this.options = options || {};
     this.perTriggerAutoConfig = this.options['PerTriggerAutoConfig'] || {};
     this.replacements = replacements;
+
+    const lang = this.options.TimelineLanguage || this.options.ParserLanguage || 'en';
+    this.activeText = lang in activeText ? activeText[lang] : activeText['en'];
 
     // A set of names which will not be notified about.
     this.ignores = {};
@@ -261,6 +273,7 @@ export class Timeline {
           line = line.replace(commandMatch[1], '').trim();
           const sync = {
             id: uniqueid,
+            origRegexStr: commandMatch[2],
             regex: Regexes.parse(this.GetReplacedSync(commandMatch[2])),
             start: seconds - 2.5,
             end: seconds + 2.5,
@@ -518,7 +531,7 @@ export class Timeline {
           time: e.time + e.duration,
           sortKey: e.sortKey,
           name: e.name,
-          text: 'Active: ' + e.text,
+          text: `${this.activeText} ${e.text}`,
           isDur: true,
         };
         events.push(durationEvent);

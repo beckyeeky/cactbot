@@ -1,4 +1,6 @@
-import Util from './util.ts';
+import { addOverlayListener } from './overlay_plugin_api';
+
+import Util from './util';
 
 // Will redirect calls from `onPlayerChangedEvent` to |func| overriding with
 // |playerName| and their job.  Job is important for raidboss.
@@ -30,11 +32,11 @@ export const addPlayerChangedOverrideListener = function(playerName, func) {
     func(e);
   };
 
-  window.addOverlayListener('onPlayerChangedEvent', onPlayerChanged);
+  addOverlayListener('onPlayerChangedEvent', onPlayerChanged);
   if (!playerName)
     return;
 
-  window.addOverlayListener('PartyChanged', (e) => {
+  addOverlayListener('PartyChanged', (e) => {
     const player = e.party.find((p) => p.name === playerName);
     if (!player)
       return;
@@ -214,7 +216,7 @@ export const addRemotePlayerSelectUI = function(lang) {
     for (const name of allianceNames)
       addRadio(name, name, 'player-radio-alliance');
   };
-  window.addOverlayListener('PartyChanged', (e) => {
+  addOverlayListener('PartyChanged', (e) => {
     buildList(e.party);
   });
   buildList([]);

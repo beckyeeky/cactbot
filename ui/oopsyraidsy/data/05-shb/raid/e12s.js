@@ -1,6 +1,6 @@
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import Outputs from '../../../../../resources/outputs.ts';
-import ZoneId from '../../../../../resources/zone_id.js';
+import NetRegexes from '../../../../../resources/netregexes';
+import Outputs from '../../../../../resources/outputs';
+import ZoneId from '../../../../../resources/zone_id';
 
 // TODO: add separate damageWarn-esque icon for damage downs?
 // TODO: 58A6 Under The Weight / 58B2 Classical Sculpture missing somebody in party warning?
@@ -35,7 +35,7 @@ export default {
     'E12S Promise Judgment Jolt': '4E47', // Ramuh get out cast (damage down)
     'E12S Promise Shatter': '589C', // Ice Pillar explosion if tether not gotten
     'E12S Promise Impact': '58A1', // Titan bomb drop
-    'E12S Oracle Dark Blizard III': '58D3', // Relativity donut mechanic
+    'E12S Oracle Dark Blizzard III': '58D3', // Relativity donut mechanic
     'E12S Oracle Apocalypse': '58E6', // Light up circle explosions (damage down)
   },
   damageFail: {

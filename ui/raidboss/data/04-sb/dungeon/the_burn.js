@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 export default {
   zoneId: ZoneId.TheBurn,
@@ -241,7 +241,7 @@ export default {
         'Rock Biter': 'Felsbeißer',
         'Mist Dragon': 'Nebeldrache',
         'Dim Crystal': 'trüber Kristall',
-        'Defective Drone': 'defekte Drohne',
+        'Defective Drone': 'defekt(?:e|er|es|en) Drohne',
         'Hedetet': 'Hedetet',
       },
       'replaceText': {

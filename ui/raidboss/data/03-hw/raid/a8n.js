@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 // ALEXANDER - THE BURDEN OF THE SON NORMAL
 // A8N
@@ -242,6 +242,7 @@ export default {
         text: {
           en: 'Don\'t Stack! (tank cleave)',
           de: 'Nicht Sammeln! (Tank Cleave)',
+          fr: 'Ne vous packez pas ! (tank cleave)',
           ja: '集まらない! (タンクへのスラッシュ)',
           cn: '别去集合！（坦克顺劈）',
           ko: '산개하기! (광역 탱버)',
@@ -352,6 +353,7 @@ export default {
         text: {
           en: 'Avoid Mirage Dashes',
           de: 'Weiche den Replikant Ansturm aus',
+          fr: 'Évitez la charge de la Réplique',
           ja: 'ミラージュの正面から離れる',
           cn: '躲避分身冲锋',
           ko: '환영 돌진 피하기',

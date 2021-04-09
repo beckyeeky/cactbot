@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 // Innocence Normal
 export default {
@@ -157,7 +157,7 @@ export default {
         text: {
           en: 'Rotate Right',
           de: 'Rechts rum rotieren',
-          fr: 'Rotation vers la droite',
+          fr: 'Tournez vers la droite',
           ja: '時針回り',
           cn: '向右旋转',
           ko: '오른쪽으로 도세요',

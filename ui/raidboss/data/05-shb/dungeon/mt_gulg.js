@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 export default {
   zoneId: ZoneId.MtGulg,
@@ -241,6 +241,9 @@ export default {
     {
       'locale': 'de',
       'replaceSync': {
+        'Forgiven Revelry': 'Geläutert(?:e|er|es|en) Prasserei',
+        'Forgiven Ambition': 'Geläutert(?:e|er|es|en) Begierde',
+        'Forgiven Prejudice': 'Geläutert(?:e|er|es|en) Voreingenommenheit',
         'Forgiven Obscenity': 'geläutert(?:e|er|es|en) Unzucht',
         'Forgiven Cruelty': 'geläutert(?:e|er|es|en) Grausamkeit',
         'Forgiven Whimsy': 'geläutert(?:e|er|es|en) Gereiztheit',
@@ -277,6 +280,9 @@ export default {
     {
       'locale': 'fr',
       'replaceSync': {
+        'Forgiven Revelry': 'Orgie Pardonnée',
+        'Forgiven Ambition': 'Ambition Pardonnée',
+        'Forgiven Prejudice': 'Préjugé Pardonné',
         'Brightsphere': 'Sphère incandescente',
         'Forgiven Cruelty': 'Cruauté Pardonnée',
         'Forgiven Obscenity': 'Obscénité Pardonnée',
@@ -313,6 +319,9 @@ export default {
     {
       'locale': 'ja',
       'replaceSync': {
+        'Forgiven Revelry': 'フォーギヴン・レヴェルリー',
+        'Forgiven Ambition': 'フォーギヴン・アンビション',
+        'Forgiven Prejudice': 'フォーギヴン・プレジュディス',
         'Brightsphere': 'ブライトスフィア',
         'Forgiven Cruelty': 'フォーギヴン・クルエルティー',
         'Forgiven Obscenity': 'フォーギヴン・オブセニティー',
@@ -349,6 +358,9 @@ export default {
     {
       'locale': 'ko',
       'replaceSync': {
+        'Forgiven Revelry': '得到宽恕的放纵',
+        'Forgiven Ambition': '得到宽恕的奢望',
+        'Forgiven Prejudice': '得到宽恕的偏见',
         'Forgiven Obscenity': '면죄된 외설',
         'Forgiven Cruelty': '면죄된 잔혹',
         'Forgiven Whimsy': '면죄된 변덕',
@@ -385,6 +397,9 @@ export default {
     {
       'locale': 'cn',
       'replaceSync': {
+        'Forgiven Revelry': '면죄된 환락',
+        'Forgiven Ambition': '면죄된 야망',
+        'Forgiven Prejudice': '면죄된 편견',
         'Forgiven Obscenity': '得到宽恕的猥亵',
         'Forgiven Cruelty': '得到宽恕的残忍',
         'Forgiven Whimsy': '得到宽恕的无常',

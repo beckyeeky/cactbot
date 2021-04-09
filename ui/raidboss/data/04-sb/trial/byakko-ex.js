@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 // Byakko Extreme
 export default {
@@ -87,7 +87,7 @@ export default {
         text: {
           en: 'Provoke Boss',
           de: 'Boss abspotten',
-          fr: 'Provoquez !',
+          fr: 'Provoquez le Boss !',
           ja: '挑発',
           cn: '挑衅',
           ko: '보스 도발',

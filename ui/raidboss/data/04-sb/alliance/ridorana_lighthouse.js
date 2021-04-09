@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 const mathDirection = function(mathBaseValue, correctMath, output) {
   if (!correctMath)
@@ -99,7 +99,7 @@ export default {
           en: 'Look for Tsunami',
           de: 'Auf Krug achten',
           fr: 'Attention Tsunami',
-          ja: '水瓶が向いてる方向から離れ',
+          ja: '水瓶が向いてる方向から離れる',
           cn: '离开水瓶口方向',
           ko: '대해일 확인',
         },
@@ -120,7 +120,7 @@ export default {
           en: 'Look for Tsunami',
           de: 'Auf Krug achten',
           fr: 'Attention Tsunami',
-          ja: '水瓶が向いてる方向から離れ',
+          ja: '水瓶が向いてる方向から離れる',
           cn: '离开水瓶口方向',
           ko: '대해일 확인',
         },
@@ -466,7 +466,7 @@ export default {
           en: 'Move to Negative',
           de: 'Ins Negative laufen',
           fr: 'Allez sur le moins',
-          ja: 'マイナス（ー）へ',
+          ja: 'マイナス（－）へ',
           cn: '移动到负极',
           ko: '-전하 쪽으로',
         },

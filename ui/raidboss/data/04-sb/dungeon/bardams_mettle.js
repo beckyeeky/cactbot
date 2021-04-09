@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 export default {
   zoneId: ZoneId.BardamsMettle,
@@ -207,7 +207,7 @@ export default {
         'Throwing Spear': 'Wurfspeer',
         'Star Shard': 'Sternensplitter',
         'Rebirth Of Bardam The Brave': 'Bardams Wiedergeburt',
-        'Looming Shadow': ' Lauernd(?:e|er|es|en) Schatten',
+        'Looming Shadow': 'Lauernd(?:e|er|es|en) Schatten',
         'Hunter Of Bardam': 'Bardams Jäger',
         'Corpsecleaner Eagle': 'Leichenputzer',
         'Garula': 'Garula',

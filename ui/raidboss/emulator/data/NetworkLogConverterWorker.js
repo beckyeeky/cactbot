@@ -1,8 +1,8 @@
-import EmulatorCommon from '../EmulatorCommon.js';
-import Encounter from './Encounter.js';
-import LogEventHandler from './LogEventHandler.js';
-import NetworkLogConverter from './NetworkLogConverter.js';
-import LogRepository from './network_log_converter/LogRepository.js';
+import EmulatorCommon from '../EmulatorCommon';
+import Encounter from './Encounter';
+import LogEventHandler from './LogEventHandler';
+import NetworkLogConverter from './NetworkLogConverter';
+import LogRepository from './network_log_converter/LogRepository';
 
 onmessage = async (msg) => {
   const logConverter = new NetworkLogConverter();
@@ -31,7 +31,7 @@ onmessage = async (msg) => {
     nextOffset < buf.length && nextOffset !== -1;
     currentOffset = nextOffset) {
     nextOffset = buf.indexOf(0x0A, nextOffset + 1);
-    const line = decoder.decode(buf.slice(currentOffset + 1, nextOffset)).trim();
+    const line = decoder.decode(buf.slice(currentOffset, nextOffset)).trim();
     if (line.length) {
       ++lineCount;
       lines.push(line);

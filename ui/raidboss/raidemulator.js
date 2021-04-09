@@ -1,48 +1,28 @@
-import './raidboss_config.js';
+import './raidboss_config';
 
-import EmulatedMap from './emulator/ui/EmulatedMap.js';
-import EmulatedPartyInfo from './emulator/ui/EmulatedPartyInfo.js';
-import EmulatorCommon from './emulator/EmulatorCommon.js';
-import Encounter from './emulator/data/Encounter.js';
-import EncounterTab from './emulator/ui/EncounterTab.js';
-import LogEventHandler from './emulator/data/LogEventHandler.js';
-import Persistor from './emulator/data/Persistor.js';
-import { PopupTextGenerator } from './popup-text.js';
-import ProgressBar from './emulator/ui/ProgressBar.js';
-import RaidEmulator from './emulator/data/RaidEmulator.js';
-import RaidEmulatorOverlayApiHook from './emulator/overrides/RaidEmulatorOverlayApiHook.js';
-import RaidEmulatorPopupText from './emulator/overrides/RaidEmulatorPopupText.js';
-import RaidEmulatorTimelineController from './emulator/overrides/RaidEmulatorTimelineController.js';
-import RaidEmulatorTimelineUI from './emulator/overrides/RaidEmulatorTimelineUI.js';
-import { TimelineLoader } from './timeline.js';
-import Tooltip from './emulator/ui/Tooltip.js';
-import UserConfig from '../../resources/user_config.js';
+import EmulatedMap from './emulator/ui/EmulatedMap';
+import EmulatedPartyInfo from './emulator/ui/EmulatedPartyInfo';
+import EmulatorCommon from './emulator/EmulatorCommon';
+import Encounter from './emulator/data/Encounter';
+import EncounterTab from './emulator/ui/EncounterTab';
+import LogEventHandler from './emulator/data/LogEventHandler';
+import Persistor from './emulator/data/Persistor';
+import { PopupTextGenerator } from './popup-text';
+import ProgressBar from './emulator/ui/ProgressBar';
+import RaidEmulator from './emulator/data/RaidEmulator';
+import RaidEmulatorOverlayApiHook from './emulator/overrides/RaidEmulatorOverlayApiHook';
+import RaidEmulatorPopupText from './emulator/overrides/RaidEmulatorPopupText';
+import RaidEmulatorTimelineController from './emulator/overrides/RaidEmulatorTimelineController';
+import RaidEmulatorTimelineUI from './emulator/overrides/RaidEmulatorTimelineUI';
+import { TimelineLoader } from './timeline';
+import Tooltip from './emulator/ui/Tooltip';
+import UserConfig from '../../resources/user_config';
 import raidbossFileData from './data/manifest.txt';
+// eslint can't detect the custom loader for the worker
+// eslint-disable-next-line import/default
+import NetworkLogConverterWorker from './emulator/data/NetworkLogConverterWorker';
 
-// @TODO: Some way to not have this be a global?
-
-// See user/raidboss-example.js for documentation.
-const Options = {
-  // These options are ones that are not auto-defined by raidboss_config.js.
-  PlayerNicks: {},
-
-  InfoSound: '../../resources/sounds/freesound/percussion_hit.ogg',
-  AlertSound: '../../resources/sounds/BigWigs/Alert.ogg',
-  AlarmSound: '../../resources/sounds/BigWigs/Alarm.ogg',
-  LongSound: '../../resources/sounds/BigWigs/Long.ogg',
-  PullSound: '../../resources/sounds/freesound/sonar.ogg',
-
-  audioAllowed: true,
-
-  DisabledTriggers: {},
-
-  PerTriggerOptions: {},
-
-  Triggers: [],
-
-  PlayerNameOverride: null,
-  PlayerJobOverride: null,
-};
+import Options from './raidboss_options';
 
 (() => {
   let emulator;
@@ -65,7 +45,7 @@ const Options = {
     emulatedPartyInfo = new EmulatedPartyInfo(emulator);
     emulatedMap = new EmulatedMap(emulator);
     emulatedWebSocket = new RaidEmulatorOverlayApiHook(emulator);
-    logConverterWorker = new Worker('../../dist/raidemulatorWorker.bundle.js');
+    logConverterWorker = new NetworkLogConverterWorker();
 
     // Listen for the user to click a player in the party list on the right
     // and persist that over to the emulator

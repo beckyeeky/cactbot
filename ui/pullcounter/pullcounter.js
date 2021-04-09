@@ -1,7 +1,9 @@
-import { LocaleRegex } from '../../resources/translations.js';
-import Regexes from '../../resources/regexes.ts';
-import UserConfig from '../../resources/user_config.js';
-import ZoneId from '../../resources/zone_id.js';
+import { callOverlayHandler, addOverlayListener } from '../../resources/overlay_plugin_api';
+
+import { LocaleRegex } from '../../resources/translations';
+import Regexes from '../../resources/regexes';
+import UserConfig from '../../resources/user_config';
+import ZoneId from '../../resources/zone_id';
 
 const Options = {
   Language: 'en',

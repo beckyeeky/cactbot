@@ -2,9 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import Mocha from 'mocha';
 
-import testManifestFiles from './helper/test_manifest.js';
-import testTimelineFiles from './helper/test_timeline.js';
-import testTriggerFiles from './helper/test_trigger.js';
+import testManifestFiles from './helper/test_manifest';
+import testTimelineFiles from './helper/test_timeline';
+import testTriggerFiles from './helper/test_trigger';
+import { walkDir } from '../util/file_utils';
 
 // This file runs in one of two ways:
 // (1) As a part of Mocha's normal execution, running all the files in test...
@@ -21,18 +22,6 @@ import testTriggerFiles from './helper/test_trigger.js';
 // of Mocha.
 
 const mocha = new Mocha();
-
-const walkDir = (dir, callback) => {
-  if (fs.statSync(dir).isFile()) {
-    callback(path.posix.join(dir));
-    return;
-  }
-  fs.readdirSync(dir).forEach((f) => {
-    const dirPath = path.posix.join(dir, f);
-    const isDirectory = fs.statSync(dirPath).isDirectory();
-    isDirectory ? walkDir(dirPath, callback) : callback(path.posix.join(dir, f));
-  });
-};
 
 const manifestFiles = [];
 const timelineFiles = [];

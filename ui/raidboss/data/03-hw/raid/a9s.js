@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 export default {
   zoneId: ZoneId.AlexanderTheEyesOfTheCreatorSavage,
@@ -344,6 +344,10 @@ export default {
         'The Cranial Plate': 'pont nasal',
       },
       'replaceText': {
+        '\\(NE/SW\\)': '(NE/SO)',
+        '\\(NW\\)': '(NO)',
+        '\\(NW/SE\\)': '(NO/SE)',
+        '\\(SW\\)': '(SO)',
         '(?<!Double )Scrapline': 'Corde à ferraille',
         '(?<!Scrap )Bomb(?!e)': 'Bombe',
         '--rocks fall--': '--chute des rochers--',

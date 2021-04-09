@@ -1,8 +1,10 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import Outputs from '../../../../../resources/outputs.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import { callOverlayHandler } from '../../../../../resources/overlay_plugin_api';
+
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import Outputs from '../../../../../resources/outputs';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 export default {
   zoneId: ZoneId.EdensVerseFurorSavage,
@@ -45,7 +47,7 @@ export default {
 
         let combatantData = null;
         if (combatantName) {
-          combatantData = await window.callOverlayHandler({
+          combatantData = await callOverlayHandler({
             call: 'getCombatants',
             names: [combatantName],
           });

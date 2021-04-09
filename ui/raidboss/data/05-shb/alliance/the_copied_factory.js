@@ -1,7 +1,7 @@
-import Conditions from '../../../../../resources/conditions.ts';
-import NetRegexes from '../../../../../resources/netregexes.ts';
-import { Responses } from '../../../../../resources/responses.js';
-import ZoneId from '../../../../../resources/zone_id.js';
+import Conditions from '../../../../../resources/conditions';
+import NetRegexes from '../../../../../resources/netregexes';
+import { Responses } from '../../../../../resources/responses';
+import ZoneId from '../../../../../resources/zone_id';
 
 // The Copied Factory
 // TODO: Tell people where to stand for Engels wall saws
@@ -822,7 +822,7 @@ export default {
         'Warehouse B': 'Warenlager B',
         'Warehouse C': 'Warenlager C',
         'The wall-mounted right arm begins to move': 'Der wandmontierte rechte Arm ist aktiv!',
-        'The wall-mounted flamethrowers activate': 'Die wandmontierten Flammenwerfer sind aktiv!',
+        'The wall-mounted flamethrowers activate\.': 'Die wandmontierten Flammenwerfer sind aktiv!',
         'The wall-mounted left arm begins to move': 'Der wandmontierte linke Arm ist aktiv!',
         'You hear frenzied movement from machines beneath': 'Die Maschinenwesen zu deinen Füßen bewegen sich!',
         'The conveyer belts whirr to life!': 'Die Fließbänder sind aktiv!',
