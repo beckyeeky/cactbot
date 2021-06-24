@@ -1,6 +1,8 @@
 import EffectId from '../../../resources/effect_id';
 import { kAbility } from '../constants';
 
+let resetFunc = null;
+
 export function setup(bars) {
   const textBox = bars.addResourceBox({
     classList: ['war-color-beast'],
@@ -26,6 +28,7 @@ export function setup(bars) {
 
   const eyeBox = bars.addProcBox({
     fgColor: 'war-color-eye',
+    notifyWhenExpired: true,
   });
 
   const comboTimer = bars.addTimerBar({
@@ -68,7 +71,6 @@ export function setup(bars) {
   });
 
   bars.onYouGainEffect(EffectId.StormsEye, (id, e) => {
-    eyeBox.duration = 0;
     eyeBox.duration = e.duration;
   });
   bars.onYouLoseEffect(EffectId.StormsEye, () => {
@@ -78,4 +80,15 @@ export function setup(bars) {
   bars.onStatChange('WAR', () => {
     eyeBox.valuescale = bars.gcdSkill;
   });
+
+  resetFunc = (bars) => {
+    eyeBox.duration = 0;
+    comboTimer.duration = 0;
+    minSkillsUntilEye = 3;
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

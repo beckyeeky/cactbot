@@ -81,7 +81,7 @@ export default {
       id: 'SophiaEX Onrush',
       regex: /Onrush/,
       beforeSeconds: 5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Avoid Dash Attack',
@@ -104,7 +104,7 @@ export default {
       id: 'SophiaEX Dischordant Cleansing',
       regex: /Dischordant Cleansing/,
       beforeSeconds: 6,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Stack With Partner',
@@ -120,7 +120,7 @@ export default {
       id: 'SophiaEX Quasar Bait',
       regex: /Quasar \(Snapshot\)/,
       beforeSeconds: 6,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Bait Quasar Meteors',
@@ -142,9 +142,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '19C4', source: 'ソフィア' }),
       netRegexCn: NetRegexes.startsUsing({ id: '19C4', source: '索菲娅' }),
       netRegexKo: NetRegexes.startsUsing({ id: '19C4', source: '소피아' }),
-      condition: function(data) {
-        return data.role === 'tank' || data.role === 'healer';
-      },
+      condition: (data) => data.role === 'tank' || data.role === 'healer',
       response: Responses.tankBusterSwap(),
     },
     {
@@ -174,8 +172,8 @@ export default {
       netRegex: NetRegexes.startsUsing({ id: '19AE', source: 'Sophia', capture: false }),
       netRegexDe: NetRegexes.startsUsing({ id: '19AE', source: 'Sophia', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '19AE', source: 'Sophia', capture: false }),
-      netRegexCn: NetRegexes.startsUsing({ id: '19AE', source: '索菲娅', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '19AE', source: 'ソフィア', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '19AE', source: '索菲娅', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '19AE', source: '소피아', capture: false }),
       response: Responses.getOut(),
     },
@@ -197,7 +195,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '19B8', source: '三の従者', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '19B8', source: '信徒其三', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '19B8', source: '제3신도', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get behind lancer',
@@ -217,7 +215,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '1988', source: '一の従者' }),
       netRegexCn: NetRegexes.startsUsing({ id: '1988', source: '信徒其一' }),
       netRegexKo: NetRegexes.startsUsing({ id: '1988', source: '제1신도' }),
-      infoText: function(data, matches, output) {
+      infoText: (data, matches, output) => {
         if (Conditions.targetIsYou())
           return output.infusionOnYou();
 
@@ -276,7 +274,7 @@ export default {
       netRegexJa: NetRegexes.addedCombatantFull({ name: 'アイオーン・ソフィア' }),
       netRegexCn: NetRegexes.addedCombatantFull({ name: '移涌' }),
       netRegexKo: NetRegexes.addedCombatantFull({ name: '아이온 소피아' }),
-      run: function(data, matches) {
+      run: (data, matches) => {
         data.cloneSpots = data.cloneSpots || {};
         const x = parseFloat(matches.x);
         const y = parseFloat(matches.y);
@@ -297,7 +295,7 @@ export default {
       // we have to separate out the "seen Thunder" logic.
       id: 'SophiaEX Duplicate Collect',
       netRegex: NetRegexes.tether({ id: '002D' }),
-      run: function(data, matches) {
+      run: (data, matches) => {
         if (data.seenThunder) {
           data.aeroClones = data.aeroClones || [];
           data.aeroClones.push(data.cloneSpots[matches.sourceId]);
@@ -318,9 +316,7 @@ export default {
       netRegexKo: NetRegexes.startsUsing({ id: '19AB', source: '아이온 소피아', capture: false }),
       delaySeconds: 1,
       suppressSeconds: 5,
-      run: function(data) {
-        data.seenThunder = true;
-      },
+      run: (data) => data.seenThunder = true,
     },
     {
       // Quasar can either be meteor baits or a platform tilt,
@@ -334,9 +330,7 @@ export default {
       netRegexJa: NetRegexes.addedCombatant({ name: 'アイオーン・ソフィア', capture: false }),
       netRegexCn: NetRegexes.addedCombatant({ name: '移涌', capture: false }),
       netRegexKo: NetRegexes.addedCombatant({ name: '아이온 소피아', capture: false }),
-      run: function(data) {
-        data.clonesActive = true;
-      },
+      run: (data) => data.clonesActive = true,
     },
     {
       // During the first post-intermission clones sequence,
@@ -350,10 +344,8 @@ export default {
       netRegexJa: NetRegexes.ability({ id: '1983', source: 'ソフィア', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '1983', source: '索菲娅', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '1983', source: '소피아', capture: false }),
-      condition: function(data) {
-        return data.clonesActive;
-      },
-      infoText: (data, _, output) => output.text(),
+      condition: (data) => data.clonesActive,
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Avoid head laser',
@@ -373,10 +365,8 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '19AA', source: 'ソフィア' }),
       netRegexCn: NetRegexes.startsUsing({ id: '19AA', source: '索菲娅' }),
       netRegexKo: NetRegexes.startsUsing({ id: '19AA', source: '소피아' }),
-      durationSeconds: function(data, matches) {
-        return parseFloat(matches.castTime);
-      },
-      alertText: function(data, _, output) {
+      durationSeconds: (_data, matches) => parseFloat(matches.castTime),
+      alertText: (data, _matches, output) => {
         const localeCompass = {
           'N': output.north(),
           'S': output.south(),
@@ -418,7 +408,7 @@ export default {
       netRegexCn: NetRegexes.ability({ id: '19AA', source: '索菲娅', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '19AA', source: '소피아', capture: false }),
       delaySeconds: 5,
-      run: function(data) {
+      run: (data) => {
         const cloneData = [
           'aeroClones',
           'clonesActive',
@@ -447,12 +437,10 @@ export default {
       // Because of this, we need only see one entity use a 21 log line and we can find the rest.
       id: 'SophiaEX Quasar Setup',
       netRegex: NetRegexes.abilityFull({ id: '19A[89]' }),
-      condition: function(data) {
-        return !data.scaleSophias;
-      },
+      condition: (data) => !data.scaleSophias,
       // We *really* shouldn't have to suppress this...
       suppressSeconds: 5,
-      run: function(data, matches) {
+      run: (data, matches) => {
         let offset;
         const yKey = Math.floor(parseFloat(matches.y)).toString();
         if (parseFloat(matches.x) < 0) {
@@ -488,11 +476,11 @@ export default {
       // There will always be exactly one blue Quasar, unless the split is 4/2.
       id: 'SophiaEX Quasar Tether Collect',
       netRegex: NetRegexes.tether({ id: '0011' }),
-      condition: function(data) {
+      condition: (data) => {
         // We shouldn't run this while Aion Teleos mechanics are active.
         return !data.clonesActive;
       },
-      run: function(data, matches) {
+      run: (data, matches) => {
         data.quasarTethers = data.quasarTethers || [];
         data.quasarTethers.push(matches.sourceId);
       },
@@ -500,7 +488,7 @@ export default {
     {
       id: 'SophiaEX Tilt Via Tether',
       netRegex: NetRegexes.tether({ id: '0011', capture: false }),
-      condition: function(data) {
+      condition: (data) => {
         // No platform tilts if clones are up.
         return !data.clonesActive;
       },
@@ -508,7 +496,7 @@ export default {
       delaySeconds: .5,
       durationSeconds: 12, // Ensuring that forgetful people aren't forgotten.
       suppressSeconds: 5,
-      alertText: function(data, _, output) {
+      alertText: (data, _matches, output) => {
         // If we somehow skipped the first set of Quasars, we won't know the locations of
         // the scale entities. Activate the sadTethers flag and wait for the actual casts.
         if (!data.scaleSophias) {
@@ -540,12 +528,10 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '19A9', source: 'ソフィア' }),
       netRegexCn: NetRegexes.startsUsing({ id: '19A9', source: '索菲娅' }),
       netRegexKo: NetRegexes.startsUsing({ id: '19A9', source: '소피아' }),
-      condition: function(data) {
-        return data.sadTethers;
-      },
+      condition: (data) => data.sadTethers,
       durationSeconds: 10,
       suppressSeconds: 5,
-      alertText: function(data, matches, output) {
+      alertText: (data, matches, output) => {
         let safeDir = findSafeDir(data);
         // If this is the first set of Meteor Quasars, there is no tilt.
         if (data.quasarTethers.length === 4 && safeDir !== 0)
@@ -559,7 +545,7 @@ export default {
     {
       id: 'SophiaEX Quasar Cleanup',
       netRegex: NetRegexes.ability({ id: '19A9', capture: false }),
-      run: function(data) {
+      run: (data) => {
         delete data.quasarTethers;
         delete data.sadTethers;
       },
@@ -577,6 +563,9 @@ export default {
         'The Third Demiurge': 'Dritt(?:e|er|es|en) Demiurg',
       },
       'replaceText': {
+        '\\(Meteor Detonate\\)': '(Meteor Explosion)',
+        '\\(Snapshot\\)': '(Meteor Positionen)',
+        '\\(Tilt\\)': '(Neigung)',
         'Aero III': 'Windga',
         'Arms of Wisdom': 'Arme der Weisheit',
         'Cintamani': 'Chintamani',
@@ -592,6 +581,7 @@ export default {
         'Quasar': 'Quasar',
         'Ring of Pain': 'Ring des Schmerzes',
         'The Scales Of Wisdom': 'Waage der Weisheit',
+        'Tethers': 'Verbindungen',
         'Thunder II\\/III': 'Blitzra/Blitzga',
         'Thunder II(?!(?:I|\\/))': 'Blitzra',
         'Thunder III': 'Blitzga',

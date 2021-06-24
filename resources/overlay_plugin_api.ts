@@ -11,25 +11,25 @@ declare global {
       callHandler: (msg: string, cb?: (value: string) => unknown) => void;
     };
     /**
-     * @deprecated This is for backward compatiability.
+     * @deprecated This is for backward compatibility.
      *
-     * It is recommanded to import from this file:
+     * It is recommended to import from this file:
      *
      * `import { addOverlayListener } from '/path/to/overlay_plugin_api';`
      */
     addOverlayListener: IAddOverlayListener;
     /**
-     * @deprecated This is for backward compatiability.
+     * @deprecated This is for backward compatibility.
      *
-     * It is recommanded to import from this file:
+     * It is recommended to import from this file:
      *
      * `import { removeOverlayListener } from '/path/to/overlay_plugin_api';`
      */
     removeOverlayListener: IRemoveOverlayListener;
     /**
-     * @deprecated This is for backward compatiability.
+     * @deprecated This is for backward compatibility.
      *
-     * It is recommanded to import from this file:
+     * It is recommended to import from this file:
      *
      * `import { callOverlayHandler } from '/path/to/overlay_plugin_api';`
      */
@@ -110,7 +110,8 @@ export const removeOverlayListener: IRemoveOverlayListener = (event, cb): void =
     const list = subscribers[event];
     const pos = list?.indexOf(cb as VoidFunc<unknown>);
 
-    if (pos && pos > -1) list?.splice(pos, 1);
+    if (pos && pos > -1)
+      list?.splice(pos, 1);
   }
 };
 
@@ -165,7 +166,8 @@ export const setCallOverlayHandlerOverride = (override?: IOverlayHandler): IOver
 };
 
 export const init = (): void => {
-  if (inited) return;
+  if (inited)
+    return;
 
   if (typeof window !== 'undefined') {
     wsUrl = /[\?&]OVERLAY_WS=([^&]+)/.exec(window.location.href);
@@ -196,7 +198,7 @@ export const init = (): void => {
 
         ws.addEventListener('message', (_msg) => {
           try {
-            const msg = JSON.parse(_msg.data) as EventParameter & {rseq?: number};
+            const msg = JSON.parse(_msg.data) as EventParameter & { rseq?: number };
 
             if (msg.rseq !== undefined && responsePromises[msg.rseq]) {
               responsePromises[msg.rseq]?.(msg);

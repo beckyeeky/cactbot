@@ -43,7 +43,8 @@ const testTriggerFile = (file) => {
 
   before(async () => {
     contents = fs.readFileSync(file) + '';
-    const importPath = '../../' + path.relative(process.cwd(), file).replace(/\\/g, '/');
+    // Normalize path
+    const importPath = '../../' + path.relative(process.cwd(), file).replace('.ts', '.js');
     triggerSet = (await import(importPath)).default;
   });
 
@@ -160,8 +161,8 @@ const testTriggerFile = (file) => {
             assert.fail(`Missing 'output' param for '${currentTrigger.id}'.`);
 
 
-          containsMatches |= funcStr.includes('matches');
-          containsMatchesParam |= getParamNames(currentTriggerFunction).includes('matches');
+          containsMatches |= /(?<!_)matches/.test(funcStr);
+          containsMatchesParam |= /(?<!_)matches/.test(getParamNames(currentTriggerFunction));
 
           const builtInResponse = 'cactbot-builtin-response';
           if (funcStr.includes(builtInResponse)) {
@@ -327,6 +328,7 @@ const testTriggerFile = (file) => {
     // This is the order in which they are run.
     const triggerOrder = [
       'id',
+      'type',
       'disabled',
       'netRegex',
       // Other netRegexes are not important in ordering.
@@ -349,6 +351,7 @@ const testTriggerFile = (file) => {
       'infoText',
       'tts',
       'run',
+      'outputStrings',
     ];
 
     for (const set of [triggerSet.triggers, triggerSet.timelineTriggers]) {

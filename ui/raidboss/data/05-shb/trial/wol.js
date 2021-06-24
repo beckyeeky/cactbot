@@ -11,10 +11,8 @@ export default {
       id: 'WOL Ultimate Crossover',
       regex: /Ultimate Crossover/,
       beforeSeconds: 8,
-      condition: function(data) {
-        return data.role === 'tank';
-      },
-      alarmText: (data, _, output) => output.text(),
+      condition: (data) => data.role === 'tank',
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Limit break now!',
@@ -31,7 +29,7 @@ export default {
       regex: /Meteor Impact 1/,
       beforeSeconds: 10,
       durationSeconds: 8,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get Towers',
@@ -53,11 +51,9 @@ export default {
       netRegexJa: NetRegexes.ability({ source: 'ウォーリア・オブ・ライト', id: '4F27', capture: false }),
       netRegexCn: NetRegexes.ability({ source: '光之战士', id: '4F27', capture: false }),
       netRegexKo: NetRegexes.ability({ source: '빛의 전사', id: '4F27', capture: false }),
-      condition: function(data) {
-        return data.role === 'healer';
-      },
+      condition: (data) => data.role === 'healer',
       suppressSeconds: 5,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Full Heal Everyone',
@@ -77,7 +73,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'ウォーリア・オブ・ライト', id: '4F11', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '光之战士', id: '4F11', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '빛의 전사', id: '4F11', capture: false }),
-      response: Responses.getUnder('info'),
+      response: Responses.getUnder(),
     },
     {
       id: 'WOL Coruscant Saber Out',
@@ -118,9 +114,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'ウォーリア・オブ・ライト', id: '4F13', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '光之战士', id: '4F13', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '빛의 전사', id: '4F13', capture: false }),
-      run: function(data) {
-        data.imbued = 'blizzard';
-      },
+      run: (data) => data.imbued = 'blizzard',
     },
     {
       id: 'WOL Imbued Absolute Fire III',
@@ -130,9 +124,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'ウォーリア・オブ・ライト', id: '4F12', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '光之战士', id: '4F12', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '빛의 전사', id: '4F12', capture: false }),
-      run: function(data) {
-        data.imbued = 'fire';
-      },
+      run: (data) => data.imbued = 'fire',
     },
     {
       id: 'WOL Imbued Coruscance Out',
@@ -142,7 +134,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'ウォーリア・オブ・ライト', id: '4F4B', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '光之战士', id: '4F4B', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '빛의 전사', id: '4F4B', capture: false }),
-      alertText: function(data, _, output) {
+      alertText: (data, _matches, output) => {
         if (data.imbued === 'blizzard')
           return output.outMove();
         else if (data.imbued === 'fire')
@@ -185,7 +177,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'ウォーリア・オブ・ライト', id: '4F4C', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '光之战士', id: '4F4C', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '빛의 전사', id: '4F4C', capture: false }),
-      alertText: function(data, _, output) {
+      alertText: (data, _matches, output) => {
         if (data.imbued === 'blizzard')
           return output.underMove();
         else if (data.imbued === 'fire')
@@ -228,12 +220,12 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'ウォーリア・オブ・ライト', id: '4F42', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '光之战士', id: '4F42', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '빛의 전사', id: '4F42', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Out of Triangle',
           de: 'Raus aus den Dreiecken',
-          fr: 'En dehors du triangle',
+          fr: 'Sortez du triangle',
           ja: '三角の外へ',
           cn: '站在三角外面',
           ko: '삼각형 밖으로',
@@ -252,7 +244,7 @@ export default {
       // This applies to both phases.  We could say something like "go side without wyrm" and
       // "go to corner without wyrm", but "avoid wyrm dash" covers both.  Hopefully it's obvious
       // not to stand in the giant black circle.
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Avoid Wyrm Dash',
@@ -290,10 +282,8 @@ export default {
       id: 'WOL Deluge of Death Marker',
       netRegex: NetRegexes.headMarker({ id: '0057' }),
       condition: Conditions.targetIsYou(),
-      alarmText: (data, _, output) => output.text(),
-      run: function(data, matches) {
-        data.deluge = matches.target;
-      },
+      alarmText: (_data, _matches, output) => output.text(),
+      run: (data, matches) => data.deluge = matches.target,
       outputStrings: {
         text: {
           en: 'GTFO',
@@ -307,9 +297,9 @@ export default {
     },
     {
       id: 'WOL Deluge of Death Cleanup',
-      netRegex: NetRegexes.headMarker({ id: '0057' }),
+      netRegex: NetRegexes.headMarker({ id: '0057', capture: false }),
       delaySeconds: 10,
-      run: function(data, matches) {
+      run: (data) => {
         // Clean this up so it doesn't apply during Katon San.
         delete data.deluge;
       },
@@ -337,7 +327,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'ウォーリア・オブ・ライト', id: '515D', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '光之战士', id: '515D', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '빛의 전사', id: '515D', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Stack Groups',
@@ -353,7 +343,7 @@ export default {
       id: 'WOL Radiant Meteor',
       netRegex: NetRegexes.headMarker({ id: '00E9' }),
       condition: Conditions.targetIsYou(),
-      alarmText: (data, _, output) => output.text(),
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Go to Corner',
@@ -385,7 +375,7 @@ export default {
       netRegexCn: NetRegexes.tether({ source: '幻光召唤兽', id: '0011' }),
       netRegexKo: NetRegexes.tether({ source: '환상빛의 소환수', id: '0011' }),
       condition: Conditions.targetIsYou(),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Point tether outside',
@@ -413,8 +403,6 @@ export default {
         'Wyrm Of Light': 'Wyrm des Lichts',
       },
       'replaceText': {
-        '\\(In\\)': '(Rein)',
-        '\\(Out\\)': '(Raus)',
         '--active time event--': '--Aktives Zeitevent--',
         'Absolute Blizzard III': 'Absolutes Eisga',
         'Absolute Fire III': 'Absolutes Feuga',
@@ -465,8 +453,6 @@ export default {
       },
       'replaceText': {
         '--active time event--': '--temps d\'évènement actif--',
-        '\\(In\\)': '(Intérieur)',
-        '\\(Out\\)': '(Extérieur)',
         'Absolute Blizzard III': 'Méga Glace absolue',
         'Absolute Fire/Blizzard': 'Méga Feu/Glace absolue',
         'Absolute Fire III': 'Méga Feu absolu',
@@ -515,8 +501,6 @@ export default {
         'Wyrm Of Light': 'ウィルム・オブ・ライト',
       },
       'replaceText': {
-        '\\(In\\)': '(中)',
-        '\\(Out\\)': '(外)',
         '--active time event--': '--QTE--',
         'Absolute Blizzard III': 'アブソリュートブリザガ',
         'Absolute Fire III': 'アブソリュートファイガ',
@@ -566,8 +550,6 @@ export default {
         'Wyrm Of Light': '光之真龙',
       },
       'replaceText': {
-        '\\(In\\)': '(月环)',
-        '\\(Out\\)': '(钢铁)',
         '--active time event--': '--XJB按--',
         'Absolute Blizzard III': '绝对冰封',
         'Absolute Fire III': '绝对爆炎',
@@ -617,8 +599,6 @@ export default {
         'Wyrm Of Light': '빛의 비룡',
       },
       'replaceText': {
-        '\\(In\\)': '(중앙)',
-        '\\(Out\\)': '(외곽)',
         '--active time event--': '--긴급 조작--',
         'Summon(?! Wyrm)': '소환',
         'Absolute Blizzard III': '앱솔루트 블리자가',

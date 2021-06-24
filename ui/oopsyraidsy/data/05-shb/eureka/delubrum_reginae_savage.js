@@ -63,6 +63,7 @@ export default {
     'DelubrumSav Guard Optimal Play Sword': '5816', // Optimal Play Sword "get out"
     'DelubrumSav Guard Optimal Play Shield': '5817', // Optimal play shield "get in"
     'DelubrumSav Guard Optimal Play Cleave': '5818', // Optimal Play cleaves for sword/shield
+    'DelubrumSav Guard Unlucky Lot': '581D', // Queen's Knight orb explosion
     'DelubrumSav Guard Burn 1': '583D', // small fire adds
     'DelubrumSav Guard Burn 2': '583E', // large fire adds
     'DelubrumSav Guard Pawn Off': '583A', // Queen's Soldier Secrets Revealed tethered clone aoe
@@ -132,21 +133,21 @@ export default {
       id: 'DelubrumSav Guard Lots Cast',
       damageRegex: ['5827', '5828', '5B6C', '5B6D', '5BB6', '5BB7', '5B88', '5B89'],
       condition: (e) => e.flags.slice(-2) === '03',
-      mistake: (e, data, matches) => {
+      mistake: (_e, _data, matches) => {
         return { type: 'warn', blame: matches.target, text: matches.ability };
       },
     },
     {
       id: 'DelubrumSav Golem Compaction',
       abilityRegex: '5746',
-      mistake: (e, data, matches) => {
+      mistake: (_e, _data, matches) => {
         return { type: 'fail', fullText: `${matches.source}: ${matches.ability}` };
       },
     },
     {
       id: 'DelubrumSav Slime Sanguine Fusion',
       abilityRegex: '554D',
-      mistake: (e, data, matches) => {
+      mistake: (_e, _data, matches) => {
         return { type: 'fail', fullText: `${matches.source}: ${matches.ability}` };
       },
     },

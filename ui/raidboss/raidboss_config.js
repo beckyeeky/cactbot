@@ -3,7 +3,7 @@ import Regexes from '../../resources/regexes';
 import { triggerOutputFunctions } from '../../resources/responses';
 import UserConfig from '../../resources/user_config';
 import Util from '../../resources/util';
-import raidbossFileData from './data/manifest.txt';
+import raidbossFileData from './data/raidboss_manifest.txt';
 import raidbossOptions from './raidboss_options';
 
 const kOptionKeys = {
@@ -120,6 +120,7 @@ const kDetailKeys = {
       fr: 'avant (seconde)',
       ja: 'その前に (秒)',
       cn: '提前 (秒)',
+      ko: '앞당김 (초)',
     },
     cls: 'before-seconds-text',
     generatedManually: true,
@@ -200,7 +201,7 @@ const kDetailKeys = {
       fr: 'tts',
       ja: 'TTS',
       cn: 'TTS',
-      ko: 'tts',
+      ko: 'TTS',
     },
     cls: 'tts-text',
   },
@@ -246,6 +247,7 @@ const kMiscTranslations = {
     fr: '(Fonction)',
     ja: '(関数)',
     cn: '(函数)',
+    ko: '(함수)',
   },
   // Warning label for triggers without ids or overridden triggers.
   warning: {
@@ -254,6 +256,7 @@ const kMiscTranslations = {
     fr: '⚠️ Attention',
     ja: '⚠️ 警告',
     cn: '⚠️ 警告',
+    ko: '⚠️ 주의',
   },
   // Shows up for triggers without ids.
   missingId: {
@@ -262,6 +265,7 @@ const kMiscTranslations = {
     fr: 'Champ ID manquant',
     ja: 'idがありません',
     cn: '缺少id属性',
+    ko: 'ID 필드값 없음',
   },
   // Shows up for triggers that are overridden by other triggers.
   overriddenByFile: {
@@ -270,6 +274,15 @@ const kMiscTranslations = {
     fr: 'Écrasé(e) par "${file}"',
     ja: '"${file}"に上書きました',
     cn: '被"${file}"文件覆盖',
+    ko: '"${file}" 파일에서 덮어씌움',
+  },
+  // Opens trigger file on Github.
+  viewTriggerSource: {
+    en: 'View Trigger Source',
+    de: 'Zeige Trigger Quelle',
+    ja: 'トリガーのコードを表示',
+    cn: '显示触发器源码',
+    ko: '트리거 출처 열기',
   },
 };
 
@@ -348,6 +361,10 @@ class DoNothingFuncProxy {
     });
   }
 }
+
+const makeLink = (href) => {
+  return `<a href="${href}" target="_blank">${href}</a>`;
+};
 
 class RaidbossConfigurator {
   constructor(cactbotConfigurator) {
@@ -541,7 +558,10 @@ class RaidbossConfigurator {
           div.appendChild(input);
           input.type = 'text';
           input.step = 'any';
-          input.placeholder = this.base.translate(kMiscTranslations.valueDefault);
+          if (typeof trig.durationSeconds === 'number')
+            input.placeholder = `${trig.durationSeconds}`;
+          else
+            input.placeholder = this.base.translate(kMiscTranslations.valueDefault);
           input.value = this.base.getOption('raidboss', 'triggers', trig.id, optionKey, '');
           const setFunc = () => {
             const val = validDurationOrUndefined(input.value) || '';
@@ -579,6 +599,28 @@ class RaidbossConfigurator {
 
           triggerDetails.appendChild(div);
         }
+
+        const label = document.createElement('div');
+        triggerDetails.appendChild(label);
+
+        const div = document.createElement('div');
+        div.classList.add('option-input-container', 'trigger-source');
+        const baseUrl = 'https://github.com/quisquous/cactbot/blob/triggers';
+        const path = key.split('-');
+        let urlFilepath;
+        if (path.length === 3) {
+          // 00-misc/general.js
+          urlFilepath = `${path[0]}-${path[1]}/${[...path].slice(2).join('-')}`;
+        } else {
+          // 02-arr/raids/t1.js
+          urlFilepath = `${path[0]}-${path[1]}/${path[2]}/${[...path].slice(3).join('-')}`;
+        }
+        const escapedTriggerId = trig.id.replace(/'/g, '\\\'');
+        const uriComponent = encodeURIComponent(`id: '${escapedTriggerId}'`).replace(/'/g, '%27');
+        const urlString = `${baseUrl}/${urlFilepath}.js#:~:text=${uriComponent}`;
+        div.innerHTML = `<a href="${urlString}" target="_blank">(${this.base.translate(kMiscTranslations.viewTriggerSource)})</a>`;
+
+        triggerDetails.appendChild(div);
       }
     }
   }
@@ -778,7 +820,7 @@ class RaidbossConfigurator {
     // id so that the ui can disable overriding information.
     const previousTriggerWithId = {};
 
-    for (const [key, item] of Object.entries(map)) {
+    for (const item of Object.values(map)) {
       // TODO: maybe each trigger set needs a zone name, and we should
       // use that instead of the filename???
       const rawTriggers = {
@@ -949,6 +991,25 @@ const templateOptions = {
     }
   },
   options: [
+    {
+      id: 'Coverage',
+      name: {
+        en: 'Supported content (latest version)',
+        ja: '対応コンテンツ一覧 (最新バージョン)',
+        cn: '支持副本一览 (含未发布更新)',
+        ko: '지원하는 컨텐츠 (릴리즈버전보다 최신)',
+      },
+      type: 'html',
+      html: {
+        // TODO: it'd be nice if OverlayPlugin could open links on the system outside of ACT.
+        en: makeLink('https://quisquous.github.io/cactbot/util/coverage/coverage.html?lang=en'),
+        de: makeLink('https://quisquous.github.io/cactbot/util/coverage/coverage.html?lang=de'),
+        fr: makeLink('https://quisquous.github.io/cactbot/util/coverage/coverage.html?lang=fr'),
+        ja: makeLink('https://quisquous.github.io/cactbot/util/coverage/coverage.html?lang=ja'),
+        cn: makeLink('https://quisquous.github.io/cactbot/util/coverage/coverage.html?lang=cn'),
+        ko: makeLink('https://quisquous.github.io/cactbot/util/coverage/coverage.html?lang=ko'),
+      },
+    },
     {
       id: 'Debug',
       name: {
@@ -1381,19 +1442,6 @@ const templateOptions = {
       },
       type: 'float',
       default: 1,
-    },
-    {
-      id: 'BrowserTTS',
-      name: {
-        en: 'Use Browser for Text to Speech',
-        de: 'Verwenden Sie den Browser für Text zu Sprache', // Machine translation
-        fr: 'Utiliser le navigateur pour la synthèse vocale', // Machine Translation
-        ja: 'ブラウザでTTS',
-        cn: '忽略ACT的设置，使用Cactbot自带的Google TTS功能（需联网）',
-        ko: '웹브라우저를 이용해서 TTS 작동시키기',
-      },
-      type: 'checkbox',
-      default: false,
     },
     {
       id: 'cactbotWormholeStrat',

@@ -12,8 +12,8 @@ import '../oopsyraidsy/oopsyraidsy_config';
 import '../radar/radar_config';
 import '../raidboss/raidboss_config';
 
-const Options = {};
-let gConfig = null;
+import '../../resources/defaults.css';
+import './config.css';
 
 // Text in the butter bar, to prompt the user to reload after a config change.
 const kReloadText = {
@@ -125,12 +125,12 @@ const kDirectoryToCategory = {
     ko: '던전',
   },
   eureka: {
-    en: 'Eureka',
-    de: 'Eureka',
-    fr: 'Eurêka',
-    ja: '禁断の地エウレカ',
-    cn: '禁地优雷卡',
-    ko: '에우레카',
+    en: 'Adventuring Forays',
+    de: 'Feldexkursion',
+    fr: 'Missions d\'exploration',
+    ja: '特殊フィールド探索',
+    cn: '特殊场景探索',
+    ko: '특수 필드 임무',
   },
   raid: {
     en: 'Raid',
@@ -170,7 +170,7 @@ const kDirectoryToCategory = {
 // TODO: use ZoneId to get this
 const fileNameToTitle = (filename) => {
   // Strip directory and extension.
-  const file = filename.replace(/^.*\//, '').replace('.js', '');
+  const file = filename.replace(/^.*\//, '').replace(/\.[jt]s/g, '');
   // Remove non-name characters (probably).
   const name = file.replace(/[_-]/g, ' ');
   // Capitalize the first letter of every word.
@@ -316,6 +316,7 @@ export default class CactbotConfigurator {
             continue;
           const buildFunc = {
             checkbox: this.buildCheckbox,
+            html: this.buildHtml,
             select: this.buildSelect,
             float: this.buildFloat,
             integer: this.buildInteger,
@@ -378,6 +379,15 @@ export default class CactbotConfigurator {
     input.type = 'checkbox';
     input.checked = this.getOption(group, opt.id, opt.default);
     input.onchange = () => this.setOption(group, opt.id, input.checked);
+
+    parent.appendChild(this.buildNameDiv(opt));
+    parent.appendChild(div);
+  }
+
+  buildHtml(parent, opt, group) {
+    const div = document.createElement('div');
+    div.classList.add('option-input-container');
+    div.innerHTML = this.translate(opt.html);
 
     parent.appendChild(this.buildNameDiv(opt));
     parent.appendChild(div);
@@ -493,7 +503,7 @@ export default class CactbotConfigurator {
   processFiles(files, userTriggerSets) {
     const map = {};
     for (const filename in files) {
-      if (!filename.endsWith('.js'))
+      if (!filename.endsWith('.js') && !filename.endsWith('.ts'))
         continue;
 
       let prefixKey = '00-misc';
@@ -525,7 +535,7 @@ export default class CactbotConfigurator {
           title = this.translate(zoneInfo.name);
       }
 
-      const fileKey = filename.replace(/\//g, '-').replace(/.js$/, '');
+      const fileKey = filename.replace(/\//g, '-').replace(/.[jt]s$/, '');
       map[fileKey] = {
         filename: filename,
         fileKey: fileKey,
@@ -617,8 +627,10 @@ export default class CactbotConfigurator {
   }
 }
 
-UserConfig.getUserConfigLocation('config', Options, async (e) => {
-  gConfig = new CactbotConfigurator(
-      Options,
+const defaultOptions = {};
+UserConfig.getUserConfigLocation('config', defaultOptions, () => {
+  const options = { ...defaultOptions };
+  const configurator = new CactbotConfigurator(
+      options,
       UserConfig.savedConfig);
 });

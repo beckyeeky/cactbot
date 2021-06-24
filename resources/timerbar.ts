@@ -22,9 +22,6 @@ export default class TimerBar extends HTMLElement {
   private _hideTimer: number | null;
   private _animationFrame: number | null;
 
-  // FIXME: 'toward' appears to have been broken for some time.
-  // empty is always towards left and fill always towards right until this is fixed.
-  // See: https://github.com/quisquous/cactbot/issues/2707
   static get observedAttributes(): string[] {
     return ['duration', 'value', 'elapsed', 'hideafter', 'lefttext', 'centertext', 'righttext', 'width', 'height', 'bg', 'fg', 'stylefill', 'toward', 'loop'];
   }
@@ -86,7 +83,8 @@ export default class TimerBar extends HTMLElement {
     this.attributeChangedCallback('value', this.value, s);
   }
   get value(): string {
-    if (!this._start) return this._duration.toString();
+    if (!this._start)
+      return this._duration.toString();
     const elapsedMs = new Date().getTime() - this._start;
     return Math.max(0, this._duration - (elapsedMs / 1000)).toString();
   }
@@ -96,7 +94,8 @@ export default class TimerBar extends HTMLElement {
     this.attributeChangedCallback('elapsed', this.elapsed, s);
   }
   get elapsed(): string {
-    if (!this._start) return '0';
+    if (!this._start)
+      return '0';
     return ((new Date().getTime() - this._start) / 1000).toString();
   }
 
@@ -237,7 +236,6 @@ export default class TimerBar extends HTMLElement {
           width: 100%;
           height: 100%;
           opacity: 1.0;
-          will-change: transform;
         }
         .text {
           position: absolute;
@@ -419,10 +417,15 @@ export default class TimerBar extends HTMLElement {
 
     // To start full and animate to empty, we animate backwards and flip
     // the direction.
-    if (this._towardRight !== this._fill)
-      this.foregroundElement.style.transformOrigin = '100% 0%';
-    else
-      this.foregroundElement.style.transformOrigin = '0% 0%';
+    if (this._towardRight !== this._fill) {
+      this.foregroundElement.style.left = '';
+      this.foregroundElement.style.right = '0px';
+      this.foregroundElement.style.transformOrigin = 'right center';
+    } else {
+      this.foregroundElement.style.left = '0px';
+      this.foregroundElement.style.right = '';
+      this.foregroundElement.style.transformOrigin = 'left center';
+    }
   }
 
   updateText(): void {
@@ -449,7 +452,7 @@ export default class TimerBar extends HTMLElement {
     const displayElapsed = elapsedSec.toFixed(1);
     if (this._fill)
       percent = 1.0 - percent;
-    this.foregroundElement.style.width = `${percent * 100}%`;
+    this.foregroundElement.style.transform = `scaleX(${percent.toFixed(3)})`;
     if (this._leftText !== '') {
       if (this._leftText === 'remain')
         this.leftTextElement.innerHTML = displayRemain;
@@ -483,7 +486,7 @@ export default class TimerBar extends HTMLElement {
   }
 
   // Apply all styles from an object where keys are CSS properties
-  applyStyles(styles: { [s: string]: string}): void {
+  applyStyles(styles: { [s: string]: string }): void {
     const s = Object.keys(styles).map((k) => {
       return `${k}:${styles?.[k] ?? ''};`;
     }).join('');
@@ -497,7 +500,8 @@ export default class TimerBar extends HTMLElement {
     const elapsedSec = Math.max(0, this._duration - remainSec);
     this._start = new Date().getTime() - (elapsedSec * 1000);
 
-    if (!this._connected) return;
+    if (!this._connected)
+      return;
 
     this.show();
     clearTimeout(this._hideTimer ?? 0);
@@ -547,3 +551,9 @@ export default class TimerBar extends HTMLElement {
 
 
 window.customElements.define('timer-bar', TimerBar);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'timer-bar': TimerBar;
+  }
+}

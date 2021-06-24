@@ -1,4 +1,4 @@
-import { Lang } from './global';
+import { Lang } from '../resources/languages';
 import { Job } from './job';
 
 declare global {
@@ -20,7 +20,7 @@ export interface JobDetail {
   'DRK': {
     blood: number;
     darksideMilliseconds: number;
-    darkArts: boolean;
+    darkArts: 1 | 0;
     livingShadowMilliseconds: number;
   };
   'GNB': {
@@ -48,7 +48,7 @@ export interface JobDetail {
   };
   'MNK': {
     lightningStacks: number;
-    lightningStacks: number;
+    lightningMilliseconds: number;
     chakraStacks: number;
     lightningTimerFrozen: boolean;
   };
@@ -142,6 +142,11 @@ export interface EventMap {
     charName: string;
   }) => void;
 
+  'FileChanged': (ev: {
+    type: 'FileChanged';
+    file: string;
+  }) => void;
+
   'OnlineStatusChanged': (ev: {
     type: 'OnlineStatusChanged';
     target: string; rawStatus:
@@ -190,12 +195,7 @@ export interface EventMap {
     };
   }) => void;
 
-  'onLogEvent': (ev: {
-    type: 'onLogEvent';
-    detail: {
-      logs: string[];
-    };
-  }) => void;
+  'onLogEvent': (ev: LogEvent) => void;
 
   'onImportLogEvent': (ev: {
     type: 'onImportLogEvent';
@@ -251,45 +251,34 @@ export interface EventMap {
     type: 'onPartyWipe';
   }) => void;
 
-  'onPlayerChangedEvent': <T extends Job>(ev: {
+  'onPlayerChangedEvent': (ev: {
     type: 'onPlayerChangedEvent';
-    detail: {
-      name: string;
-      job: T;
-      level: number;
-      currentHP: number;
-      maxHP: number;
-      currentMP: number;
-      maxMP: number;
-      currentCP: number;
-      maxCP: number;
-      currentGP: number;
-      maxGP: number;
-      currentShield: number;
-      jobDetail: JobDetail[T];
-      pos: {
-        x: number;
-        y: number;
-        z: number;
-      };
-      rotation: number;
-      bait: number;
-      debugJob: string;
-    };
-  }
-  ) => void;
+    detail: PlayerChangedRet;
+  }) => void;
 
   'onUserFileChanged': (ev: {
     type: 'onUserFileChanged';
+    file: string;
   }) => void;
   // #endregion
 }
+
+export type EventResponses = {
+  [event in keyof EventMap]: Parameters<EventMap[event]>[0];
+};
+
+export type LogEvent = {
+  type: 'onLogEvent';
+  detail: {
+    logs: string[];
+  };
+};
 
 export type EventType = keyof EventMap;
 
 interface CactbotLoadUserRet {
   userLocation: string;
-  localUserFiles: Record<string, string> | null;
+  localUserFiles: { [filename: string]: string } | null;
   parserLanguage: Lang;
   systemLocale: string;
   displayLanguage: Lang;
@@ -297,12 +286,87 @@ interface CactbotLoadUserRet {
   language: Lang;
 }
 
+// Structured JSON data saved in OverlayPlugin config files.
+export type SavedConfigEntry = string | number | boolean | [ SavedConfigEntry] |
+   { [nestedName: string]: SavedConfigEntry };
+export type SavedConfig = {
+  [overlayName: string]: SavedConfigEntry;
+};
+
+type PlayerChangedJobDetails<T> = {
+  job: T;
+  jobDetail: JobDetail[T];
+} | {
+  job: Job;
+  jobDetail: null;
+}
+
+type PlayerChangedBase = {
+  name: string;
+  level: number;
+  currentHP: number;
+  maxHP: number;
+  currentMP: number;
+  maxMP: number;
+  currentCP: number;
+  maxCP: number;
+  currentGP: number;
+  maxGP: number;
+  currentShield: number;
+  pos: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  rotation: number;
+  bait: number;
+  debugJob: string;
+};
+
+type PlayerChangedRet = Job extends infer T ? T extends Job ?
+  PlayerChangedJobDetails<T> & PlayerChangedBase : never : never;
+
+// Member names taken from OverlayPlugin's MiniParse.cs
+// Types taken from FFXIV parser plugin
+export interface PluginCombatantState {
+  CurrentWorldID?: number;
+  WorldID?: number;
+  WorldName?: string;
+  BNpcID?: number;
+  BNpcNameID?: number;
+  PartyType?: number;
+  ID?: number;
+  OwnerID?: number;
+  type?: number;
+  Job?: number;
+  Level?: number;
+  Name?: string;
+  CurrentHP: number;
+  MaxHP: number;
+  CurrentMP: number;
+  MaxMP: number;
+  PosX: number;
+  PosY: number;
+  PosZ: number;
+  Heading: number;
+}
+
+export type GetCombatantsCall = {
+  call: 'getCombatants';
+  ids?: number[];
+  names?: string[];
+  props?: string[];
+};
+
+export type GetCombatantsRet = { combatants: PluginCombatantState[] };
+
 export type IOverlayHandler = {
   // OutputPlugin build-in
   (msg: {
     call: 'subscribe';
     events: string[];
   }): Promise<null>;
+  (msg: GetCombatantsCall): Promise<GetCombatantsRet>;
   // TODO: add OverlayPlugin build-in handlers
   // Cactbot
   // TODO: fill up all handler types
@@ -327,10 +391,10 @@ export type IOverlayHandler = {
   (msg: {
     call: 'cactbotSaveData';
   }): Promise<null>;
-  <T>(msg: {
+  (msg: {
     call: 'cactbotLoadData';
     overlay: string;
-  }): Promise<{ data: T } | null>;
+  }): Promise<{ data: SavedConfig } | null>;
   <T>(msg: {
     call: 'cactbotChooseDirectory';
   }): Promise<{ data: T } | null>;

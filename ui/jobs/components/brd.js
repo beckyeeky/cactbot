@@ -1,6 +1,8 @@
 import EffectId from '../../../resources/effect_id';
 import { computeBackgroundColorFrom } from '../utils';
 
+let resetFunc = null;
+
 export function setup(bars) {
   const straightShotProc = bars.addProcBox({
     id: 'brd-procs-straightshotready',
@@ -9,7 +11,6 @@ export function setup(bars) {
   });
   straightShotProc.bigatzero = false;
   bars.onYouGainEffect(EffectId.StraightShotReady, () => {
-    straightShotProc.duration = 0;
     straightShotProc.duration = 10;
   });
   bars.onYouLoseEffect(EffectId.StraightShotReady, () => straightShotProc.duration = 0);
@@ -17,10 +18,12 @@ export function setup(bars) {
   const causticBiteBox = bars.addProcBox({
     id: 'brd-procs-causticbite',
     fgColor: 'brd-color-causticbite',
+    notifyWhenExpired: true,
   });
   const stormBiteBox = bars.addProcBox({
     id: 'brd-procs-stormbite',
     fgColor: 'brd-color-stormbite',
+    notifyWhenExpired: true,
   });
   // Iron jaws just refreshes these effects by gain once more,
   // so it doesn't need to be handled separately.
@@ -30,14 +33,12 @@ export function setup(bars) {
     EffectId.Stormbite,
     EffectId.Windbite,
   ], () => {
-    stormBiteBox.duration = 0;
     stormBiteBox.duration = 30 - 0.5;
   });
   bars.onMobGainsEffectFromYou([
     EffectId.CausticBite,
     EffectId.VenomousBite,
   ], () => {
-    causticBiteBox.duration = 0;
     causticBiteBox.duration = 30 - 0.5;
   });
   bars.onStatChange('BRD', () => {
@@ -60,8 +61,10 @@ export function setup(bars) {
     id: 'brd-timers-repertoire',
     fgColor: 'brd-color-song',
   });
+  repertoireTimer.toward = 'right';
+  repertoireTimer.stylefill = 'fill';
   // Only with-DoT-target you last attacked will trigger bars timer.
-  // So it work not well in mutiple targets fight.
+  // So it work not well in multiple targets fight.
   bars.updateDotTimerFuncs.push(() => repertoireTimer.duration = 2.91666);
   const soulVoiceBox = bars.addResourceBox({
     classList: ['brd-color-soulvoice'],
@@ -93,10 +96,8 @@ export function setup(bars) {
 
     const oldSeconds = parseFloat(songBox.duration) - parseFloat(songBox.elapsed);
     const seconds = jobDetail.songMilliseconds / 1000.0;
-    if (!songBox.duration || seconds > oldSeconds) {
-      songBox.duration = 0;
+    if (!songBox.duration || seconds > oldSeconds)
       songBox.duration = seconds;
-    }
 
     // Soul Voice
     if (jobDetail.soulGauge !== soulVoiceBox.innerText) {
@@ -139,4 +140,18 @@ export function setup(bars) {
     bars.speedBuffs.museStacks = 0;
     bars.speedBuffs.paeonStacks = 0;
   });
+
+  resetFunc = (bars) => {
+    straightShotProc.duration = 0;
+    stormBiteBox.duration = 0;
+    causticBiteBox.duration = 0;
+    repertoireTimer.duration = 0;
+    ethosStacks = 0;
+    songBox.duration = 0;
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

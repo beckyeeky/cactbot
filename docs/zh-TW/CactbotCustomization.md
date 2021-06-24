@@ -120,7 +120,7 @@ Options.Triggers.push({
 });
 ```
 
-最簡單的定制觸發器方式是直接複製上面那一大塊程式碼粘貼到此檔案再進行修改。 您可以修改 `zoneId` 一行為您想要觸發器響應的區域id，這一行通常位於cactbot觸發器檔案的頂部。 [該檔案](../resources/zone_id.js) 列出了所有可用的區域id。 若您定義了錯誤的id，OverlayPlugin的日誌視窗將會輸出警告資訊。 然後複製觸發器文本並粘貼至此， 按您的喜好進行修改。 當你改完所有你想改的觸發器後， 重載raidboss懸浮窗以應用更改。
+最簡單的定制觸發器方式是直接複製上面那一大塊程式碼粘貼到此檔案再進行修改。 您可以修改 `zoneId` 一行為您想要觸發器響應的區域id，這一行通常位於cactbot觸發器檔案的頂部。 [該檔案](../resources/zone_id.ts) 列出了所有可用的區域id。 若您定義了錯誤的id，OverlayPlugin的日誌視窗將會輸出警告資訊。 然後複製觸發器文本並粘貼至此， 按您的喜好進行修改。 當你改完所有你想改的觸發器後， 重載raidboss懸浮窗以應用更改。
 
 **注意**：此方式會將原觸發器完全移除，因此請在修改時不要刪除任何邏輯。 此外，觸發器均採用JavaScript編寫，因此必須採用標準JavaScript語法。 若您不是程式設計師，您需要格外注意編輯方法。
 
@@ -130,7 +130,7 @@ Options.Triggers.push({
 
 若您只是想修改 `資訊文字`，你可以 [透過cactbot配置介面改變觸發器文字](#changing-trigger-text-with-the-cactbot-ui) 實現。
 
-其中一種調整方式是編輯觸發器的輸出。 您可以在 [ui/raidboss/data/04-sb/ultimate/unending_coil_ultimate.js](https://github.com/quisquous/cactbot/blob/cce8bc6b10d2210fa512bd1c8edd39c260cc3df8/ui/raidboss/data/04-sb/ultimate/unending_coil_ultimate.js#L715-L743) 中找到原本的 fireball #1 觸發器。
+其中一種調整方式是編輯觸發器的輸出。 您可以在 [ui/raidboss/data/04-sb/ultimate/unending_coil_ultimate.js](https://github.com/quisquous/cactbot/blob/triggers/04-sb/ultimate/unending_coil_ultimate.js#:~:text=UCU%20Nael%20Fireball%201) 中找到原本的 fireball #1 觸發器。
 
 您需要將以下的程式碼貼上至您的使用者自定義js檔案底部。
 
@@ -167,7 +167,7 @@ Options.Triggers.push({
 
 ### 例2：使挑釁提示適用於全職業
 
-目前，只有團隊成員的挑釁會觸發提示，並且不是所有職業都能收到提示。 該例子展示了如何使其適用於所有職業。 該挑釁觸發器可以在 [ui/raidboss/data/00-misc/general.js](https://github.com/quisquous/cactbot/blob/cce8bc6b10d2210fa512bd1c8edd39c260cc3df8/ui/raidboss/data/00-misc/general.js#L11-L30) 中找到。
+目前，只有團隊成員的挑釁會觸發提示，並且不是所有職業都能收到提示。 該例子展示了如何使其適用於所有職業。 該挑釁觸發器可以在 [ui/raidboss/data/00-misc/general.js](https://github.com/quisquous/cactbot/blob/triggers/00-misc/general.js#:~:text=General%20Provoke) 中找到。
 
 我們需要修改 `condition` 函式(function)。 由於此處的id與內建的 `General Provoke` 觸發器一致，因此會覆蓋同名的內建觸發器。
 
@@ -313,8 +313,8 @@ Options.PlayerNicks = {
 此處有一個例子：
 
 ```log
-[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: local user file: C:\Users\tinipoutini\cactbot\user\raidboss.js (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.js, Line: 83)
-[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: *** ERROR IN USER FILE *** (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.js, Line: 95)
+[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: local user file: C:\Users\tinipoutini\cactbot\user\raidboss.js (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts, Line: 83)
+[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: *** ERROR IN USER FILE *** (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts, Line: 95)
 [10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: SyntaxError: Unexpected token :
-    at loadUser (file:///C:/Users/tinipoutini/cactbot/resources/user_config.js:92:28) (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.js, Line: 96)
+    at loadUser (file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts:92:28) (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts, Line: 96)
 ```

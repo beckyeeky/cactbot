@@ -3,20 +3,9 @@ import { kAbility } from '../constants';
 import { computeBackgroundColorFrom } from '../utils';
 
 const lightningFgColors = [];
+let resetFunc = null;
 
 export function setup(bars) {
-  // TODO: Remove bars timer when cn/ko update 5.4
-  let lightningTimer = null;
-  if (['cn', 'ko'].includes(bars.options.ParserLanguage)) {
-    lightningTimer = bars.addTimerBar({
-      id: 'mnk-timers-lightning',
-      fgColor: 'mnk-color-lightning-0',
-    });
-
-    for (let i = 0; i <= 3; ++i)
-      lightningFgColors.push(computeBackgroundColorFrom(lightningTimer, 'mnk-color-lightning-' + i));
-  }
-
   const formTimer = bars.addTimerBar({
     id: 'mnk-timers-combo',
     fgColor: 'mnk-color-form',
@@ -48,34 +37,9 @@ export function setup(bars) {
         p.classList.remove('dim');
     }
 
-    // TODO: Remove bars.speedBuffs.lightningStacks,
-    // and change code to calculate speed by level in calcGCDFromStat function
-    // when cn/ko update 5.4
-    if (lightningTimer) {
-      bars.speedBuffs.lightningStacks = jobDetail.lightningStacks;
-      lightningTimer.fg = lightningFgColors[bars.speedBuffs.lightningStacks];
-      if (bars.speedBuffs.lightningStacks === 0) {
-        // Show sad red bar when you've lost all your pancakes.
-        lightningTimer.stylefill = 'fill';
-        lightningTimer.value = 0;
-        lightningTimer.duration = 0;
-      } else {
-        lightningTimer.stylefill = 'empty';
-
-        // Setting the duration resets the timer bar to 0, so set
-        // duration first before adjusting the value.
-        const old = parseFloat(lightningTimer.duration) - parseFloat(lightningTimer.elapsed);
-        const lightningSeconds = jobDetail.lightningMilliseconds / 1000.0;
-        if (lightningSeconds > old) {
-          lightningTimer.duration = 16;
-          lightningTimer.value = lightningSeconds;
-        }
-      }
-    } else {
-      // For now, we just assign bars.speedBuffs.lightningStacks
-      // as corresponding stacks via current level
-      bars.speedBuffs.lightningStacks = getLightningStacksViaLevel(bars.level);
-    }
+    // After the 5.4 changes, we just assign bars.speedBuffs.lightningStacks
+    // as corresponding stacks via current level
+    bars.speedBuffs.lightningStacks = getLightningStacksViaLevel(bars.level);
   });
 
   const dragonKickBox = bars.addProcBox({
@@ -98,32 +62,36 @@ export function setup(bars) {
     threshold: 5,
   });
 
-  bars.onUseAbility(kAbility.TwinSnakes, () => {
-    twinSnakesBox.duration = 0;
-    twinSnakesBox.duration = 15;
+  bars.onYouGainEffect(EffectId.TwinSnakes, (name, matches) => {
+    // -0.5 for logline delay
+    twinSnakesBox.duration = (parseFloat(matches.duration) - 0.5).toString();
   });
-  bars.onUseAbility(kAbility.FourPointFury, () => {
-    // FIXME: using bars at zero.
-    const old = parseFloat(twinSnakesBox.duration) - parseFloat(twinSnakesBox.elapsed);
-    twinSnakesBox.duration = 0;
-    if (old > 0)
-      twinSnakesBox.duration = Math.min(old + 10, 15);
-  });
+  bars.onYouLoseEffect(EffectId.TwinSnakes, () => twinSnakesBox.duration = 0);
+
   bars.onUseAbility(kAbility.Demolish, () => {
-    demolishBox.duration = 0;
     // it start counting down when you cast demolish
     // but DOT appears on target about 1 second later
     demolishBox.duration = 18 + 1;
   });
+
   bars.onYouGainEffect(EffectId.LeadenFist, () => {
-    dragonKickBox.duration = 0;
     dragonKickBox.duration = 30;
   });
   bars.onYouLoseEffect(EffectId.LeadenFist, () => dragonKickBox.duration = 0);
+
+  let perfectBalanceActive = false;
   bars.onYouGainEffect(EffectId.PerfectBalance, (name, matches) => {
+    if (!perfectBalanceActive) {
+      formTimer.duration = 0;
+      formTimer.duration = parseFloat(matches.duration).toString();
+      formTimer.fg = computeBackgroundColorFrom(formTimer, 'mnk-color-pb');
+      perfectBalanceActive = true;
+    }
+  });
+  bars.onYouLoseEffect(EffectId.PerfectBalance, () => {
     formTimer.duration = 0;
-    formTimer.duration = parseFloat(matches.duration);
-    formTimer.fg = computeBackgroundColorFrom(formTimer, 'mnk-color-pb');
+    formTimer.fg = computeBackgroundColorFrom(formTimer, 'mnk-color-form');
+    perfectBalanceActive = false;
   });
 
   const changeFormFunc = (name, matches) => {
@@ -136,4 +104,18 @@ export function setup(bars) {
     EffectId.RaptorForm,
     EffectId.CoeurlForm,
   ], changeFormFunc);
+
+  resetFunc = (bars) => {
+    twinSnakesBox.duration = 0;
+    demolishBox.duration = 0;
+    dragonKickBox.duration = 0;
+    formTimer.duration = 0;
+    formTimer.fg = computeBackgroundColorFrom(formTimer, 'mnk-color-form');
+    perfectBalanceActive = false;
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

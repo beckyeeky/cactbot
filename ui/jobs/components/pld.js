@@ -1,6 +1,8 @@
 import EffectId from '../../../resources/effect_id';
 import { kAbility } from '../constants';
 
+let resetFunc = null;
+
 const setAtonement = (atonementBox, stacks) => {
   atonementBox.innerText = stacks;
   const p = atonementBox.parentNode;
@@ -38,11 +40,11 @@ export function setup(bars) {
 
   const goreBox = bars.addProcBox({
     fgColor: 'pld-color-gore',
+    notifyWhenExpired: true,
   });
 
   bars.onCombo((skill) => {
     if (skill === kAbility.GoringBlade) {
-      goreBox.duration = 0;
       // Technically, goring blade is 21, but 2.43 * 9 = 21.87, so if you
       // have the box show 21, it looks like you're awfully late with
       // your goring blade and just feels really bad.  So, lie to the
@@ -67,4 +69,14 @@ export function setup(bars) {
     goreBox.valuescale = bars.gcdSkill;
     goreBox.threshold = bars.gcdSkill * 3 + 0.3;
   });
+
+  resetFunc = (bars) => {
+    goreBox.duration = 0;
+    setAtonement(atonementBox, 0);
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

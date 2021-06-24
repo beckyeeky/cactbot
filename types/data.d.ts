@@ -1,24 +1,31 @@
-import PartyTracker from '../resources/party.js';
-import { Lang } from './global';
+import PartyTracker from '../resources/party';
+import { Lang } from '../resources/languages';
 import { Job, Role } from './job';
 
-export interface Option {
+export interface BaseOptions {
   ParserLanguage: Lang;
-  LangShortLocale: Lang;
+  ShortLocale: string;
   DisplayLanguage: Lang;
+  TextAlertsEnabled: boolean;
+  SoundAlertsEnabled: boolean;
+  SpokenAlertsEnabled: boolean;
+  GroupSpokenAlertsEnabled: boolean;
+  Skin?: string;
   [key: string]: unknown;
   // todo: complete this type
 }
 
-export interface Data {
+export interface RaidbossData {
   job: Job;
   me: string;
   role: Role;
   party: PartyTracker;
-  lang: string;
+  lang: Lang;
+  parserLang: Lang;
+  displayLang: Lang;
   currentHP: number;
-  options: Option;
-  ShortName: (x: string) => string;
+  options: BaseOptions;
+  ShortName: (x?: string) => string;
   StopCombat: () => void;
   /** @deprecated Use parseFloat instead */
   ParseLocaleFloat: (string: string) => number;

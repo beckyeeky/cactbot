@@ -1,6 +1,8 @@
 import EffectId from '../../../resources/effect_id';
 import { kAbility } from '../constants';
 
+let resetFunc = null;
+
 export function setup(bars) {
   const container = bars.addJobBarContainer();
 
@@ -52,7 +54,6 @@ export function setup(bars) {
     fgColor: 'rdm-color-lucid',
   });
   bars.onUseAbility(kAbility.LucidDreaming, () => {
-    lucidBox.duration = 0;
     lucidBox.duration = 60;
   });
   bars.onStatChange('RDM', () => {
@@ -86,7 +87,6 @@ export function setup(bars) {
   });
 
   bars.onYouGainEffect(EffectId.VerstoneReady, (name, matches) => {
-    whiteProc.duration = 0;
     whiteProc.duration = parseFloat(matches.duration) - bars.gcdSpell;
   });
   bars.onYouLoseEffect(EffectId.VerstoneReady, () => whiteProc.duration = 0);
@@ -95,4 +95,15 @@ export function setup(bars) {
     blackProc.duration = parseFloat(matches.duration) - bars.gcdSpell;
   });
   bars.onYouLoseEffect(EffectId.VerfireReady, () => blackProc.duration = 0);
+
+  resetFunc = (bars) => {
+    lucidBox.duration = 0;
+    whiteProc.duration = 0;
+    blackProc.duration = 0;
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

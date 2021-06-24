@@ -28,6 +28,10 @@ export default class TimerBox extends HTMLElement {
   private _hideTimer: number | null;
   private _timer: number | null;
   private _animationFrame: number | null;
+  private _notifyThresholdCallbacks: boolean;
+  private _onThresholdCallbacks: Array<() => void> = [];
+  private _onExpiredCallbacks: Array<() => void> = [];
+  private _onResetCallbacks: Array<() => void> = [];
 
   static get observedAttributes(): string[] {
     return ['duration', 'threshold', 'bg', 'fg', 'toward', 'stylefill', 'hideafter', 'bigatzero', 'roundupthreshold'];
@@ -136,25 +140,24 @@ export default class TimerBox extends HTMLElement {
 
   // When the timer reaches 0, it is big if this is true.
   set bigatzero(big: boolean) {
-    if (big)
-      this.setAttribute('bigatzero', '');
-    else
-      this.removeAttribute('bigatzero');
+    this.setAttribute('bigatzero', String(big));
   }
   get bigatzero(): boolean {
-    return this.hasAttribute('bigatzero');
+    return this.getAttribute('bigatzero') === 'true';
   }
 
   // The length remaining in the count down.
   get value(): string {
-    if (!this._start) return this._duration.toString();
+    if (!this._start)
+      return this._duration.toString();
     const elapsedMs = new Date().getTime() - this._start;
     return Math.max(0, this._duration - (elapsedMs / 1000)).toString();
   }
 
   // The elapsed time.
   get elapsed(): string {
-    if (!this._start) return '0';
+    if (!this._start)
+      return '0';
     return ((new Date().getTime() - this._start) / 1000).toString();
   }
 
@@ -209,15 +212,24 @@ export default class TimerBox extends HTMLElement {
     this._hideTimer = 0;
     this._timer = 0;
     this._animationFrame = 0;
+    this._notifyThresholdCallbacks = true;
 
-    if (this.duration !== null) this._duration = Math.max(parseFloat(this.duration), 0);
-    if (this.threshold !== null) this._threshold = parseFloat(this.threshold);
-    if (this.bg !== null) this._bg = this.bg;
-    if (this.fg !== null) this._fg = this.fg;
-    if (this.scale !== null) this._scale = Math.max(parseFloat(this.scale), 0.01);
-    if (this.toward !== null) this._towardTop = this.toward !== 'bottom';
-    if (this.stylefill !== null) this._fill = this.stylefill !== 'empty';
-    if (this.hideafter !== null && this.hideafter !== '') this._hideAfter = Math.max(parseFloat(this.hideafter), 0);
+    if (this.duration !== null)
+      this._duration = Math.max(parseFloat(this.duration), 0);
+    if (this.threshold !== null)
+      this._threshold = parseFloat(this.threshold);
+    if (this.bg !== null)
+      this._bg = this.bg;
+    if (this.fg !== null)
+      this._fg = this.fg;
+    if (this.scale !== null)
+      this._scale = Math.max(parseFloat(this.scale), 0.01);
+    if (this.toward !== null)
+      this._towardTop = this.toward !== 'bottom';
+    if (this.stylefill !== null)
+      this._fill = this.stylefill !== 'empty';
+    if (this.hideafter !== null && this.hideafter !== '')
+      this._hideAfter = Math.max(parseFloat(this.hideafter), 0);
   }
 
   init(root: ShadowRoot): void {
@@ -304,6 +316,16 @@ export default class TimerBox extends HTMLElement {
     this.draw();
   }
 
+  onThresholdReached(f: () => void): void {
+    this._onThresholdCallbacks.push(f);
+  }
+  onExpired(f: () => void): void {
+    this._onExpiredCallbacks.push(f);
+  }
+  onReset(f: () => void): void {
+    this._onResetCallbacks.push(f);
+  }
+
   layout(): void {
     // To start full and animate to empty, we animate backwards and flip
     // the direction.
@@ -351,7 +373,8 @@ export default class TimerBox extends HTMLElement {
   }
 
   draw(): void {
-    if (!this._connected) return;
+    if (!this._connected)
+      return;
 
     const elapsedSec = (new Date().getTime() - this._start) / 1000;
     const remainingSec = Math.max(0, this._duration - elapsedSec);
@@ -391,24 +414,40 @@ export default class TimerBox extends HTMLElement {
   }
 
   reset(): void {
-    if (!this._connected) return;
+    if (!this._connected)
+      return;
 
     this.show();
     clearTimeout(this._hideTimer ?? 0);
     this._hideTimer = null;
     clearTimeout(this._timer ?? 0);
     this._timer = null;
+    this.classList.remove('expired');
+    this._notifyThresholdCallbacks = true;
 
     this._start = new Date().getTime();
+
+    for (const f of this._onResetCallbacks)
+      setTimeout(f, 0);
+
     this.advance();
   }
 
   advance(): void {
     const elapsedSec = (new Date().getTime() - this._start) / 1000;
     if (elapsedSec >= this._duration) {
+      // We need to check for this._duration > 0 here, as for undocumented reason the
+      // duration of a timerbox is always set to zero before it is set to the
+      // actual duration. As a result this would otherwise trigger a sound each time
+      // the ability is activated.
+      if (this._duration > 0) {
+        for (const f of this._onExpiredCallbacks)
+          setTimeout(f, 0);
+      }
       // Sets the attribute to 0 so users can see the counter is done, and
       // if they set the same duration again it will count.
       this._duration = 0;
+      this.classList.add('expired');
       if (this._hideAfter > 0)
         this._hideTimer = window.setTimeout(this.hide.bind(this), this._hideAfter);
       else if (this._hideAfter === 0)
@@ -418,6 +457,13 @@ export default class TimerBox extends HTMLElement {
       this._animationFrame = null;
     } else {
       this._animationFrame = window.requestAnimationFrame(this.advance.bind(this));
+    }
+
+    const remainingTime = Math.max(0, this._duration - elapsedSec);
+    if (remainingTime <= this._threshold && this._notifyThresholdCallbacks && this._duration > 0) {
+      for (const f of this._onThresholdCallbacks)
+        setTimeout(f, 0);
+      this._notifyThresholdCallbacks = false;
     }
 
     this.draw();

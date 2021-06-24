@@ -1,6 +1,8 @@
 import { kAbility } from '../constants';
 import { calcGCDFromStat } from '../utils';
 
+let resetFunc = null;
+
 export function setup(bars) {
   const offguardBox = bars.addProcBox({
     id: 'blu-procs-offguard',
@@ -24,28 +26,33 @@ export function setup(bars) {
   });
 
   bars.onUseAbility(kAbility.OffGuard, () => {
-    offguardBox.duration = 0;
     offguardBox.duration = calcGCDFromStat(bars, bars.spellSpeed, 60000);
   });
   bars.onUseAbility(kAbility.PeculiarLight, () => {
-    offguardBox.duration = 0;
     offguardBox.duration = calcGCDFromStat(bars, bars.spellSpeed, 60000);
   });
   bars.onUseAbility(kAbility.SongOfTorment, () => {
-    tormentBox.duration = 0;
     tormentBox.duration = 30;
   });
   // +0.5&0.8 for animation delay
   bars.onUseAbility(kAbility.AetherialSpark, () => {
-    tormentBox.duration = 0;
     tormentBox.duration = 15 + 0.5;
   });
   bars.onUseAbility(kAbility.Nightbloom, () => {
-    tormentBox.duration = 0;
     tormentBox.duration = 60 + 0.8;
   });
   bars.onUseAbility(kAbility.LucidDreaming, () => {
-    lucidBox.duration = 0;
     lucidBox.duration = 60;
   });
+
+  resetFunc = (bars) => {
+    tormentBox.duration = 0;
+    offguardBox.duration = 0;
+    lucidBox.duration = 0;
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

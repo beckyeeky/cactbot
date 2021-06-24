@@ -4,7 +4,10 @@ import FisherUI from './fisher-ui';
 import SeaBase from './seabase';
 import UserConfig from '../../resources/user_config';
 
-const Options = {
+import '../../resources/defaults.css';
+import './fisher.css';
+
+const defaultOptions = {
   IQRHookQuantity: 100,
   IQRTugQuantity: 10,
   Colors: {
@@ -15,10 +18,9 @@ const Options = {
   },
 };
 
-let gFisher;
-
 class Fisher {
-  constructor(element) {
+  constructor(options, element) {
+    this.options = options;
     this.element = element;
 
     this.zone = null;
@@ -82,7 +84,7 @@ class Fisher {
       },
       'en': {
         'undiscovered': /undiscovered fishing hole/,
-        'cast': /00:08c3:(?:[\w']\.?)(?:[\w'\s]+\.?)? cast(?:s?) (?:your|his|her) line (?:on|in|at) ([\w\s'&()]+)\./,
+        'cast': /00:08c3:(?:[\w']\.?)(?:[\w'\s]+\.?)? cast(?:s?) (?:your|his|her) line (?:on|in|at) (?:the )?([\w\s'&()]+)\./,
         'bite': /00:08c3:Something bites!/,
         'catch': /00:0843:(?:[\w']\.?)(?:[\w'\s]+\.?)? land(?:s?) (?:a|an|[\d]+ )?.+?([\w\s\-\'\#\d]{3,})(?: | [^\w] |[^\w\s].+ )measuring \d/,
         'nocatch': /00:08c3:(Nothing bites\.|You reel in your line|You lose your bait|The fish gets away|You lose your |Your line breaks|The fish sense something amiss|You cannot carry any more)/,
@@ -144,8 +146,8 @@ class Fisher {
       },
     };
 
-    this.ui = new FisherUI(element, Options);
-    this.seaBase = new SeaBase(Options);
+    this.ui = new FisherUI(this.options, element);
+    this.seaBase = new SeaBase(this.options);
   }
 
   getActiveBait() {
@@ -222,7 +224,7 @@ class Fisher {
     this.fishing = true;
 
     // undiscovered fishing hole
-    if (this.regex[Options.ParserLanguage]['undiscovered'].test(place)) {
+    if (this.regex[this.options.ParserLanguage]['undiscovered'].test(place)) {
       // store this for now
       // if we catch anything we'll pull the data then
       // "data on 'x' is added to your fishing log" is printed before the catch
@@ -339,8 +341,8 @@ class Fisher {
   parseLine(log) {
     let result = null;
 
-    for (const type in this.regex[Options.ParserLanguage]) {
-      result = this.regex[Options.ParserLanguage][type].exec(log);
+    for (const type in this.regex[this.options.ParserLanguage]) {
+      result = this.regex[this.options.ParserLanguage][type].exec(log);
       if (result) {
         switch (type) {
         // case 'bait': this.handleBait(result[1]); break;
@@ -383,18 +385,19 @@ class Fisher {
   }
 }
 
-UserConfig.getUserConfigLocation('fisher', Options, () => {
-  gFisher = new Fisher(document.getElementById('fisher'));
+UserConfig.getUserConfigLocation('fisher', defaultOptions, () => {
+  const options = { ...defaultOptions };
+  const fisher = new Fisher(options, document.getElementById('fisher'));
 
   addOverlayListener('onLogEvent', (e) => {
-    gFisher.OnLogEvent(e);
+    fisher.OnLogEvent(e);
   });
 
   addOverlayListener('ChangeZone', (e) => {
-    gFisher.OnChangeZone(e);
+    fisher.OnChangeZone(e);
   });
 
   addOverlayListener('onPlayerChangedEvent', (e) => {
-    gFisher.OnPlayerChange(e);
+    fisher.OnPlayerChange(e);
   });
 });

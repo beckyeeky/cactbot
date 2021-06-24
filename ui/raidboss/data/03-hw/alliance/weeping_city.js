@@ -19,7 +19,7 @@ export default {
       regex: /The Widow's Kiss/,
       beforeSeconds: 5,
       // Probably kills the player if failed, so it gets an alert.
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Stand on webs',
@@ -35,7 +35,7 @@ export default {
       id: 'Weeping City Punishing Ray',
       regex: /Punishing Ray/,
       beforeSeconds: 10,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get Puddles',
@@ -83,9 +83,7 @@ export default {
       netRegexJa: NetRegexes.message({ line: '蜘蛛女の狩場 will be sealed off.*?', capture: false }),
       netRegexCn: NetRegexes.message({ line: '女王蛛猎场 will be sealed off.*?', capture: false }),
       netRegexKo: NetRegexes.message({ line: '거미 여왕의 사냥터 will be sealed off.*?', capture: false }),
-      run: function(data) {
-        data.arachneStarted = true;
-      },
+      run: (data) => data.arachneStarted = true,
     },
     {
       id: 'Weeping City HeadMarker Ozma',
@@ -95,7 +93,7 @@ export default {
       netRegexJa: NetRegexes.message({ line: 'ピラミッド上部層 will be sealed off.*?', capture: false }),
       netRegexCn: NetRegexes.message({ line: '金字塔上层 will be sealed off.*?', capture: false }),
       netRegexKo: NetRegexes.message({ line: '피라미드 상층부 will be sealed off.*?', capture: false }),
-      run: function(data) {
+      run: (data) => {
         data.arachneStarted = false;
         data.ozmaStarted = true;
       },
@@ -108,7 +106,7 @@ export default {
       netRegexJa: NetRegexes.message({ line: '要の玄室 will be sealed off.*?', capture: false }),
       netRegexCn: NetRegexes.message({ line: '契约石玄室 will be sealed off.*?', capture: false }),
       netRegexKo: NetRegexes.message({ line: '쐐기 안치소 will be sealed off.*?', capture: false }),
-      run: function(data) {
+      run: (data) => {
         data.ozmaStarted = false;
         data.calStarted = true;
       },
@@ -122,9 +120,7 @@ export default {
     {
       id: 'Weeping City Shadow Burst',
       netRegex: NetRegexes.headMarker({ id: '003E' }),
-      condition: function(data) {
-        return data.arachneStarted;
-      },
+      condition: (data) => data.arachneStarted,
       response: Responses.stackMarkerOn(),
     },
     {
@@ -133,17 +129,15 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '183A', source: 'Arachne (?:der|die|das) Ahnin', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '183A', source: 'Arachné Mère', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '183A', source: 'アルケニー', capture: false }),
-      netRegexKo: NetRegexes.startsUsing({ id: '183A', source: '아라크네', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '183A', source: '阿剌克涅', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '183A', source: '아라크네', capture: false }),
       response: Responses.lookAway(),
     },
     {
       id: 'Weeping City Arachne Web',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      condition: function(data, matches) {
-        return data.arachneStarted && data.me === matches.target;
-      },
-      infoText: (data, _, output) => output.text(),
+      condition: (data, matches) => data.arachneStarted && data.me === matches.target,
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Drop Web Outside',
@@ -165,7 +159,7 @@ export default {
       id: 'Weeping City Dark Eruption',
       netRegex: NetRegexes.headMarker({ id: '0019' }),
       condition: Conditions.targetIsYou(),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Puddles on YOU',
@@ -183,11 +177,9 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '17CE', source: 'Beschworen(?:e|er|es|en) Sukkubus' }),
       netRegexFr: NetRegexes.startsUsing({ id: '17CE', source: 'Succube Adjuré' }),
       netRegexJa: NetRegexes.startsUsing({ id: '17CE', source: 'サモン・サキュバス' }),
-      netRegexKo: NetRegexes.startsUsing({ id: '17CE', source: '소환된 서큐버스' }),
       netRegexCn: NetRegexes.startsUsing({ id: '17CE', source: '被召唤出的梦魔' }),
-      condition: function(data) {
-        return data.CanSilence();
-      },
+      netRegexKo: NetRegexes.startsUsing({ id: '17CE', source: '소환된 서큐버스' }),
+      condition: (data) => data.CanSilence(),
       response: Responses.interrupt(),
     },
     {
@@ -196,8 +188,8 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '17D4', source: 'Beschworen(?:e|er|es|en) Haagenti' }),
       netRegexFr: NetRegexes.startsUsing({ id: '17D4', source: 'Haagenti Adjuré' }),
       netRegexJa: NetRegexes.startsUsing({ id: '17D4', source: 'サモン・ハーゲンティ' }),
-      netRegexKo: NetRegexes.startsUsing({ id: '17D4', source: '소환된 하겐티' }),
       netRegexCn: NetRegexes.startsUsing({ id: '17D4', source: '被召唤出的哈加提' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '17D4', source: '소환된 하겐티' }),
       response: Responses.lookAwayFromSource(),
     },
     {
@@ -206,12 +198,10 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '17CB', source: 'Forgall', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '17CB', source: 'Forgall', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '17CB', source: 'フォルガル', capture: false }),
-      netRegexKo: NetRegexes.startsUsing({ id: '17CB', source: '포르갈', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '17CB', source: '弗加尔', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '17CB', source: '포르갈', capture: false }),
       // Hell Wind sets HP to single digits, so mitigations don't work. Don't notify non-healers.
-      condition: function(data) {
-        return data.role === 'healer';
-      },
+      condition: (data) => data.role === 'healer',
       response: Responses.aoe(),
     },
     {
@@ -220,9 +210,9 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '17CA', source: 'Forgall', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '17CA', source: 'Forgall', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '17CA', source: 'フォルガル', capture: false }),
-      netRegexKo: NetRegexes.startsUsing({ id: '17CA', source: '포르갈', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '17CA', source: '弗加尔', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.startsUsing({ id: '17CA', source: '포르갈', capture: false }),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Stand in one puddle',
@@ -238,7 +228,7 @@ export default {
       id: 'Weeping City Meteor Impact',
       netRegex: NetRegexes.headMarker({ id: '0039' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Drop meteor back or left',
@@ -258,9 +248,9 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '1826', source: 'Yadis', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '1826', source: 'Ozma', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '1826', source: 'オズマ', capture: false }),
-      netRegexKo: NetRegexes.ability({ id: '1826', source: '오즈마', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '1826', source: '奥兹玛', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.ability({ id: '1826', source: '오즈마', capture: false }),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get off rectangle platform',
@@ -280,8 +270,8 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '1803', source: 'Yadis', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '1803', source: 'Ozma', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '1803', source: 'オズマ', capture: false }),
-      netRegexKo: NetRegexes.ability({ id: '1803', source: '오즈마', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '1803', source: '奥兹玛', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '1803', source: '오즈마', capture: false }),
       response: Responses.getIn(),
     },
     {
@@ -293,11 +283,11 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '1803', source: 'Yadis', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '1803', source: 'Ozma', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '1803', source: 'オズマ', capture: false }),
-      netRegexKo: NetRegexes.ability({ id: '1803', source: '오즈마', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '1803', source: '奥兹玛', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '1803', source: '오즈마', capture: false }),
       // Delaying here to avoid colliding with other Flare Star triggers.
       delaySeconds: 4,
-      alertText: function(data, _, output) {
+      alertText: (data, _matches, output) => {
         if (data.role === 'tank')
           return output.tankLasers();
 
@@ -327,10 +317,8 @@ export default {
       // Failing to pop an orb means it will explode, dealing damage with 1808 Aethernova.
       id: 'Weeping City Flare Star Orbs',
       netRegex: NetRegexes.addedCombatantFull({ npcBaseId: '4889', capture: false }),
-      condition: function(data) {
-        return data.role === 'tank' || data.role === 'healer';
-      },
-      infoText: (data, _, output) => output.text(),
+      condition: (data) => data.role === 'tank' || data.role === 'healer',
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get orbs',
@@ -346,9 +334,7 @@ export default {
       id: 'Weeping City Acceleration Bomb',
       netRegex: NetRegexes.gainsEffect({ effectId: '430' }),
       condition: Conditions.targetIsYou(),
-      delaySeconds: function(data, matches) {
-        return parseFloat(matches.duration) - 3;
-      },
+      delaySeconds: (_data, matches) => parseFloat(matches.duration) - 3,
       response: Responses.stopEverything(),
     },
     {
@@ -357,17 +343,15 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '1802', source: 'Yadis-Schatten', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '1802', source: 'Ombre D\'Ozma', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '1802', source: 'オズマの影', capture: false }),
-      netRegexKo: NetRegexes.startsUsing({ id: '1802', source: '오즈마의 그림자', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '1802', source: '奥兹玛之影', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '1802', source: '오즈마의 그림자', capture: false }),
       response: Responses.lookAway(),
     },
     {
       // Each party gets a stack marker, so this is the best we can do.
       id: 'Weeping City Meteor Stack',
       netRegex: NetRegexes.headMarker({ id: '003E', capture: false }),
-      condition: function(data) {
-        return data.ozmaStarted;
-      },
+      condition: (data) => data.ozmaStarted,
       suppressSeconds: 5,
       response: Responses.stackMarker(),
     },
@@ -380,8 +364,8 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '180A', source: 'Calofisteri', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '180A', source: 'Calofisteri', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '180A', source: 'カロフィステリ', capture: false }),
-      netRegexKo: NetRegexes.ability({ id: '180A', source: '칼로피스테리', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '180A', source: '卡洛菲斯提莉', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '180A', source: '칼로피스테리', capture: false }),
       response: Responses.goRight(),
     },
     {
@@ -390,8 +374,8 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '180E', source: 'Calofisteri', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '180E', source: 'Calofisteri', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '180E', source: 'カロフィステリ', capture: false }),
-      netRegexKo: NetRegexes.ability({ id: '180E', source: '칼로피스테리', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '180E', source: '卡洛菲斯提莉', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '180E', source: '칼로피스테리', capture: false }),
       response: Responses.goLeft(),
     },
     {
@@ -400,7 +384,7 @@ export default {
       id: 'Weeping City Living Lock Axes',
       netRegex: NetRegexes.addedCombatantFull({ npcNameId: ['4899', '4900'], capture: false }),
       suppressSeconds: 5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Close to axes, avoid bulbs',
@@ -416,7 +400,7 @@ export default {
       id: 'Weeping City Living Lock Scythes',
       netRegex: NetRegexes.addedCombatantFull({ npcNameId: '4898', capture: false }),
       suppressSeconds: 5,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Avoid scythe line AoEs',
@@ -433,7 +417,7 @@ export default {
       id: 'Weeping City Entanglement',
       netRegex: NetRegexes.addedCombatantFull({ npcNameId: '4904', capture: false }),
       suppressSeconds: 5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Avoid purple circles',
@@ -453,18 +437,16 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '181D', source: 'Verfilzung', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '181D', source: 'Emmêlement', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '181D', source: '魔髪の縛め', capture: false }),
-      netRegexKo: NetRegexes.ability({ id: '181D', source: '머리카락 포박', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '181D', source: '魔发束缚', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '181D', source: '머리카락 포박', capture: false }),
       suppressSeconds: 5,
       response: Responses.killExtraAdd(),
     },
     {
       id: 'Weeping City Particle Beam',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
-      condition: function(data) {
-        return data.calStarted;
-      },
-      alertText: function(data, matches, output) {
+      condition: (data) => data.calStarted,
+      alertText: (data, matches, output) => {
         if (data.me === matches.target)
           return output.skyLaserOnYou();
 
@@ -497,8 +479,8 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '1819', source: 'Calofisteri', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '1819', source: 'Calofisteri', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '1819', source: 'カロフィステリ', capture: false }),
-      netRegexKo: NetRegexes.ability({ id: '1819', source: '칼로피스테리', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '1819', source: '卡洛菲斯提莉', capture: false }),
+      netRegexKo: NetRegexes.ability({ id: '1819', source: '칼로피스테리', capture: false }),
       condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
@@ -508,8 +490,8 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '1822', source: 'Calofisteri', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '1822', source: 'Calofisteri', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '1822', source: 'カロフィステリ', capture: false }),
-      netRegexKo: NetRegexes.startsUsing({ id: '1822', source: '칼로피스테리', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '1822', source: '卡洛菲斯提莉', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '1822', source: '칼로피스테리', capture: false }),
       response: Responses.lookAway(),
     },
     {
@@ -518,8 +500,8 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '1820', source: 'Calofisteri', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '1820', source: 'Calofisteri', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '1820', source: 'カロフィステリ', capture: false }),
-      netRegexKo: NetRegexes.startsUsing({ id: '1820', source: '칼로피스테리', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '1820', source: '卡洛菲斯提莉', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ id: '1820', source: '칼로피스테리', capture: false }),
       response: Responses.awayFromFront(),
     },
   ],
@@ -575,7 +557,7 @@ export default {
         'Mana Explosion': 'Mana-Explosion',
         'Mega Death': 'Megatod',
         'Megiddo Flame': 'Megiddoflamme',
-        'Meteor(?![\\w\\s])': 'Meteo',
+        'Meteor(?![\\w\\s])': 'Meteor',
         'Meteor Headmarkers': 'Meteor Markierungen',
         'Meteor Impact': 'Meteoreinschlag',
         'Necropurge': 'Nekrobuße',
@@ -585,6 +567,7 @@ export default {
         'Pyramid': 'Pyramide',
         'Shadow Burst': 'Schattenstoß',
         'Silken Spray': 'Seidengespinst',
+        'Sphere': 'Kugel',
         'Split End': 'Gespaltene Spitzen',
         'Sticky Wicket': 'Klebfadenfetzen',
         'Tank Lasers': 'Tank Laser',

@@ -285,15 +285,15 @@ ThirdParty
 |:---------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:|
 |  <img src="../../resources/ffxiv/jobs/pld-large.png" width="30px" /><br> 骑士  |                          显示当前的忠义值和赎罪剑层数。 以及监控沥血剑的DoT。                           |
 |  <img src="../../resources/ffxiv/jobs/war-large.png" width="30px" /><br> 战士  |               显示兽魂值，并监控剩余的暴风碎Buff时间，给出以GCD为基准的补buff提示，同时显示剩余连击时间。               |
-| <img src="../../resources/ffxiv/jobs/drk-large.png" width="30px" /><br> 暗黑骑士 |             显示暗血值和暗黑剩余时间，嗜血，血乱和掠影示现的持续时间和冷却时间，并且显示剩余连击时间。                             |
+| <img src="../../resources/ffxiv/jobs/drk-large.png" width="30px" /><br> 暗黑骑士 |                  显示暗血值和暗黑剩余时间，嗜血，血乱和掠影示现的持续时间和冷却时间，并且显示剩余连击时间。                  |
 | <img src="../../resources/ffxiv/jobs/gnb-large.png" width="30px" /><br> 绝枪战士 |                    显示无情的持续时间&冷却时间，血壤&烈牙的冷却时间，晶壤数量，并显示剩余连击时间。                    |
 | <img src="../../resources/ffxiv/jobs/whm-large.png" width="30px" /><br> 白魔法师 |                 显示治疗&血百合数量，距离获得下一朵治疗百合的时间，DoT剩余时间，以及法令&醒梦的冷却时间。                 |
 |  <img src="../../resources/ffxiv/jobs/sch-large.png" width="30px" /><br> 学者  |                 显示以太超流的层数、异想以太量/炽天使剩余时间、DoT剩余时间，并显示以太超流&醒梦的冷却。                  |
 | <img src="../../resources/ffxiv/jobs/ast-large.png" width="30px" /><br> 占星术士 |                 显示已有的印记数量，标注是否应该发当前卡/应该发给谁，DoT剩余时间和抽卡&醒梦的冷却时间。                  |
-|  <img src="../../resources/ffxiv/jobs/mnk-large.png" width="30px" /><br> 武僧  | 显示斗气档数，<del>剩余的疾风迅雷Buff时间</del>(5.4疾风迅雷将被删除)，身形持续时间，并监控连击效果提高、双掌打buff和破碎拳DoT时间。 |
+|  <img src="../../resources/ffxiv/jobs/mnk-large.png" width="30px" /><br> 武僧  | 显示斗气档数，身形持续时间，并监控连击效果提高、双掌打buff和破碎拳DoT时间。 |
 | <img src="../../resources/ffxiv/jobs/drg-large.png" width="30px" /><br> 龙骑士  |               显示龙血时间&龙眼数，开膛枪buff剩余时间，跳跃的冷却时间，以及猛枪&巨龙视线的持续时间和冷却时间。               |
 |  <img src="../../resources/ffxiv/jobs/nin-large.png" width="30px" /><br> 忍者  |                显示忍气量，风遁剩余时间，攻其不备持续时间&冷却时间，分身之术&结印的冷却，并显示连击剩余时间。                 |
-|  <img src="../../resources/ffxiv/jobs/sam-large.png" width="30px" /><br> 武士  |           显示剑气量，默想深度档数，士风&阵风&彼岸花的持续时间，燕回返的冷却时间，并显示连击剩余时间。                                     |
+|  <img src="../../resources/ffxiv/jobs/sam-large.png" width="30px" /><br> 武士  |                  显示剑气量，剑压档数，士风、阵风和彼岸花的剩余时间，回返的冷却时间，以及显示连击剩余时间。                  |
 | <img src="../../resources/ffxiv/jobs/brd-large.png" width="30px" /><br> 吟游诗人 |        显示当前歌谣及其持续时间，诗心档数，灵魂之声量，直线射击预备buff监控，DoT持续时间，以及显示你的DoT造成伤害时机的计时条。        |
 | <img src="../../resources/ffxiv/jobs/mch-large.png" width="30px" /><br> 机工士  |    显示热量计、电能计、连击计时器、钻头/毒菌冲击&空气锚的冷却时间，野火的冷却时间&持续时间。 当野火发动时，将显示你已在野火中打出的GCD数目。     |
 |  <img src="../../resources/ffxiv/jobs/dnc-large.png" width="30px" /><br> 舞者  |                   显示连击计时器、幻扇量谱、伶俐量谱、标准舞步冷却、技巧舞步&百花争艳的冷却&持续时间。                   |
@@ -314,7 +314,7 @@ ThirdParty
 
 该模块会自动追踪NM的出现和死亡。  还会显示特殊天气/夜晚计时器以及粘贴到聊天中的优雷卡追踪器链接。  聊天中的所有坐标信息也都会临时显示在地图上。
 
-当前，该模块不会直接读取优雷卡追踪器的信息。  但如果您点击优雷卡追踪器左侧红色的“复制已杀死的NM”按钮来复制当前已死NM的列表，则可以将其粘贴到游戏中，例如`/echo ? 冷却中的NM: 蝎子 (7m) > 魔界花 (24m) > 独眼 (54m)`，以便该模块从此列表自动同步数据。
+当前，该模块不会直接读取优雷卡追踪器的信息。  但如果您点击优雷卡追踪器左侧红色的“复制已杀死的NM”按钮来复制当前已死NM的列表，则可以将其粘贴到游戏中，例如`/echo 冷却中的NM: 蝎子 (7m) → 魔界花 (24m) → 独眼 (54m)`，以便该模块从此列表自动同步数据。
 
 如果您看不到表情符号，请确保已安装[此Windows更新](https://support.microsoft.com/en-us/help/2729094/an-update-for-the-segoe-ui-symbol-font-in-windows-7-and-in-windows-ser)。
 

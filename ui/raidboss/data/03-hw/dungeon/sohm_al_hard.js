@@ -11,9 +11,7 @@ export default {
       id: 'Sohm Al Hard Wild Horn',
       regex: /Wild Horn/,
       beforeSeconds: 4,
-      condition: function(data) {
-        return data.role === 'tank' || data.role === 'healer';
-      },
+      condition: (data) => data.role === 'tank' || data.role === 'healer',
       response: Responses.tankBuster(),
     },
   ],
@@ -23,10 +21,10 @@ export default {
       // occurs between 1C30 and 1C31.
       id: 'Sohm Al Hard Inflammable Fumes',
       netRegex: NetRegexes.ability({ id: '1C30', source: 'The Leightonward', capture: false }),
-      netRegexCn: NetRegexes.ability({ id: '1C30', source: '莱顿瓦德', capture: false }),
       netRegexDe: NetRegexes.ability({ id: '1C30', source: 'Hortigolem', capture: false }),
       netRegexFr: NetRegexes.ability({ id: '1C30', source: 'Chortocyon', capture: false }),
       netRegexJa: NetRegexes.ability({ id: '1C30', source: 'レイトンワード', capture: false }),
+      netRegexCn: NetRegexes.ability({ id: '1C30', source: '莱顿瓦德', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '1C30', source: '레이튼워드', capture: false }),
       condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
@@ -36,13 +34,13 @@ export default {
       // However, it's not the same ability.
       id: 'Sohm Al Hard Glorious Blaze',
       netRegex: NetRegexes.startsUsing({ id: '1C32', source: 'Spore Sac', capture: false }),
-      netRegexCn: NetRegexes.startsUsing({ id: '1C32', source: '孢囊', capture: false }),
       netRegexDe: NetRegexes.startsUsing({ id: '1C32', source: 'Sporensack', capture: false }),
       netRegexFr: NetRegexes.startsUsing({ id: '1C32', source: 'Sac de spores', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ id: '1C32', source: 'スポアサック', capture: false }),
+      netRegexCn: NetRegexes.startsUsing({ id: '1C32', source: '孢囊', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '1C32', source: '포자 주머니', capture: false }),
       suppressSeconds: 5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Away from large pod',
@@ -58,12 +56,8 @@ export default {
       // The actual effect being checked here is Heavy.
       id: 'Sohm Al Hard Excretion',
       netRegex: NetRegexes.gainsEffect({ effectId: '0E' }),
-      condition: function(data) {
-        return data.CanCleanse();
-      },
-      infoText: function(data, matches, output) {
-        return output.text({ player: data.ShortName(matches.target) });
-      },
+      condition: (data) => data.CanCleanse(),
+      infoText: (data, matches, output) => output.text({ player: data.ShortName(matches.target) }),
       outputStrings: {
         text: {
           en: 'Cleanse ${player}',
@@ -168,7 +162,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ id: '1C3E', source: '熔岩蝎' }),
       netRegexKo: NetRegexes.startsUsing({ id: '1C3E', source: '용암 전갈' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Drop puddle outside',
@@ -188,9 +182,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: ['1C40', '1C48'], source: ['ラーヴァ・スコーピオン', 'テイル・スコーピオン'] }),
       netRegexCn: NetRegexes.startsUsing({ id: ['1C40', '1C48'], source: ['熔岩蝎', '尖尾蝎'] }),
       netRegexKo: NetRegexes.startsUsing({ id: ['1C40', '1C48'], source: ['용암 전갈', '꼬리 전갈'] }),
-      condition: function(data, matches) {
-        return data.me === matches.target || data.role === 'tank' || data.role === 'healer';
-      },
+      condition: (data, matches) => data.me === matches.target || data.role === 'tank' || data.role === 'healer',
       response: Responses.tankBuster(),
     },
     {
@@ -217,6 +209,10 @@ export default {
         'Lava Scorpion': 'Lavaskorpion',
       },
       'replaceText': {
+        '\\(Back\\)': '(Hinten)',
+        '\\(Front\\)': '(Vorne)',
+        '\\(Readies\\)': '(Vorbereitung)',
+        '\\(Ring\\)': '(Ring)',
         'Wild Horn': 'Wildes Horn',
         'Spore Sac': 'Sporensack',
         'Realm Shaker': 'Erderschütterer',

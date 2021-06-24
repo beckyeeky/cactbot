@@ -44,7 +44,7 @@ export default {
       id: 'Swallows Compass Ember Spawn',
       netRegex: NetRegexes.addedCombatantFull({ npcNameId: '7201', capture: false }),
       suppressSeconds: 5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Avoid Fire Orbs',
@@ -65,7 +65,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ id: '2898', source: '天狗火', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '2898', source: '텐구불', capture: false }),
       suppressSeconds: 5,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Away From Fireballs',
@@ -107,7 +107,7 @@ export default {
       id: 'Swallows Compass Mirage',
       netRegex: NetRegexes.headMarker({ id: '0001' }),
       condition: Conditions.targetIsYou(),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: '5x Puddles on YOU',
@@ -135,7 +135,7 @@ export default {
       netRegex: NetRegexes.gainsEffect({ effectId: '237' }),
       condition: Conditions.targetIsYou(),
       suppressSeconds: 2, // If the user stays in, they will get more reminders.
-      alarmText: (data, _, output) => output.text(),
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'OUT OF THE LAKE',
@@ -198,11 +198,12 @@ export default {
       netRegexKo: NetRegexes.startsUsing({ id: ['2BA8', '2BA9', '2BAE', '2BAF'], source: ['제천대성', '제천대성의 분신'], capture: false }),
       delaySeconds: 0.5,
       suppressSeconds: 5,
-      alertText: (data, _, output) => {
+      alertText: (data, _matches, output) => {
         if (data.dynamo)
           return output.dynamo();
         return output.chariot();
       },
+      run: (data) => delete data.dynamo,
       outputStrings: {
         dynamo: {
           en: 'Close to blue staff',
@@ -221,7 +222,6 @@ export default {
           ko: '빨강 지팡이에서 떨어지기',
         },
       },
-      run: (data) => delete data.dynamo,
     },
     {
       id: 'Swallows Compass Five Fingered Punishment',
@@ -256,7 +256,7 @@ export default {
       id: 'Swallows Compass Long End Call',
       netRegex: NetRegexes.tether({ id: '0029', capture: false }),
       delaySeconds: 0.5,
-      alertText: (data, _, output) => {
+      alertText: (data, _matches, output) => {
         if (data.tethers.includes(data.me)) {
           if (data.seenIntermission)
             return output.target();
@@ -264,6 +264,7 @@ export default {
         }
         return output.avoid();
       },
+      run: (data) => delete data.tethers,
       outputStrings: {
         target: {
           en: 'Laser on YOU',
@@ -290,7 +291,6 @@ export default {
           ko: '선 피하기',
         },
       },
-      run: (data) => delete data.tethers,
     },
   ],
   timelineReplace: [

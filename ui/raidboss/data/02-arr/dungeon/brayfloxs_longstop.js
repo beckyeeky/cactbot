@@ -11,8 +11,8 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '1FA', source: 'Groß(?:e|er|es|en) Gelbpelikan' }),
       netRegexFr: NetRegexes.startsUsing({ id: '1FA', source: 'Grand Pélican Jaune' }),
       netRegexJa: NetRegexes.startsUsing({ id: '1FA', source: 'グレート・イエローペリカン' }),
-      netRegexKo: NetRegexes.startsUsing({ id: '1FA', source: '노란 왕사다새' }),
       netRegexCn: NetRegexes.startsUsing({ id: '1FA', source: '大黄鹈鹕' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '1FA', source: '노란 왕사다새' }),
       condition: (data) => data.CanStun(),
       response: Responses.stun('info'),
     },
@@ -31,7 +31,7 @@ export default {
       condition: (data) => data.role === 'healer',
       delaySeconds: 1,
       suppressSeconds: 2,
-      alertText: (data, _, output) => {
+      alertText: (data, _matches, output) => {
         if (!data.pelicanPoisons)
           return;
 
@@ -69,7 +69,7 @@ export default {
       id: 'Brayflox Normal Pelican Adds',
       netRegex: NetRegexes.addedCombatantFull({ npcNameId: '1283', capture: false }),
       suppressSeconds: 2,
-      response: Responses.killAdds('info'),
+      response: Responses.killAdds(),
     },
     {
       id: 'Brayflox Normal Ashdrake Burning Cyclone',
@@ -77,8 +77,8 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '205', source: 'Asch-Drakon' }),
       netRegexFr: NetRegexes.startsUsing({ id: '205', source: 'Draconide Des Cendres' }),
       netRegexJa: NetRegexes.startsUsing({ id: '205', source: 'アッシュドレイク' }),
-      netRegexKo: NetRegexes.startsUsing({ id: '205', source: '잿빛도마뱀' }),
       netRegexCn: NetRegexes.startsUsing({ id: '205', source: '白烬火蛟' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '205', source: '잿빛도마뱀' }),
       condition: (data) => data.CanStun(),
       response: Responses.stun('info'),
     },
@@ -86,7 +86,7 @@ export default {
       // Tempest Biast Spawn
       id: 'Brayflox Normal Tempest Biast',
       netRegex: NetRegexes.addedCombatantFull({ npcNameId: '1285', capture: false }),
-      response: Responses.killAdds('info'),
+      response: Responses.killAdds(),
     },
     {
       id: 'Brayflox Normal Inferno Drake Burning Cyclone',
@@ -94,8 +94,8 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '3D8', source: 'Sonnen-Drakon' }),
       netRegexFr: NetRegexes.startsUsing({ id: '3D8', source: 'Draconide Des Brasiers' }),
       netRegexJa: NetRegexes.startsUsing({ id: '3D8', source: 'インフェルノドレイク' }),
-      netRegexKo: NetRegexes.startsUsing({ id: '3D8', source: '지옥불 도마뱀' }),
       netRegexCn: NetRegexes.startsUsing({ id: '3D8', source: '狱炎火蛟' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '3D8', source: '지옥불 도마뱀' }),
       condition: (data) => data.CanStun(),
       response: Responses.stun('info'),
     },
@@ -106,8 +106,8 @@ export default {
       netRegexDe: NetRegexes.ability({ id: '3D3', source: 'Höllenkrümmer' }),
       netRegexFr: NetRegexes.ability({ id: '3D3', source: 'Ménopome' }),
       netRegexJa: NetRegexes.ability({ id: '3D3', source: 'ヘルベンダー' }),
-      netRegexKo: NetRegexes.ability({ id: '3D3', source: '장수도롱뇽' }),
       netRegexCn: NetRegexes.ability({ id: '3D3', source: '水栖蝾螈' }),
+      netRegexKo: NetRegexes.ability({ id: '3D3', source: '장수도롱뇽' }),
       infoText: (data, matches, output) => {
         if (matches.target !== data.me)
           return output.breakBubbleOn({ player: data.ShortName(matches.target) });
@@ -141,8 +141,8 @@ export default {
       netRegexDe: NetRegexes.startsUsing({ id: '22F', source: 'Aiatar' }),
       netRegexFr: NetRegexes.startsUsing({ id: '22F', source: 'Aiatar' }),
       netRegexJa: NetRegexes.startsUsing({ id: '22F', source: 'アイアタル' }),
-      netRegexKo: NetRegexes.startsUsing({ id: '22F', source: '아이아타르' }),
       netRegexCn: NetRegexes.startsUsing({ id: '22F', source: '阿杰特' }),
+      netRegexKo: NetRegexes.startsUsing({ id: '22F', source: '아이아타르' }),
       condition: (data) => data.CanStun(),
       response: Responses.stun('info'),
     },
@@ -151,7 +151,7 @@ export default {
       id: 'Brayflox Normal Aiatar Toxic Vomit Tank',
       netRegex: NetRegexes.gainsEffect({ effectId: '117', capture: false }),
       condition: (data) => data.role === 'tank',
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Move Boss Out of Puddles',

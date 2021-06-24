@@ -2,6 +2,10 @@ import EffectId from '../../../resources/effect_id';
 import { kAbility } from '../constants';
 import { computeBackgroundColorFrom } from '../utils';
 
+let resetFunc = null;
+let tid1;
+let tid2;
+
 export function setup(bars) {
   const comboTimer = bars.addTimerBar({
     id: 'dnc-timers-combo',
@@ -20,7 +24,6 @@ export function setup(bars) {
     fgColor: 'dnc-color-standardstep',
   });
   bars.onUseAbility(kAbility.StandardStep, () => {
-    standardStep.duration = 0;
     standardStep.duration = 30;
   });
 
@@ -30,7 +33,6 @@ export function setup(bars) {
     fgColor: 'dnc-color-technicalstep',
   });
   bars.onUseAbility(kAbility.TechnicalStep, () => {
-    technicalStep.duration = 0;
     technicalStep.duration = 120;
   });
   let technicalIsActive = false;
@@ -42,7 +44,7 @@ export function setup(bars) {
     kAbility.DoubleTechnicalFinish,
     kAbility.SingleTechnicalFinish,
   ], () => {
-    // Avoid mutiple call in one TechnicalFinish.
+    // Avoid multiple call in one TechnicalFinish.
     if (technicalIsActive)
       return;
     elapsed = technicalStep.elapsed;
@@ -50,7 +52,7 @@ export function setup(bars) {
     technicalStep.duration = 20;
     technicalStep.threshold = 1000;
     technicalStep.fg = computeBackgroundColorFrom(technicalStep, 'dnc-color-technicalstep.active');
-    setTimeout(() => {
+    tid1 = setTimeout(() => {
       technicalIsActive = false;
       technicalStep.duration = 100 - elapsed;
       technicalStep.threshold = bars.gcdSkill + 1;
@@ -66,13 +68,12 @@ export function setup(bars) {
   let flourishEffect = [];
   let flourishIsActive = false;
   bars.onUseAbility(kAbility.Flourish, () => {
-    flourish.duration = 0;
     flourish.duration = 20;
     flourishEffect = [];
     flourishIsActive = true;
     flourish.threshold = 1000;
     flourish.fg = computeBackgroundColorFrom(flourish, 'dnc-color-flourish.active');
-    setTimeout(() => {
+    tid2 = setTimeout(() => {
       flourish.duration = 40;
       flourishIsActive = false;
       flourish.threshold = bars.gcdSkill + 1;
@@ -85,7 +86,7 @@ export function setup(bars) {
     EffectId.FlourishingShower,
     EffectId.FlourishingWindmill,
     EffectId.FlourishingFanDance,
-  ], () => {
+  ], (effect) => {
     if (!(flourishEffect.includes(effect)))
       flourishEffect.push(effect);
     if (flourishEffect.length === 5 && flourishIsActive) {
@@ -120,4 +121,26 @@ export function setup(bars) {
     flourish.valuescale = bars.gcdSkill;
     flourish.threshold = bars.gcdSkill + 1;
   });
+
+  resetFunc = (bars) => {
+    comboTimer.duration = 0;
+    standardStep.duration = 0;
+    technicalStep.duration = 0;
+    technicalIsActive = false;
+    elapsed = 0;
+    technicalStep.threshold = bars.gcdSkill + 1;
+    technicalStep.fg = computeBackgroundColorFrom(technicalStep, 'dnc-color-technicalstep');
+    flourish.duration = 0;
+    flourishEffect = [];
+    flourishIsActive = false;
+    flourish.threshold = bars.gcdSkill + 1;
+    flourish.fg = computeBackgroundColorFrom(flourish, 'dnc-color-flourish');
+    clearTimeout(tid1);
+    clearTimeout(tid2);
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

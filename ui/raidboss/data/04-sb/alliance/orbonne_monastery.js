@@ -18,7 +18,7 @@ export default {
       id: 'Orbonne Agrias Duskblade',
       regex: /Duskblade/,
       beforeSeconds: 15,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get to your pads',
@@ -33,10 +33,8 @@ export default {
     {
       id: 'Orbonne Ultima Dominion Tether',
       regex: /Demi-Virgo.*Tether/,
-      condition: function(data) {
-        return data.role === 'tank';
-      },
-      alertText: (data, _, output) => output.text(),
+      condition: (data) => data.role === 'tank',
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Pick up tether',
@@ -89,7 +87,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3737', source: '機工士ムスタディオ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3737', source: '机工士姆斯塔迪奥', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3737', source: '기공사 무스타디오', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Point opening at Mustadio',
@@ -115,7 +113,7 @@ export default {
       id: 'Orbonne Mustadio Searchlight',
       netRegex: NetRegexes.headMarker({ id: '00A4' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Searchlight on YOU',
@@ -151,21 +149,15 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3854', source: '聖騎士アグリアス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3854', source: '圣骑士阿格莉亚丝', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3854', source: '성기사 아그리아스', capture: false }),
-      preRun: function(data) {
-        data.halidom = [];
-      },
+      preRun: (data) => data.halidom = [],
       delaySeconds: 50,
-      run: function(data) {
-        delete data.agriasGhostCleanse;
-      },
+      run: (data) => delete data.agriasGhostCleanse,
     },
     {
       id: 'Orbonne Agrias Vacuum',
       netRegex: NetRegexes.headMarker({ id: '00A5' }),
       condition: Conditions.targetIsYou(),
-      run: function(data) {
-        data.agriasGhostCleanse = true;
-      },
+      run: (data) => data.agriasGhostCleanse = true,
     },
     {
       id: 'Orbonne Agrias Consecration',
@@ -175,10 +167,8 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3850', source: '聖騎士アグリアス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3850', source: '圣骑士阿格莉亚丝', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3850', source: '성기사 아그리아스', capture: false }),
-      condition: function(data) {
-        return !data.agriasGhostCleanse;
-      },
-      infoText: (data, _, output) => output.text(),
+      condition: (data) => !data.agriasGhostCleanse,
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Pick up swords',
@@ -198,9 +188,7 @@ export default {
       netRegexJa: NetRegexes.ability({ id: '3851', source: '模造聖域' }),
       netRegexCn: NetRegexes.ability({ id: '3851', source: '仿制圣域' }),
       netRegexKo: NetRegexes.ability({ id: '3851', source: '모조 성역' }),
-      run: function(data, matches) {
-        data.halidom.push(matches.target);
-      },
+      run: (data, matches) => data.halidom.push(matches.target),
     },
     {
       id: 'Orbonne Agrias Halidom Outside',
@@ -212,7 +200,7 @@ export default {
       netRegexKo: NetRegexes.ability({ id: '3851', source: '모조 성역', capture: false }),
       delaySeconds: 0.5,
       suppressSeconds: 10,
-      alertText: function(data, _, output) {
+      alertText: (data, _matches, output) => {
         if (data.agriasGhostCleanse || data.halidom.includes(data.me))
           return;
         return output.text();
@@ -232,7 +220,7 @@ export default {
       id: 'Orbonne Agrias Hallowed Bolt',
       netRegex: NetRegexes.headMarker({ id: '00A6' }),
       condition: Conditions.targetIsYou(),
-      alarmText: (data, _, output) => output.text(),
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Go To Center',
@@ -252,7 +240,7 @@ export default {
       netRegexJa: NetRegexes.ability({ id: '385D', source: '聖騎士アグリアス', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '385D', source: '圣骑士阿格莉亚丝', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '385D', source: '성기사 아그리아스', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get Shield',
@@ -273,7 +261,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ id: '385E', source: '剑之骑士', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '385E', source: '검의 기사', capture: false }),
       suppressSeconds: 5,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Use Shield, Face Knights',
@@ -294,7 +282,7 @@ export default {
       netRegexCn: NetRegexes.addedCombatant({ name: '光辉的大盾', capture: false }),
       netRegexKo: NetRegexes.addedCombatant({ name: '찬란한 방패', capture: false }),
       suppressSeconds: 10,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Kill shields with sword',
@@ -314,7 +302,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3857', source: '聖騎士アグリアス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3857', source: '圣骑士阿格莉亚丝', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3857', source: '성기사 아그리아스', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Use shield, face boss',
@@ -334,7 +322,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3858', source: '聖騎士アグリアス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3858', source: '圣骑士阿格莉亚丝', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3858', source: '성기사 아그리아스', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Use shield if tethered',
@@ -354,9 +342,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3752', source: '雷神シド' }),
       netRegexCn: NetRegexes.startsUsing({ id: '3752', source: '雷神西德' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3752', source: '뇌신 시드' }),
-      condition: function(data) {
-        return data.role === 'healer';
-      },
+      condition: (data) => data.role === 'healer',
       response: Responses.tankBuster('info'),
     },
     {
@@ -367,10 +353,8 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3752', source: '雷神シド', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3752', source: '雷神西德', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3752', source: '뇌신 시드', capture: false }),
-      condition: function(data) {
-        return data.CanFeint();
-      },
-      infoText: (data, _, output) => output.text(),
+      condition: (data) => data.CanFeint(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Feint Tank Buster',
@@ -401,10 +385,8 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3758', source: '雷神シド', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3758', source: '雷神西德', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3758', source: '뇌신 시드', capture: false }),
-      condition: function(data) {
-        return data.role === 'tank';
-      },
-      alarmText: (data, _, output) => output.text(),
+      condition: (data) => data.role === 'tank',
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Give Tether Away',
@@ -425,7 +407,7 @@ export default {
       netRegexCn: NetRegexes.ability({ id: '3759', source: '雷神西德' }),
       netRegexKo: NetRegexes.ability({ id: '3759', source: '뇌신 시드' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Give Tether Away',
@@ -445,7 +427,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '375A', source: '雷神シド', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '375A', source: '雷神西德', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '375A', source: '뇌신 시드', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Kill Icewolf Adds',
@@ -465,11 +447,9 @@ export default {
       netRegexJa: NetRegexes.ability({ id: '3751', source: '雷神シド', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '3751', source: '雷神西德', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '3751', source: '뇌신 시드', capture: false }),
-      condition: function(data) {
-        return data.role === 'healer';
-      },
+      condition: (data) => data.role === 'healer',
       suppressSeconds: 10,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Heal To Full',
@@ -489,7 +469,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3761', source: '雷神シド', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3761', source: '雷神西德', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3761', source: '뇌신 시드', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Stand on Pads',
@@ -505,7 +485,7 @@ export default {
       id: 'Orbonne Cid Shadowblade Bubble',
       netRegex: NetRegexes.headMarker({ id: '00AA' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Drop Bubble In Back',
@@ -521,7 +501,7 @@ export default {
       id: 'Orbonne Cid Hallowed Bolt',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Bolt on YOU',
@@ -549,7 +529,7 @@ export default {
       id: 'Orbonne Cid Divine Ruination',
       netRegex: NetRegexes.headMarker({ id: '006E' }),
       condition: Conditions.targetIsYou(),
-      alarmText: (data, _, output) => output.text(),
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Point Line Outside',
@@ -609,14 +589,14 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '374C', source: '雷神シド', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '374C', source: '雷神西德', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '374C', source: '뇌신 시드', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           // e.g. E / NE / NW platforms
           en: 'Rotate right',
           de: 'Im Uhrzeigersinn ausweichen',
           fr: 'Evitez les épées dans le sens anti-horaire',
-          ja: '右へ（逆時計回り）',
+          ja: '右へ（反時計回り）',
           cn: '向右移动避开',
           ko: '오른쪽으로 돌기',
         },
@@ -630,7 +610,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '374D', source: '雷神シド', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '374D', source: '雷神西德', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '374D', source: '뇌신 시드', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           // NW / NE / E platforms
@@ -663,7 +643,7 @@ export default {
       id: 'Orbonne Ultima Eruption',
       netRegex: NetRegexes.headMarker({ id: '0066' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Eruption on YOU',
@@ -689,7 +669,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '38CF', source: 'デミ・ベリアス', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '38CF', source: '亚灵贝利亚斯', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '38CF', source: '데미벨리아스', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Stand on Slow Clock',
@@ -709,7 +689,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '38DA', source: 'デミ・ハシュマリム', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '38DA', source: '亚灵哈修马利姆', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '38DA', source: '데미하쉬말림', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Look for Hashmal dash',
@@ -729,10 +709,8 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3895', source: '聖天使アルテマ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3895', source: '圣天使阿尔蒂玛', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3895', source: '성천사 알테마', capture: false }),
-      condition: function(data) {
-        return data.role === 'healer';
-      },
-      alertText: (data, _, output) => output.text(),
+      condition: (data) => data.role === 'healer',
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Heal Like Whoa',
@@ -752,12 +730,10 @@ export default {
       netRegexJa: NetRegexes.ability({ id: '3895', source: '聖天使アルテマ', capture: false }),
       netRegexCn: NetRegexes.ability({ id: '3895', source: '圣天使阿尔蒂玛', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '3895', source: '성천사 알테마', capture: false }),
-      condition: function(data) {
-        return data.role !== 'healer';
-      },
+      condition: (data) => data.role !== 'healer',
       // zzz
       delaySeconds: 23.5,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Kill Ruination!',
@@ -773,9 +749,7 @@ export default {
       id: 'Orbonne Ultima Acceleration Bomb',
       netRegex: NetRegexes.gainsEffect({ effectId: '430' }),
       condition: Conditions.targetIsYou(),
-      delaySeconds: function(data, matches) {
-        return parseFloat(matches.duration) - 1;
-      },
+      delaySeconds: (_data, matches) => parseFloat(matches.duration) - 1,
       response: Responses.stopEverything(),
     },
   ],
@@ -880,6 +854,9 @@ export default {
         'Time Eruption': 'Zeiteruption',
         'Towerfall': 'Turmsturz',
         'Ultimate Illusion': 'Ultimative Illusion',
+        'Marks': 'Markierungen',
+        '(?<!Sword )In/Out': 'Rein/Raus',
+        '(?<!Sword )Out/In': 'Raus/Rein',
       },
     },
     {

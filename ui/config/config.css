@@ -232,6 +232,10 @@ html {
   align-self: center;
 }
 
+.trigger-source {
+  justify-content: flex-end;
+}
+
 .alarm-text {
   color: #f30;
 }
@@ -270,7 +274,7 @@ input[type=text] {
 }
 
 .trigger-duration > input[type=text] {
-  width: 60px;
+  width: 75px;
   text-align: left;
 }
 

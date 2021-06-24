@@ -191,7 +191,7 @@ Options.Triggers.push({
 위에 있는 코드 블록을 각 트리거에 붙여넣는 것입니다.
 `zoneId`에 이 트리거가 작동할 지역 ID를 입력하세요.
 보통 cactbot 트리거 파일 최상단에 적혀있습니다.
-그리고 [이 파일](../../resources/zone_id.js)은 모든 지역 ID 리스트를 저장하고 있습니다.
+그리고 [이 파일](../../resources/zone_id.ts)은 모든 지역 ID 리스트를 저장하고 있습니다.
 만약 올바른 지역 ID를 입력하지 않는다면, 오버레이 플러그인 로그 창에 warning이 나오게 됩니다.
 그 다음, 트리거 텍스트를 블록 안에 복사하여 필요한 만큼 수정하세요.
 이 과정을 수정하고 싶은 모든 트리거에 대해 반복하면 됩니다.
@@ -210,7 +210,7 @@ Options.Triggers.push({
 
 이를 해결하는 방법으로는 트리거의 출력을 수정하여 조정하는 것이 있습니다.
 fireball #1 원본 트리거는
-[ui/raidboss/data/04-sb/ultimate/unending_coil_ultimate.js](https://github.com/quisquous/cactbot/blob/cce8bc6b10d2210fa512bd1c8edd39c260cc3df8/ui/raidboss/data/04-sb/ultimate/unending_coil_ultimate.js#L715-L743)에서 찾을 수 있습니다.
+[ui/raidboss/data/04-sb/ultimate/unending_coil_ultimate.js](https://github.com/quisquous/cactbot/blob/triggers/04-sb/ultimate/unending_coil_ultimate.js#:~:text=UCU%20Nael%20Fireball%201)에서 찾을 수 있습니다.
 
 이 코드들을 `cactbot/user/raidboss.js` 파일 아래 부분에 붙여넣습니다.
 
@@ -247,7 +247,7 @@ Options.Triggers.push({
 지금은 도발 알림이 같은 파티나 연합 파티에 있는 경우에만 작동하고, 일부 직업에 대해서만 작동하고 있습니다.
 이 예시는 어떻게 모든 플레이어에 대해 알림을 보여주도록 만들 수 있는지 보여줍니다.
 도발 트리거는
-[ui/raidboss/data/00-misc/general.js](https://github.com/quisquous/cactbot/blob/cce8bc6b10d2210fa512bd1c8edd39c260cc3df8/ui/raidboss/data/00-misc/general.js#L11-L30)에서 찾을 수 있습니다.
+[ui/raidboss/data/00-misc/general.js](https://github.com/quisquous/cactbot/blob/triggers/00-misc/general.js#:~:text=General%20Provoke)에서 찾을 수 있습니다.
 
 다음 예시는 `condition` 함수(function)가 수정된 버전입니다.
 이 트리거는 cactbot에 내장된 트리거인 `General Provoke`와 id가 동일하기 때문에
@@ -378,8 +378,8 @@ Raidboss 타임라인을 덮어쓰는 것은 [Raidboss 트리거 덮어쓰기](#
 ```javascript
 Options.PlayerNicks = {
   // '이름 성': '닉네임',
-  'Banana Nana', 'Nana',
-  'The Great\'one', 'Joe', // The Great'one와 같이 이름에 작은 따옴표가 포함된 경우 그 앞에 역슬래시를 추가해야 합니다.
+  'Banana Nana': 'Nana',
+  'The Great\'one': 'Joe', // The Great'one와 같이 이름에 작은 따옴표가 포함된 경우 그 앞에 역슬래시를 추가해야 합니다.
   'Viewing Cutscene': 'Cut',
   // 기타 더 많은 닉네임을 추가할 수 있습니다.
 };
@@ -553,14 +553,14 @@ Options.Triggers.push({
 유저 자바스크립트 파일들은 다음 global들에 접근할 수 있습니다:
 
 - [Conditions](../../resources/conditions.ts)
-- [ContentType](../../resources/content_type.js)
+- [ContentType](../../resources/content_type.ts)
 - [NetRegexes](../../resources/netregexes.ts)
 - [Regexes](../../resources/regexes.ts)
-- [Responses](../../resources/responses.js)
+- [Responses](../../resources/responses.ts)
 - [Outputs](../../resources/outputs.ts)
 - [Util](../../resources/util.ts)
-- [ZoneId](../../resources/zone_id.js)
-- [ZoneInfo](../../resources/zone_info.js)
+- [ZoneId](../../resources/zone_id.ts)
+- [ZoneInfo](../../resources/zone_info.ts)
 
 ## User 파일 디버깅
 
@@ -595,8 +595,8 @@ User 파일은 JavaScript로 작성하기 때문에 JavaScript 문법에 맞지 
 예시:
 
 ```log
-[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: local user file: C:\Users\tinipoutini\cactbot\user\raidboss.js (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.js, Line: 83)
-[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: *** ERROR IN USER FILE *** (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.js, Line: 95)
+[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: local user file: C:\Users\tinipoutini\cactbot\user\raidboss.js (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts, Line: 83)
+[10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: *** ERROR IN USER FILE *** (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts, Line: 95)
 [10/19/2020 6:18:27 PM] Info: raidbossy: BrowserConsole: SyntaxError: Unexpected token :
-    at loadUser (file:///C:/Users/tinipoutini/cactbot/resources/user_config.js:92:28) (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.js, Line: 96)
+    at loadUser (file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts:92:28) (Source: file:///C:/Users/tinipoutini/cactbot/resources/user_config.ts, Line: 96)
 ```

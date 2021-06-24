@@ -1,6 +1,7 @@
 import Conditions from '../../../../../resources/conditions';
 import NetRegexes from '../../../../../resources/netregexes';
 import Regexes from '../../../../../resources/regexes';
+import Outputs from '../../../../../resources/outputs';
 import { Responses } from '../../../../../resources/responses';
 import ZoneId from '../../../../../resources/zone_id';
 
@@ -68,22 +69,8 @@ const orbNpcNameIdToOutputString = {
 };
 
 const orbOutputStrings = {
-  unknown: {
-    en: '???',
-    de: '???',
-    fr: '???',
-    ja: '???',
-    cn: '???',
-    ko: '???',
-  },
-  knockback: {
-    en: 'Knockback',
-    de: 'Rückstoß',
-    fr: 'Poussée',
-    ja: 'ノックバック',
-    cn: '击退',
-    ko: '넉백',
-  },
+  unknown: Outputs.unknown,
+  knockback: Outputs.knockback,
   stop: {
     en: 'Stop',
     de: 'Stopp',
@@ -109,14 +96,7 @@ const orbOutputStrings = {
     cn: '动动动',
     ko: '움직이기',
   },
-  in: {
-    en: 'In',
-    de: 'Rein',
-    fr: 'Intérieur',
-    ja: '中へ',
-    cn: '靠近',
-    ko: '안으로',
-  },
+  in: Outputs.in,
   out: {
     en: 'Out',
     de: 'Raus',
@@ -136,14 +116,14 @@ const orbOutputStrings = {
 };
 
 // TODO: promote something like this to Conditions?
-const tankBusterOnParty = (ceId) => (data, matches) => {
-  if (ceId && data.ce !== ceId)
+const tankBusterOnParty = (ceName) => (data, matches) => {
+  if (ceName && data.ce !== ceName)
     return false;
-  if (data.target === data.me)
+  if (matches.target === data.me)
     return true;
   if (data.role !== 'healer')
     return false;
-  return data.party.inParty(data.target);
+  return data.party.inParty(matches.target);
 };
 
 export default {
@@ -182,7 +162,7 @@ export default {
       netRegexJa: NetRegexes.gameLog({ line: '操作がない状態になってから7分が経過しました。.*?', capture: false }),
       netRegexCn: NetRegexes.gameLog({ line: '已经7分钟没有进行任何操作.*?', capture: false }),
       netRegexKo: NetRegexes.gameLog({ line: '7분 동안 아무 조작을 하지 않았습니다..*?', capture: false }),
-      response: Responses.wakeUp('alarm'),
+      response: Responses.wakeUp(),
     },
     {
       id: 'Bozja South Critical Engagement',
@@ -204,11 +184,14 @@ export default {
         for (const key in ceIds) {
           if (ceIds[key] === ceId) {
             if (data.options.Debug)
-              console.log(`Start CE: ${ceId} (${key})`);
-            data.ce = ceId;
+              console.log(`Start CE: ${key} (${ceId})`);
+            data.ce = key;
             return;
           }
         }
+
+        if (data.options.Debug)
+          console.log(`Start CE: ??? (${ceId})`);
       },
     },
     {
@@ -219,7 +202,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: 'レッドコメット', id: '506C' }),
       netRegexCn: NetRegexes.startsUsing({ source: '红色彗星', id: '506C' }),
       netRegexKo: NetRegexes.startsUsing({ source: '붉은 혜성', id: '506C' }),
-      condition: tankBusterOnParty(ceIds.choctober),
+      condition: tankBusterOnParty('choctober'),
       response: Responses.tankBuster(),
     },
     {
@@ -259,7 +242,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ source: '第四军团地狱潜者', id: '51EA', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: 'Iv군단 헬다이버', id: '51EA', capture: false }),
       condition: (data) => data.helldiver,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Stand in dive charge',
@@ -292,7 +275,7 @@ export default {
       netRegexKo: NetRegexes.startsUsing({ source: 'Iv군단 헬다이버', id: '51EC', capture: false }),
       condition: (data) => data.helldiver,
       delaySeconds: 6,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Take one tether',
@@ -358,7 +341,7 @@ export default {
       netRegexKo: NetRegexes.startsUsing({ source: '브류나크', id: '51CD', capture: false }),
       condition: (data) => !data.helldiver,
       delaySeconds: 6.5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Kill Magitek Core',
@@ -380,7 +363,7 @@ export default {
       netRegexKo: NetRegexes.startsUsing({ source: '브류나크', id: '51D0', capture: false }),
       condition: (data) => !data.helldiver,
       preRun: (data) => data.energyCount = (data.energyCount || 0) + 1,
-      infoText: (data, _, output) => {
+      infoText: (data, _matches, output) => {
         if (data.energyCount === 1)
           return output.getUnderOrb();
         if (data.energyCount === 2)
@@ -429,7 +412,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ source: '阿尔贝雷欧的巨兽', id: '5404', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '알비레오의 야수', id: '5404', capture: false }),
       suppressSeconds: 3,
-      response: Responses.lookAway('info'),
+      response: Responses.lookAway(),
     },
     {
       id: 'Bozja South Castrum Albeleo Abyssal Cry',
@@ -440,7 +423,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ source: '阿尔贝雷欧的恶狼', id: '5406' }),
       netRegexKo: NetRegexes.startsUsing({ source: '알비레오의 흐로드비트니르', id: '5406' }),
       condition: (data) => data.CanSilence(),
-      response: Responses.interrupt('alert'),
+      response: Responses.interrupt(),
     },
     {
       id: 'Bozja South Castrum Adrammelech Holy IV',
@@ -474,7 +457,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ source: '阿德拉梅里克', id: '4F92', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '아드람멜렉', id: '4F92', capture: false }),
       delaySeconds: 4.5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Kill Meteors',
@@ -514,7 +497,7 @@ export default {
       preRun: (data) => data.fiendCount = (data.fiendCount || 0) + 1,
       durationSeconds: (data) => (data.orbs || {}).length === 4 ? 23 : 14,
       suppressSeconds: 20,
-      infoText: (data, _, output) => {
+      infoText: (data, _matches, output) => {
         // Let your actor id memes be dreams!
         // Orbs go off from highest actor id to lowest actor id, in pairs of two.
         const sortedOrbs = Object.keys(data.orbs || {}).sort().reverse();
@@ -568,7 +551,7 @@ export default {
       // 5 seconds warning.
       delaySeconds: 7.2 - 5,
       durationSeconds: 4.5,
-      alertText: (data, _, output) => {
+      alertText: (data, _matches, output) => {
         data.orbOutput = data.orbOutput || [];
         const orb = data.orbOutput.shift();
         if (!orb)
@@ -587,7 +570,7 @@ export default {
       netRegexKo: NetRegexes.ability({ source: '아드람멜렉', id: '4F7B', capture: false }),
       // 2.5 seconds warning, as it's weird if this shows up way before the first orb.
       delaySeconds: 9 - 2.5,
-      alertText: (data, _, output) => {
+      alertText: (data, _matches, output) => {
         data.orbOutput = data.orbOutput || [];
         const orb = data.orbOutput.shift();
         if (!orb)
@@ -708,7 +691,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ source: '达温', id: '517A', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '다우언', id: '517A', capture: false }),
       delaySeconds: 5,
-      alertText: (data, _, output) => {
+      alertText: (data, _matches, output) => {
         // Only the first plumage orbs have no wind.
         // If we needed to this dynamically, look for Call Beast (5192) from Lyon before this.
         const text = data.haveSeenMoltingPlumage ? output.orbWithFlutter() : output.justOrb();
@@ -754,7 +737,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ source: '达温', id: '5175', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '다우언', id: '5175', capture: false }),
       suppressSeconds: 9999,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Follow Boss',
@@ -774,7 +757,7 @@ export default {
       netRegexJa: NetRegexes.gameLog({ line: '獣王ライアンは、王者の円壇での戦いを望んでいるようだ.*?', capture: false }),
       netRegexCn: NetRegexes.gameLog({ line: '兽王莱昂似乎很期待在王者圆坛战斗！', capture: false }),
       netRegexKo: NetRegexes.gameLog({ line: '마수왕 라이언이 왕의 단상에서 싸우려고 합니다!', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Lyon Passage Open',
@@ -782,7 +765,7 @@ export default {
           fr: 'Passage du Lyon ouvert',
           ja: '獣王ライオンフェイス開始',
           cn: '挑战兽王莱恩',
-          ko: '라이온 포탈 개방',
+          ko: '라이언 포탈 개방',
         },
       },
     },
@@ -815,7 +798,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ source: '獣王ライアン', id: '5173', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '兽王 莱昂', id: '5173', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ source: '마수왕 라이언', id: '5173', capture: false }),
-      response: Responses.getBehind('alert'),
+      response: Responses.getBehind(),
     },
   ],
   timelineReplace: [
@@ -869,6 +852,7 @@ export default {
         'Fire IV': 'Feuka',
         'Flare': 'Flare',
         'Frigid Pulse': 'Froststoß',
+        'Frigid/': 'Frost/',
         'Heart Of Nature': 'Puls der Erde',
         'Holy IV': 'Giga-Sanctus',
         'Lightburst': 'Lichtstoß',

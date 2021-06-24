@@ -2,8 +2,6 @@
   <head>
     <meta charset="utf-8" />
     <title>Cactbot Raid Emulator</title>
-    <!-- General Overlay Scripts-->
-    <link rel="stylesheet" href="../../resources/defaults.css" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -14,9 +12,6 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-    <link rel="stylesheet" type="text/css" href="raidemulator.css" />
-    <script src="../../dist/raidboss_data.bundle.js"></script>
-    <script src="../../dist/raidemulator.bundle.js"></script>
   </head>
   <body class="bg-secondary">
     <div class="modal-backdrop hide"></div>
@@ -73,9 +68,10 @@
           <div class="modal-body">
             <p>Welcome to the Raid Emulator.</p>
             <p>This tool replays encounters and shows what triggers were fired when, and allows you to view the encounter from any player's perspective.</p>
-            <p>This tool requires that ACT be running in the background with both ngld's OverlayPlugin and the Cactbot plugin loaded.</p>
+            <p>This tool optionally accepts an <strong>OVERLAY_WS</strong> parameter to connect to an ACT web socket with both ngld's OverlayPlugin and the Cactbot plugin loaded.</p>
+            <p>If connected to a web socket, this tool will load and respect user configuration files for cactbot/raidboss.</p>
             <p>No overlays need to be created.</p>
-            <p>Current WebSocket status: <span class="d-none websocketConnected text-success">Connected</span><span class="websocketDisconnected text-error">Disconnected</span>.</p>
+            <p>Current WebSocket status: <span class="d-none websocketConnected text-success">Connected</span><span class="websocketDisconnected text-warning">Disconnected</span>.</p>
             <p>To get started, you need to import an encounter via one of the following options:</p>
             <p>
               <ul>
@@ -87,12 +83,37 @@
             <p>Once you have loaded an encounter, you can:</p>
             <p>
               <ul>
-                <li>Change the currrent perspective by selecting a party member on the right</li>
+                <li>Change the current perspective by selecting a party member on the right</li>
                 <li>Seek to any point in the encounter by clicking the bar at the top</li>
                 <li>Hover over trigger indicators in the top bar to see their names</li>
                 <li>See detailed information about triggers fired by clicking their button</li>
               </ul>
             </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal disconnectedModal text-dark" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Currently Disconnected</h5>
+            <button type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Raid Emulator is currently disconnected from ACT.</p>
+            <p>Raid Emulator will use the default settings for raidboss. These are:</p>
+            <ul>
+              <li>Display language: <span class="discLangDisplay"></span></li>
+              <li>Default alert output: Text and Sound</li>
+              <li>Alerts language: <span class="discLangAlerts"></span></li>
+              <li>Timeline language: <span class="discLangTimeline"></span></li>
+            </ul>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button>
@@ -142,6 +163,16 @@
           <div class="d-inline progress-bar-timestamp current-timestamp">00:00</div>
           <div class="d-inline progress-bar-timestamp divider-timestamp">/</div>
           <div class="d-inline progress-bar-timestamp duration-timestamp">00:00</div>
+        </div>
+        <div class="col-auto">
+          <span class="connectionIndicator">
+            <i
+              class="connectedIndicator fa fa-plug text-success" data-toggle="tooltip"
+              title="Connected to websocket"></i>
+            <i
+              class="disconnectedIndicator fa fa-ban text-danger d-none" data-toggle="tooltip"
+              title="Disconnected from websocket"></i>
+          </span>
         </div>
       </div>
       <div class="row mainContentRow flex-fill">
@@ -295,6 +326,18 @@
           <div class="encounterName">Name: <span class="label"></span></div>
           <div class="encounterStartStatus">Start Status: <span class="label"></span></div>
           <div class="encounterEndStatus">End Status: <span class="label"></span></div>
+        </div>
+      </template>
+      <template id="topTooltipTemplate" class="tooltip top">
+        <div class="tooltip bs-tooltip-top" role="tooltip" x-placement="top">
+          <div class="arrow"></div>
+          <div class="tooltip-inner"></div>
+        </div>
+      </template>
+      <template id="rightTooltipTemplate" class="tooltip right">
+        <div class="tooltip bs-tooltip-right" role="tooltip" x-placement="right">
+          <div class="arrow"></div>
+          <div class="tooltip-inner"></div>
         </div>
       </template>
       <template id="bottomTooltipTemplate" class="tooltip bottom">

@@ -1,5 +1,7 @@
 import { kAbility } from '../constants';
 
+let resetFunc = null;
+
 export function setup(bars) {
   const aetherflowStackBox = bars.addResourceBox({
     classList: ['sch-color-aetherflow'],
@@ -12,6 +14,7 @@ export function setup(bars) {
   const bioBox = bars.addProcBox({
     id: 'sch-procs-bio',
     fgColor: 'sch-color-bio',
+    notifyWhenExpired: true,
   });
 
   const aetherflowBox = bars.addProcBox({
@@ -57,17 +60,14 @@ export function setup(bars) {
     kAbility.Bio2,
     kAbility.Biolysis,
   ], () => {
-    bioBox.duration = 0;
     bioBox.duration = 30;
   });
 
   bars.onUseAbility(kAbility.Aetherflow, () => {
-    aetherflowBox.duration = 0;
     aetherflowBox.duration = 60;
     aetherflowStackBox.parentNode.classList.remove('too-much-stacks');
   });
   bars.onUseAbility(kAbility.LucidDreaming, () => {
-    lucidBox.duration = 0;
     lucidBox.duration = 60;
   });
 
@@ -78,4 +78,15 @@ export function setup(bars) {
     lucidBox.valuescale = bars.gcdSpell;
     lucidBox.threshold = bars.gcdSpell + 1;
   });
+
+  resetFunc = (bars) => {
+    bioBox.duration = 0;
+    aetherflowBox.duration = 0;
+    lucidBox.duration = 0;
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

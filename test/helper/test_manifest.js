@@ -23,7 +23,7 @@ const testManifestFile = (file) => {
   });
 
   const ignorePathRegexes = [
-    /(?:^|\/)manifest\.txt$/,
+    /(?:^|\/)\w*_manifest\.txt$/,
     /(?:^|\/)readme\.\w*$/i,
   ];
 
@@ -50,8 +50,8 @@ const testManifestFile = (file) => {
 
   it('correct file types in manifest', () => {
     for (const file of manifestLines) {
-      // All files must be .js and .txt.
-      if (/\.txt$/.test(file) || /\.js$/.test(file))
+      // All files must be .js/.ts and .txt.
+      if (/\.txt$/.test(file) || /\.[jt]s$/.test(file))
         continue;
       assert.fail(`${file} has invalid extension`);
     }

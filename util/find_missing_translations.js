@@ -51,7 +51,7 @@ const findAllJavascriptFiles = (filter) => {
   walkDirSync(basePath(), (filepath) => {
     if (ignoreDirs.some((str) => filepath.includes(str)))
       return;
-    if (!filepath.endsWith('.js'))
+    if (!filepath.endsWith('.js') && !filepath.endsWith('.ts'))
       return;
     if (filter !== undefined && !filepath.includes(filter))
       return;
@@ -74,10 +74,12 @@ const parseJavascriptFile = (file, locales) => {
 
   let lineNumber = 0;
   let keys = [];
+  let fixme = [];
   let openMatch = null;
 
-  const openObjRe = new RegExp('^(\\s*)(.*{)\\s*$');
-  const keyRe = new RegExp('^\\s*(\\w{2}):');
+  const openObjRe = /^(\s*)(.*{)\s*$/;
+  const keyRe = /^\s*(\w{2}):/;
+  const fixmeRe = /\/\/ FIX-?ME/;
 
   lineReader.on('line', (line, idx = lineCounter()) => {
     // Immediately exit if the file is auto-generated
@@ -95,6 +97,7 @@ const parseJavascriptFile = (file, locales) => {
       // idx is zero-based, but line numbers are not.
       lineNumber = idx + 1;
       keys = [];
+      fixme = [];
       return;
     }
 
@@ -107,7 +110,9 @@ const parseJavascriptFile = (file, locales) => {
     if (line.match(`${openMatch[1]}}`)) {
       // Check if these keys look like a translation block.
       if (keys.includes('en')) {
-        const missingKeys = new Set([...locales].filter((locale) => !keys.includes(locale)));
+        const missingKeys = new Set([...locales].filter((locale) => {
+          return !keys.includes(locale) || fixme.includes(locale);
+        }));
 
         const openStr = openMatch[2];
         // Only some locales care about zoneRegex, so special case.
@@ -127,8 +132,14 @@ const parseJavascriptFile = (file, locales) => {
 
     // If we're inside an object, find anything that looks like a key.
     const keyMatch = line.match(keyRe);
-    if (keyMatch)
-      keys.push(keyMatch[1]);
+    if (keyMatch) {
+      const lang = keyMatch[1];
+      keys.push(lang);
+
+      // Track if this line has a FIXME comment on it, so we can include it as "missing".
+      if (fixmeRe.test(line))
+        fixme.push(lang);
+    }
   });
 };
 

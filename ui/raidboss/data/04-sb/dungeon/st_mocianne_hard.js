@@ -11,11 +11,12 @@ export default {
       id: 'St Mocianne Hard Quickmire',
       regex: /Quickmire/,
       beforeSeconds: 7, // This is approximately when the sewage surge begins.
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Be On A Platform',
           de: 'BSei auf einer Plattform',
+          fr: 'Soyez sur une plateforme ',
           ja: '円形床の上へ',
           cn: '站台子上',
         },
@@ -50,11 +51,12 @@ export default {
       id: 'St Mocianne Hard Sludge Bomb',
       netRegex: NetRegexes.headMarker({ id: '0001' }),
       condition: Conditions.targetIsYou(),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Sludge puddle on YOU',
           de: 'Schlammfläche auf DIR',
+          fr: 'Zone de poison au sol sur VOUS',
           ja: '自分にスラッジボム',
           cn: '泥浆炸弹点名',
           ko: '독장판 대상자',
@@ -81,11 +83,12 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '2E4F', source: 'ヌルチュー', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '2E4F', source: '泥口花', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '2E4F', source: '누루츄', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get behind flower',
           de: 'Geh hinter die Blume',
+          fr: 'Passez derrière la plante',
           ja: 'ボスの後ろへ',
           cn: '躲背后',
           ko: '꽃 뒤로',
@@ -122,12 +125,13 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3132', source: 'シルトゴーレム' }),
       netRegexCn: NetRegexes.startsUsing({ id: '3132', source: '淤泥巨像' }),
       netRegexKo: NetRegexes.startsUsing({ id: '3132', source: '실트 골렘' }),
-      delaySeconds: (data, matches) => parseFloat(matches.duration) - 6,
-      infoText: (data, _, output) => output.text(),
+      delaySeconds: (_data, matches) => parseFloat(matches.castTime) - 6,
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Conveyors: Avoid Golem Lines',
           de: 'Transportbänder: Weiche den Golemlinien aus',
+          fr: 'Transporteurs : Évitez les lignes des golems',
           ja: '強制移動: ゴーレムの直線を避ける',
           cn: '传送: 注意躲开巨像的直线AoE',
           ko: '넉백: 골렘이 있는 줄 피하기',
@@ -165,11 +169,12 @@ export default {
       id: 'St Mocianne Hard Quagmire',
       netRegex: NetRegexes.headMarker({ id: '008B' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Spread + Stay Off Platforms',
           de: 'Verteilen + runter von den Plattformen',
+          fr: 'Dispersion + Restez hors des platesformes',
           ja: '散開、円形床に落とさないよう',
           cn: '分散，出台子',
           ko: '산개, 초록 장판 피하기',
@@ -184,11 +189,12 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '3137', source: 'トカップチ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '3137', source: '枯腐泥妖', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '3137', source: '진흙장사', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Push Mud Pie On Platform',
           de: 'Schiebe Schlammklumpen auf eine Plattform',
+          fr: 'Poussez la Boule de boue sur la platesforme',
           ja: 'スライムを円形床に吹き飛ばす',
           cn: '把小怪推到台子上',
           ko: '진흙 슬라임 초록 장판으로',
@@ -203,11 +209,12 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '313C', source: 'トカップチ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '313C', source: '枯腐泥妖', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '313C', source: '진흙장사', capture: false }),
-      alarmText: (data, _, output) => output.text(),
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Push Mud Pie Out Of Cone',
           de: 'Schiebe Schlammklumpen aus der Kegel-AoE',
+          fr: 'Poussez la Boule de boue hors du cône',
           ja: 'スライムを範囲外へ吹き飛ばす',
           cn: '把小怪推出AoE',
           ko: '진흙 슬라임 초록 장판 바깥으로',
@@ -229,8 +236,6 @@ export default {
         'Withered Belladonna': 'verwittert(?:e|er|es|en) Belladonna',
       },
       'replaceText': {
-        '\\(inner\\)': '(innen)',
-        '\\(outer\\)': '(außen)',
         'Bog Bequest': 'Maliziöser Modder',
         'Devour': 'Verschlingen',
         'Earth Shaker': 'Erdstoß',
@@ -256,7 +261,6 @@ export default {
     },
     {
       'locale': 'fr',
-      'missingTranslations': true,
       'replaceSync': {
         'Kingsloam': 'Salle d\'audience du roi fangeux',
         'Lakhamu': 'Lakhamu',
@@ -268,6 +272,7 @@ export default {
         'Withered Belladonna': 'belladone flétrie',
       },
       'replaceText': {
+        '\\?': ' ?',
         'Bog Bequest': 'Sotomusô-gadoue',
         'Devour': 'Dévoration',
         'Earth Shaker': 'Secousse',
@@ -304,8 +309,6 @@ export default {
         'Withered Belladonna': 'ウィザード・ベラドンナ',
       },
       'replaceText': {
-        '\\(inner\\)': '(中)',
-        '\\(outer\\)': '(外)',
         'Bog Bequest': 'ドロドロ外無双',
         'Devour': '捕食',
         'Earth Shaker': 'アースシェイカー',
@@ -342,8 +345,6 @@ export default {
         'Withered Belladonna': '枯萎剧毒美人',
       },
       'replaceText': {
-        '\\(inner\\)': '(内)',
-        '\\(outer\\)': '(外)',
         'Bog Bequest': '污泥外无双',
         'Devour': '捕食',
         'Earth Shaker': '大地摇动',

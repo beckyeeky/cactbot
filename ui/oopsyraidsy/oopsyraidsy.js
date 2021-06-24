@@ -11,15 +11,24 @@ import ZoneInfo from '../../resources/zone_info';
 
 import './oopsyraidsy_config';
 
-import oopsyFileData from './data/manifest.txt';
+import oopsyFileData from './data/oopsy_manifest.txt';
 
-const Options = {
+import '../../resources/defaults.css';
+import './oopsy_common.css';
+
+const defaultOptions = {
   Triggers: [],
   PlayerNicks: {},
   DisabledTriggers: {},
   IgnoreContentTypes: [
     ContentType.Pvp,
     ContentType.Eureka,
+  ],
+  IgnoreZoneIds: [
+    // Bozja zones have an (unnamed) content type of 29 which also applies
+    // to Delubrum Reginae (which we want oopsy on).  So, ignore by zone.
+    ZoneId.TheBozjanSouthernFront,
+    ZoneId.Zadnor,
   ],
 
   AbilityIdNameMap: {
@@ -219,12 +228,12 @@ Examples:
 
 /* eslint-enable */
 
-function ShortNamify(name) {
+function ShortNamify(name, playerNicks) {
   // TODO: make this unique among the party in case of first name collisions.
   // TODO: probably this should be a general cactbot utility.
 
-  if (name in Options.PlayerNicks)
-    return Options.PlayerNicks[name];
+  if (name in playerNicks)
+    return playerNicks[name];
 
   const idx = name.indexOf(' ');
   return idx < 0 ? name : name.substr(0, idx);
@@ -557,7 +566,7 @@ class MistakeCollector {
   OnMistakeText(type, blame, text, time) {
     if (!text)
       return;
-    const blameText = blame ? ShortNamify(blame) + ': ' : '';
+    const blameText = blame ? ShortNamify(blame, this.options.PlayerNicks) + ': ' : '';
     this.listView.AddLine(type, blameText + text, this.GetFormattedTime(time));
   }
 
@@ -720,7 +729,7 @@ class DamageTracker {
       role: this.role,
       party: this.partyTracker,
       inCombat: this.inCombat,
-      ShortName: ShortNamify,
+      ShortName: (name) => ShortNamify(name, this.options.PlayerNicks),
       IsPlayerId: IsPlayerId,
 
       // Deprecated.
@@ -1121,7 +1130,8 @@ class DamageTracker {
     this.healTriggers = [];
     this.netTriggers = [];
 
-    this.ignoreZone = Options.IgnoreContentTypes.includes(this.contentType);
+    this.ignoreZone = this.options.IgnoreContentTypes.includes(this.contentType) ||
+      this.options.IgnoreZoneIds.includes(this.zoneId);
     if (this.ignoreZone)
       return;
 
@@ -1228,7 +1238,7 @@ class DamageTracker {
     if (!this.me)
       return;
 
-    this.triggerSets = Options.Triggers;
+    this.triggerSets = this.options.Triggers;
     for (const filename in this.dataFiles) {
       const json = this.dataFiles[filename];
       if (typeof json !== 'object') {
@@ -1255,7 +1265,8 @@ class DamageTracker {
   }
 }
 
-UserConfig.getUserConfigLocation('oopsyraidsy', Options, () => {
+UserConfig.getUserConfigLocation('oopsyraidsy', defaultOptions, () => {
+  const options = { ...defaultOptions };
   let listView;
   let mistakeCollector;
 
@@ -1265,14 +1276,14 @@ UserConfig.getUserConfigLocation('oopsyraidsy', Options, () => {
   // Choose the ui based on whether this is the summary view or the live list.
   // They have different elements in the file.
   if (summaryElement) {
-    listView = new OopsySummaryList(Options, summaryElement);
-    mistakeCollector = new MistakeCollector(Options, listView);
+    listView = new OopsySummaryList(options, summaryElement);
+    mistakeCollector = new MistakeCollector(options, listView);
   } else {
-    listView = new OopsyLiveList(Options, liveListElement);
-    mistakeCollector = new MistakeCollector(Options, listView);
+    listView = new OopsyLiveList(options, liveListElement);
+    mistakeCollector = new MistakeCollector(options, listView);
   }
 
-  const damageTracker = new DamageTracker(Options, mistakeCollector, oopsyFileData);
+  const damageTracker = new DamageTracker(options, mistakeCollector, oopsyFileData);
 
   addOverlayListener('onLogEvent', (e) => damageTracker.OnLogEvent(e));
   addOverlayListener('LogLine', (e) => damageTracker.OnNetLog(e));

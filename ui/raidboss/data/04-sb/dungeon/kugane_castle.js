@@ -45,13 +45,15 @@ export default {
       id: 'Kugane Castle Cordage',
       netRegex: NetRegexes.tether({ id: '0011' }),
       condition: Conditions.targetIsYou(),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Harakiri tether on YOU',
           de: 'Harakiri Verbindung auf DIR',
+          fr: 'Lien Harakiri sur VOUS',
           ja: '自分にはらきり',
           cn: '切腹点名',
+          ko: '자폭 대상자',
         },
       },
     },
@@ -70,11 +72,12 @@ export default {
       netRegexCn: NetRegexes.ability({ id: '1EAE', source: '景山', capture: false }),
       netRegexKo: NetRegexes.ability({ id: '1EAE', source: '카게야마', capture: false }),
       suppressSeconds: 15, // No point in notifying repeatedly
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Grab gold piles',
           de: 'Sammle die Goldhaufen',
+          fr: 'Prenez les pièces d\'or',
           ja: '大判小判を拾う',
           cn: '捡金币',
           ko: '금화 은화 줍기',
@@ -107,8 +110,6 @@ export default {
         'Zuiko-Maru': 'Zuiko-Maru',
       },
       'replaceText': {
-        '\\(inner\\)': '(innen)',
-        '\\(outer\\)': '(außen)',
         'Clearout': 'Kreisfeger',
         'Clockwork Medium': 'Mechanik-Medium',
         'Clockwork Raiton': 'Mechanik-Raiton',
@@ -133,7 +134,6 @@ export default {
     },
     {
       'locale': 'fr',
-      'missingTranslations': true,
       'replaceSync': {
         'Daigoro': 'Daigoro',
         'Dojun-Maru': 'Dôjun Maru',
@@ -146,6 +146,7 @@ export default {
         'Zuiko-Maru': 'Zuiko Maru',
       },
       'replaceText': {
+        '\\?': ' ?',
         'Clearout': 'Fauchage',
         'Clockwork Medium': 'Kuchiyose mécanique',
         'Clockwork Raiton': 'Raiton mécanique',
@@ -182,8 +183,6 @@ export default {
         'Zuiko-Maru': 'ズイコウ丸',
       },
       'replaceText': {
-        '\\(inner\\)': '(中)',
-        '\\(outer\\)': '(外)',
         'Clearout': 'なぎ払い',
         'Clockwork Medium': 'からくり口寄せ',
         'Clockwork Raiton': 'からくり雷遁',

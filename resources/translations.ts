@@ -1,6 +1,7 @@
-import { Lang } from '../types/global';
+import { Lang } from './languages';
 import Regexes from './regexes';
 import NetRegexes from './netregexes';
+import { CactbotBaseRegExp } from '../types/net_trigger';
 
 // Fill in LocaleRegex so that things like LocaleRegex.countdownStart.de is a valid regex.
 const localeLines = {
@@ -121,20 +122,22 @@ class RegexSet {
   netRegexes?: LocaleRegexesObj;
 
   get localeRegex(): LocaleRegexesObj {
-    if (this.regexes) return this.regexes;
+    if (this.regexes)
+      return this.regexes;
     this.regexes = this.buildLocaleRegexes(localeLines, (s: string) => Regexes.gameLog({ line: s + '.*?' }));
     return this.regexes;
   }
 
   get localeNetRegex(): LocaleRegexesObj {
-    if (this.netRegexes) return this.netRegexes;
+    if (this.netRegexes)
+      return this.netRegexes;
     this.netRegexes = this.buildLocaleRegexes(localeLines, (s: string) => NetRegexes.gameLog({ line: s + '[^|]*?' }));
     return this.netRegexes;
   }
 
   buildLocaleRegexes(
       locales: typeof localeLines,
-      builder: (s: string) => RegExp,
+      builder: (s: string) => CactbotBaseRegExp<'GameLog'> | RegExp,
   ): LocaleRegexesObj {
     return Object.fromEntries(
         Object
@@ -143,7 +146,9 @@ class RegexSet {
     ) as LocaleRegexesObj;
   }
 
-  buildLocaleRegex(lines: LocaleLine, builder: (s: string) => RegExp): Record<Lang, RegExp> {
+  buildLocaleRegex(lines: LocaleLine,
+      builder: (s: string) => CactbotBaseRegExp<'GameLog'> | RegExp,
+  ): Record<Lang, CactbotBaseRegExp<'GameLog'> | RegExp> {
     const regexEn = builder(lines.en);
     return {
       en: regexEn,

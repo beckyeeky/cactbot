@@ -100,7 +100,7 @@ export default {
       id: 'E9N Stygian Tether',
       netRegex: NetRegexes.headMarker({ id: '000C' }),
       condition: Conditions.targetIsYou(),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Wait Near Bramble',
@@ -128,7 +128,7 @@ export default {
       netRegexKo: NetRegexes.startsUsing({ id: ['55DF', '55E[01]'], source: '어둠의 구름', capture: false }),
       durationSeconds: 5,
       suppressSeconds: 1,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Go Sides At Tethered Wall',
@@ -149,7 +149,7 @@ export default {
       netRegexCn: NetRegexes.startsUsing({ id: '55E2', source: '暗黑之云', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '55E2', source: '어둠의 구름', capture: false }),
       durationSeconds: 5,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Away From Tethered Walls',
@@ -183,7 +183,7 @@ export default {
       netRegexKo: NetRegexes.startsUsing({ id: '55E8', source: '어둠의 구름', capture: false }),
       delaySeconds: 4,
       durationSeconds: 4,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get Towers',
@@ -342,9 +342,32 @@ export default {
     },
     {
       'locale': 'ko',
-      'missingTranslations': true,
       'replaceSync': {
         'Cloud Of Darkness': '어둠의 구름',
+        'Stygian Arbor': '어둠의 나무',
+      },
+      'replaceText': {
+        'Anti-air Particle Beam': '고공식 파동포',
+        'Bad Vibrations': '강력한 진동',
+        'Deluge of Darkness': '어둠의 대범람',
+        'Earth-shattering Particle Beam': '붕괴식 파동포',
+        'Empty Plane': '암흑의 하늘',
+        'Evil Seed': '씨앗탄',
+        'Flood of Emptiness': '어둠의 범람: 암흑의 하늘',
+        'Flood of Obscurity': '어둠의 범람: 암흑의 숲',
+        'Ground-razing Particle Beam': '방사식 파동포',
+        'Hypercharged Condensation': '파동운 흡인',
+        'Mire of Despair': '어둠의 늪',
+        'Obscure Woods': '암흑의 숲',
+        '(?<! )Particle Beam': '파동 폭발',
+        'Particle Concentration': '파동구',
+        'Rejuvenating Balm': '활성탄',
+        'Summon': '소환',
+        'the Art of Darkness': '어둠의 전투술',
+        'Waste Away': '메마름',
+        'Wide-angle Particle Beam': '광각식 파동포',
+        'Wide-angle Phaser': '광각식 도약파동포',
+        'Zero-form Particle Beam': '0식 파동포',
       },
     },
   ],

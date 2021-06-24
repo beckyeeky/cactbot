@@ -7,7 +7,7 @@
 Each trigger file is a module that exports a single trigger set.
 
 ```javascript
-import ZoneId from '../path/to/resources/zone_id.js';
+import ZoneId from '../path/to/resources/zone_id';
 // Other imports here.
 
 export default {
@@ -39,10 +39,16 @@ export default {
 
 **zoneId**
 A shortened name for the zone to use these triggers in.
-The set of id names can be found in [zone_id.js](../resources/zone_id.js).
+The set of id names can be found in [zone_id.ts](../resources/zone_id.ts).
 Prefer using this over zoneRegex.
 A trigger set must have one of zoneId or zoneRegex to specify the zone
 (but not both).
+
+**initData**
+A function that can be used to initialize the data this trigger set uses.
+It should return an object that sets values for any fields in `data` that need to be initialized.
+This function is called any time the fight is reset, mainly on zone change or wipe.
+See [t1.ts](../ui/raidboss/data/02-arr/raid/t1.ts) for an example implementation.
 
 **zoneRegex**
 A regular expression that matches against the zone name (coming from ACT).
@@ -86,10 +92,12 @@ Boolean, defaults to true. If true, timelines and triggers will reset automatica
 ```javascript
 {
   id: 'id string',
+  // Note: netRegex only, see `NetFields` from [net_fields.d.ts](https://github.com/quisquous/cactbot/blob/main/types/net_fields.d.ts)
+  type: 'StartsUsing',
   disabled: false,
-  // Note: prefer to use the regex helpers from [netregexes.ts](https://github.com/quisquous/cactbot/blob/main/resources/netregexes.ts)
-  netRegex: /trigger-regex-for-network-log-lines/,
-  netRegexFr: /trigger-regex-for-network-log-lines-but-in-French/
+  // Note: use the regex helpers from [netregexes.ts](https://github.com/quisquous/cactbot/blob/main/resources/netregexes.ts)
+  netRegex: NetRegexes.startsUsing({ id: 'some-id', source: 'some-name' }),
+  netRegexFr: NetRegexes.startsUsing({ id: 'some-id', source: 'some-name-but-in-french' }),
   // Note: prefer to use the regex helpers from [regexes.ts](https://github.com/quisquous/cactbot/blob/main/resources/regexes.ts)
   regex: /trigger-regex-for-act-log-lines/,
   regexFr: /trigger-regex-for-act-log-lines-but-in-French/,
@@ -226,10 +234,10 @@ Volume between 0 and 1 to play the sound associated with the trigger.
 
 **response**
 A way to return infoText/alertText/alarmText/tts all from a single entrypoint.
-Also used by `resources/responses.js`.
+Also used by `resources/responses.ts`.
 Response has less priority than an explicitly specified text or tts,
 and so can be overridden.
-(As with `regex` and `condition`, "canned" responses are available within [responses.js](https://github.com/quisquous/cactbot/blob/main/resources/responses.js).)
+(As with `regex` and `condition`, "canned" responses are available within [responses.ts](https://github.com/quisquous/cactbot/blob/main/resources/responses.ts).)
 
 **alarmText**
 Displays a text popup with Alarm importance when the trigger activates.
@@ -255,8 +263,29 @@ May be a string or a `function(data, matches, output)` that returns a string.
 **tts**
 An alternative text string for the chosen TTS option to use for callouts.
 This can be a localized object just like the text popups.
+If this is set, but there is no key matching your current language,
+Raidboss will default to the text from the text popups.
 
-**run: function(data, matches, ouptut)**
+For example, consider this configuration:
+
+```typescript
+{
+  ...
+  infoText: {
+    en: 'Tank Buster',
+    de: 'AoE',
+    fr: 'Cleave',
+  },
+  tts: {
+    de: 'Spread',
+  },
+}
+```
+
+If your language is `en`, you will receive the `Tank Buster` message.
+If your language is `de`, you will receive the `Spread` message.
+
+**run: function(data, matches, output)**
 If the trigger activates, the function will run as the last action before the trigger ends.
 
 **outputStrings**
@@ -321,7 +350,7 @@ and instead `response` should return a function that calls
 `output.responseOutputStrings = {};`
 where `{}` is the outputStrings object you would have returned from the trigger `outputStrings` field.
 This is a bit awkward, but allows response to both return and use `outputStrings`,
-and keeps [resources/responses.js](../resources/responses.js) more encapsulated.
+and keeps [resources/responses.ts](../resources/responses.ts) more encapsulated.
 
 For example:
 
@@ -394,10 +423,10 @@ Use of these helpers makes automated testing significantly easier,
 and allows humans to catch errors and inconsistencies more easily when reviewing pull requests.
 
 Currently, three separate elements have pre-made structures defined:
-[Condition](https://github.com/quisquous/cactbot/blob/main/resources/conditions.ts), [Regex](https://github.com/quisquous/cactbot/blob/main/resources/regexes.ts), [NetRegex](https://github.com/quisquous/cactbot/blob/main/resources/netregexes.ts), and [Response](https://github.com/quisquous/cactbot/blob/main/resources/responses.js).
+[Condition](https://github.com/quisquous/cactbot/blob/main/resources/conditions.ts), [Regex](https://github.com/quisquous/cactbot/blob/main/resources/regexes.ts), [NetRegex](https://github.com/quisquous/cactbot/blob/main/resources/netregexes.ts), and [Response](https://github.com/quisquous/cactbot/blob/main/resources/responses.ts).
 `Condition` functions take no arguments. Almost all `Response` functions take one optional argument, `severity`,
 used to determine what level of popup text to display to the user when the trigger activates.
-`Regex`(`NetRegex`) functions can take several arguments [(`gainsEffect()` is a good example)](https://github.com/quisquous/cactbot/blob/dcdf3ee4cd1b6d5bdfb9a8052cc9e4c9b10844d8/resources/regexes.js#L176) depending on which log line is being matched against,
+`Regex`(`NetRegex`) functions can take several arguments [(`gainsEffect()` is a good example)](https://github.com/quisquous/cactbot/blob/0bd9095682ec15b35f880d2241be365f4bdf6a87/resources/regexes.ts#L348) depending on which log line is being matched against,
 but generally a contributor would include the `source`, (name of the caster/user of the ability to match,)
 the `id`, (the hex ability ID, such as `2478`,) and whether or not the regex should capture the matches (`capture: false`.)
 `Regex`(`NetRegex`) functions capture by default, but standard practice is to specify non-capturing unless a trigger element requires captures.
@@ -477,7 +506,7 @@ A simple example using `outputStrings` and `Outputs` as below:
     if (data.role === 'healer')
       return output.tankBusters({ player: data.ShortName(matches.target) });
   },
-  infoText: function(data, _, output) {
+  infoText: function(data, _matches, output) {
     if (data.role !== 'tank' && data.role !== 'healer')
       return output.avoidLaser();
   },

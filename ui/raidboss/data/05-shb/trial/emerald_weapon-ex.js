@@ -1,5 +1,6 @@
 import ZoneId from '../../../../../resources/zone_id';
 import NetRegexes from '../../../../../resources/netregexes';
+import Outputs from '../../../../../resources/outputs';
 import Conditions from '../../../../../resources/conditions';
 import { Responses } from '../../../../../resources/responses';
 
@@ -39,6 +40,7 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55B0' }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55B0' }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55B0' }),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55B0' }),
       condition: Conditions.caresAboutMagical(),
       response: Responses.tankBuster(),
     },
@@ -49,6 +51,7 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: ['55B1', '5B10'], capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: ['55B1', '5B10'], capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: ['55B1', '5B10'], capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: ['55B1', '5B10'], capture: false }),
       condition: Conditions.caresAboutAOE(),
       response: Responses.aoe(),
     },
@@ -59,7 +62,8 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55AA', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55AA', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55AA', capture: false }),
-      alertText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55AA', capture: false }),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Get orbs',
@@ -78,10 +82,12 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '5594', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '5594', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '5594', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '5594', capture: false }),
       condition: (data) => data.seenMines || data.role !== 'tank',
       delaySeconds: 9,
       durationSeconds: 6,
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
+      run: (data) => data.seenMines = true,
       outputStrings: {
         text: {
           en: 'Get Near Same Polarity Mines',
@@ -92,7 +98,6 @@ export default {
           ko: '같은 극성 폭탄쪽으로',
         },
       },
-      run: (data) => data.seenMines = true,
     },
     {
       id: 'EmeraldEx Divide Et Impera P1',
@@ -101,20 +106,14 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '5537', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '5537', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '5537', capture: false }),
-      alertText: (data, _, output) => {
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '5537', capture: false }),
+      alertText: (data, _matches, output) => {
         if (data.role === 'tank')
           return output.sharedTankStack();
         return output.spread();
       },
       outputStrings: {
-        spread: {
-          en: 'Spread',
-          de: 'Verteilen',
-          fr: 'Dispersez-vous',
-          ja: '散開',
-          cn: '分散',
-          ko: '산개',
-        },
+        spread: Outputs.spread,
         ...sharedOutputStrings,
       },
     },
@@ -122,7 +121,7 @@ export default {
       id: 'EmeraldEx Magitek Magnetism Flare',
       netRegex: NetRegexes.headMarker({ id: '0057' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Flare on YOU',
@@ -138,7 +137,7 @@ export default {
       id: 'EmeraldEx Magitek Magnetism Bait',
       netRegex: NetRegexes.headMarker({ id: '0017' }),
       condition: Conditions.targetIsYou(),
-      alertText: (data, _, output) => output.text(),
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Bait Lines Away From Safe Spot',
@@ -157,6 +156,7 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55[D9]1', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55[D9]1', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55[D9]1', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55[D9]1', capture: false }),
       response: Responses.getOut(),
     },
     {
@@ -166,7 +166,8 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '555B', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '555B', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '555B', capture: false }),
-      alertText: (data, _, output) => {
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '555B', capture: false }),
+      alertText: (data, _matches, output) => {
         if (data.role === 'tank')
           return output.sharedTankStack();
         return output.protean();
@@ -190,7 +191,8 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55C3', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55C3', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55C3', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55C3', capture: false }),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Go sides, aim across',
@@ -209,7 +211,8 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55CC', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55CC', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55CC', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55CC', capture: false }),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Swords',
@@ -228,6 +231,7 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55D5', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55D5', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55D5', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55D5', capture: false }),
       response: Responses.goLeft(),
     },
     {
@@ -237,6 +241,7 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55D4', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55D4', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55D4', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55D4', capture: false }),
       response: Responses.goRight(),
     },
     {
@@ -246,6 +251,7 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '5585', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '5585', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '5585', capture: false }),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '5585', capture: false }),
       response: Responses.knockback(),
     },
     {
@@ -256,7 +262,8 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Arme Émeraude', id: '55C8', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'エメラルドウェポン', id: '55C8', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '绿宝石神兵', id: '55C8', capture: false }),
-      alarmText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.startsUsing({ source: '에메랄드 웨폰', id: '55C8', capture: false }),
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'X to cards, + to intercards',
@@ -275,7 +282,8 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Spectre De Gaius', id: '55BA', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'ガイウスの幻影', id: '55BA', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '盖乌斯的幻影', id: '55BA', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.startsUsing({ source: '가이우스의 환영', id: '55BA', capture: false }),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Numbered Divebombs',
@@ -294,7 +302,8 @@ export default {
       netRegexFr: NetRegexes.startsUsing({ source: 'Spectre De Gaius', id: '55C0', capture: false }),
       netRegexJa: NetRegexes.startsUsing({ source: 'ガイウスの幻影', id: '55C0', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ source: '盖乌斯的幻影', id: '55C0', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      netRegexKo: NetRegexes.startsUsing({ source: '가이우스의 환영', id: '55C0', capture: false }),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'watch rank-and-file soldiers',
@@ -430,6 +439,37 @@ export default {
         'Sidescathe': '侧面扫射',
         'Split': '分离',
         'Tertius Terminus Est': '恩惠终结：叁',
+      },
+    },
+    {
+      'locale': 'ko',
+      'replaceSync': {
+        'Black Wolf\'s Image': '가이우스의 환영',
+        'Imperial Image': '제국 병사의 환영',
+        'Reaper Image': '리퍼의 환영',
+        'The Emerald Weapon': '에메랄드 웨폰',
+      },
+      'replaceText': {
+        '--cutscene--': '--컷신--',
+        'Aetheroplasm Production': '폭뢰 생성',
+        'Aire Tam Storm': '에메랄드 대폭발',
+        'Bit Storm': '암 비트: 원형 사격',
+        'Divide Et Impera': '분할 통치',
+        'Emerald Beam': '에메랄드 광선',
+        'Emerald Shot': '에메랄드 발사',
+        'Expire': '분사',
+        'Heirsbane': '제IX호',
+        'Legio Phantasmatis': '환영 군단',
+        'Magitek Cannon': '마도포',
+        'Magitek Magnetism': '마도 자석',
+        'Optimized Ultima': '마도 알테마',
+        'Photon Ring': '광자 고리',
+        'Primus Terminus Est': '파멸의 종착역 I',
+        'Secundus Terminus Est': '파멸의 종착역 II',
+        'Shots Fired': '일제 소사',
+        'Sidescathe': '측면 소사',
+        'Split': '분리',
+        'Tertius Terminus Est': '파멸의 종착역 III',
       },
     },
   ],

@@ -1,6 +1,8 @@
 import EffectId from '../../../resources/effect_id';
 import { kAbility } from '../constants';
 
+let resetFunc = null;
+
 export function setup(bars) {
   const comboTimer = bars.addTimerBar({
     id: 'sam-timers-combo',
@@ -63,9 +65,9 @@ export function setup(bars) {
   const shifu = bars.addProcBox({
     id: 'sam-procs-shifu',
     fgColor: 'sam-color-shifu',
+    notifyWhenExpired: true,
   });
   bars.onYouGainEffect(EffectId.Shifu, (id, matches) => {
-    shifu.duration = 0;
     shifu.duration = matches.duration - 0.5; // -0.5s for log line delay
     bars.speedBuffs.shifu = 1;
   });
@@ -77,9 +79,9 @@ export function setup(bars) {
   const jinpu = bars.addProcBox({
     id: 'sam-procs-jinpu',
     fgColor: 'sam-color-jinpu',
+    notifyWhenExpired: true,
   });
   bars.onYouGainEffect(EffectId.Jinpu, (id, matches) => {
-    jinpu.duration = 0;
     jinpu.duration = matches.duration - 0.5; // -0.5s for log line delay
   });
   bars.onYouLoseEffect(EffectId.Jinpu, () => {
@@ -95,16 +97,15 @@ export function setup(bars) {
     kAbility.KaeshiGoken,
     kAbility.KaeshiSetsugekka,
   ], () => {
-    tsubameGaeshi.duration = 0;
     tsubameGaeshi.duration = 60;
   });
 
   const higanbana = bars.addProcBox({
     id: 'sam-procs-higanbana',
     fgColor: 'sam-color-higanbana',
+    notifyWhenExpired: true,
   });
   bars.onMobGainsEffectFromYou(EffectId.Higanbana, () => {
-    higanbana.duration = 0;
     higanbana.duration = 60 - 0.5; // -0.5s for log line delay
   });
 
@@ -118,4 +119,17 @@ export function setup(bars) {
     higanbana.valuescale = bars.gcdSkill;
     higanbana.threshold = bars.gcdSkill * 4;
   });
+
+  resetFunc = (bars) => {
+    comboTimer.duration = 0;
+    shifu.duration = 0;
+    jinpu.duration = 0;
+    tsubameGaeshi.duration = 0;
+    higanbana.duration = 0;
+  };
+}
+
+export function reset(bars) {
+  if (resetFunc)
+    resetFunc(bars);
 }

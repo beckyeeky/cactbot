@@ -15,9 +15,9 @@ import { Responses, triggerFunctions, triggerOutputFunctions, builtInResponseStr
 // Paths are relative to current file.
 // We can't import the manifest directly from util/ because that's webpack magic,
 // so need to do the same processing its loader would do.
-const raidbossManifest = '../ui/raidboss/data/manifest.txt';
-const oopsyManifest = '../ui/oopsyraidsy/data/manifest.txt';
-const outputFileName = 'coverage/coverage_report';
+const raidbossManifest = '../ui/raidboss/data/raidboss_manifest.txt';
+const oopsyManifest = '../ui/oopsyraidsy/data/oopsy_manifest.txt';
+const outputFileName = 'coverage/coverage_report.ts';
 
 const readManifest = (filename) => {
   const contents = fs.readFileSync(filename);
@@ -61,7 +61,7 @@ const processRaidbossCoverage = async (manifest, coverage) => {
   const manifestLines = readManifest(manifest);
   const dataDir = path.dirname(manifest);
   for (const line of manifestLines) {
-    if (!line.endsWith('.js'))
+    if (!line.endsWith('.js') && !line.endsWith('.ts'))
       continue;
     const triggerFileName = path.join(dataDir, line).replace(/\\/g, '/');
     const triggerSet = (await import(triggerFileName)).default;
@@ -129,7 +129,7 @@ const processOopsyCoverage = async (manifest, coverage) => {
   const manifestLines = readManifest(manifest);
   const dataDir = path.dirname(manifest);
   for (const line of manifestLines) {
-    if (!line.endsWith('.js'))
+    if (!line.endsWith('.js') && !line.endsWith('.ts'))
       continue;
     const triggerFileName = path.join(dataDir, line).replace(/\\/g, '/');
     const triggerSet = (await import(triggerFileName)).default;

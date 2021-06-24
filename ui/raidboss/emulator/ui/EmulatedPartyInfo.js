@@ -20,10 +20,10 @@ export default class EmulatedPartyInfo extends EventBus {
     for (let i = 0; i < 8; ++i)
       this.triggerBars[i] = this.$triggerBar.querySelector('.player' + i);
 
-    emulator.on('tick', (timestampOffset, lastLogTimestamp) => {
-      if (lastLogTimestamp) {
-        this.updatePartyInfo(emulator, lastLogTimestamp);
-        this.latestDisplayedState = Math.max(this.latestDisplayedState, lastLogTimestamp);
+    emulator.on('tick', (currentLogTime, lastLogLineTime) => {
+      if (lastLogLineTime) {
+        this.updatePartyInfo(emulator, lastLogLineTime);
+        this.latestDisplayedState = Math.max(this.latestDisplayedState, lastLogLineTime);
       }
     });
     emulator.on('currentEncounterChanged', (encounter) => {
@@ -182,19 +182,19 @@ export default class EmulatedPartyInfo extends EventBus {
     if (State === undefined)
       return;
 
-    const hpProg = (State.HP / State.maxHP) * 100;
-    let hpLabel = State.HP + '/' + State.maxHP;
-    hpLabel = EmulatorCommon.spacePadLeft(hpLabel, (State.maxHP.toString().length * 2) + 1);
-    this.displayedParty[id].$hpProgElem.ariaValueNow = State.HP;
-    this.displayedParty[id].$hpProgElem.ariaValueMax = State.maxHP;
+    const hpProg = (State.hp / State.maxHp) * 100;
+    let hpLabel = State.hp + '/' + State.maxHp;
+    hpLabel = EmulatorCommon.spacePadLeft(hpLabel, (State.maxHp.toString().length * 2) + 1);
+    this.displayedParty[id].$hpProgElem.ariaValueNow = State.hp;
+    this.displayedParty[id].$hpProgElem.ariaValueMax = State.maxHp;
     this.displayedParty[id].$hpProgElem.style.width = hpProg + '%';
     this.displayedParty[id].$hpLabelElem.textContent = hpLabel;
 
-    const mpProg = (State.MP / State.maxMP) * 100;
-    let mpLabel = State.MP + '/' + State.maxMP;
-    mpLabel = EmulatorCommon.spacePadLeft(mpLabel, (State.maxMP.toString().length * 2) + 1);
-    this.displayedParty[id].$mpProgElem.ariaValueNow = State.MP;
-    this.displayedParty[id].$mpProgElem.ariaValueMax = State.maxMP;
+    const mpProg = (State.mp / State.maxMp) * 100;
+    let mpLabel = State.mp + '/' + State.maxMp;
+    mpLabel = EmulatorCommon.spacePadLeft(mpLabel, (State.maxMp.toString().length * 2) + 1);
+    this.displayedParty[id].$mpProgElem.ariaValueNow = State.mp;
+    this.displayedParty[id].$mpProgElem.ariaValueMax = State.maxMp;
     this.displayedParty[id].$mpProgElem.style.width = mpProg + '%';
     this.displayedParty[id].$mpLabelElem.textContent = mpLabel;
   }
@@ -243,15 +243,13 @@ export default class EmulatedPartyInfo extends EventBus {
       name: 'Initial Data',
       classes: ['data'],
       $obj: $initDataViewer,
-      callback: () => {
-        $initDataViewer.textContent = JSON.stringify(per.initialData, null, 2);
-      },
     }));
 
     const $triggerContainer = $container.querySelector('.d-flex.flex-column');
 
     for (const i in per.triggers.sort((l, r) => l.resolvedOffset - r.resolvedOffset)) {
       const $triggerDataViewer = this.$jsonViewerTemplate.cloneNode(true);
+      $triggerDataViewer.textContent = JSON.stringify(per.triggers[i], null, 2);
       const triggerText = this.getTriggerLabelText(per.triggers[i]);
       const $trigger = this._wrapCollapse({
         time: this.getTriggerResolvedLabelTime(per.triggers[i]),
@@ -260,9 +258,6 @@ export default class EmulatedPartyInfo extends EventBus {
         text: triggerText,
         classes: [per.triggers[i].status.responseType],
         $obj: $triggerDataViewer,
-        callback: () => {
-          $triggerDataViewer.textContent = JSON.stringify(per.triggers[i], null, 2);
-        },
       });
       if (per.triggers[i].status.executed)
         $trigger.classList.add('trigger-executed');
@@ -289,9 +284,6 @@ export default class EmulatedPartyInfo extends EventBus {
       name: 'Final Data',
       classes: ['data'],
       $obj: $finalDataViewer,
-      callback: () => {
-        $finalDataViewer.textContent = JSON.stringify(per.finalData, null, 2);
-      },
     }));
 
     return $ret;

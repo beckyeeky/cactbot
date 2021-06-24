@@ -26,7 +26,7 @@ export default {
       netRegexJa: NetRegexes.startsUsing({ id: '1ED6', source: 'アルテ・ロイテ', capture: false }),
       netRegexCn: NetRegexes.startsUsing({ id: '1ED6', source: '老者', capture: false }),
       netRegexKo: NetRegexes.startsUsing({ id: '1ED6', source: '알테 로이테', capture: false }),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Breath Wing: Be beside boss',
@@ -171,9 +171,9 @@ export default {
         'Wyrm Tail': '太古龙尾',
       },
       'replaceText': {
-        '(safe)': '(安全)',
-        '(spread)': '(分散)',
-        '(stack)': '(分摊)',
+        '\\(safe\\)': '(安全)',
+        '\\(spread\\)': '(分散)',
+        '\\(stack\\)': '(分摊)',
         'Blaze': '冰焰',
         'Breath Wing': '风息之翼',
         'Charybdis': '大漩涡',

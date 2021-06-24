@@ -23,7 +23,8 @@ export default {
       id: 'ShivaEx Icebrand',
       regex: /Icebrand/,
       beforeSeconds: 5,
-      alertText: (data, _, output) => output.text(),
+      suppressSeconds: 1,
+      alertText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Party Share Tankbuster',
@@ -40,6 +41,7 @@ export default {
       id: 'ShivaEx Heavenly Strike',
       regex: /Heavenly Strike/,
       beforeSeconds: 5,
+      suppressSeconds: 1,
       response: Responses.knockback('info'),
     },
   ],
@@ -50,9 +52,9 @@ export default {
       netRegexDe: NetRegexes.ability({ source: 'Shiva', id: '995', capture: false }),
       netRegexFr: NetRegexes.ability({ source: 'Shiva', id: '995', capture: false }),
       netRegexJa: NetRegexes.ability({ source: 'シヴァ', id: '995', capture: false }),
-      netRegexKo: NetRegexes.ability({ source: '시바', id: '995', capture: false }),
       netRegexCn: NetRegexes.ability({ source: '希瓦', id: '995', capture: false }),
-      response: (data, _, output) => {
+      netRegexKo: NetRegexes.ability({ source: '시바', id: '995', capture: false }),
+      response: (data, _matches, output) => {
         // cactbot-builtin-response
         output.responseOutputStrings = {
           staffTankSwap: {
@@ -88,9 +90,9 @@ export default {
       netRegexDe: NetRegexes.ability({ source: 'Shiva', id: '993', capture: false }),
       netRegexFr: NetRegexes.ability({ source: 'Shiva', id: '993', capture: false }),
       netRegexJa: NetRegexes.ability({ source: 'シヴァ', id: '993', capture: false }),
-      netRegexKo: NetRegexes.ability({ source: '시바', id: '993', capture: false }),
       netRegexCn: NetRegexes.ability({ source: '希瓦', id: '993', capture: false }),
-      response: (data, _, output) => {
+      netRegexKo: NetRegexes.ability({ source: '시바', id: '993', capture: false }),
+      response: (data, _matches, output) => {
         // cactbot-builtin-response
         output.responseOutputStrings = {
           swordTankSwap: {
@@ -125,8 +127,8 @@ export default {
       netRegexDe: NetRegexes.ability({ source: 'Shiva', id: ['993', '995'], capture: false }),
       netRegexFr: NetRegexes.ability({ source: 'Shiva', id: ['993', '995'], capture: false }),
       netRegexJa: NetRegexes.ability({ source: 'シヴァ', id: ['993', '995'], capture: false }),
-      netRegexKo: NetRegexes.ability({ source: '시바', id: ['993', '995'], capture: false }),
       netRegexCn: NetRegexes.ability({ source: '希瓦', id: ['993', '995'], capture: false }),
+      netRegexKo: NetRegexes.ability({ source: '시바', id: ['993', '995'], capture: false }),
       delaySeconds: 30,
       run: (data) => data.soonAfterWeaponChange = false,
     },
@@ -168,8 +170,8 @@ export default {
       netRegexDe: NetRegexes.ability({ source: 'Shiva', id: 'BE5' }),
       netRegexFr: NetRegexes.ability({ source: 'Shiva', id: 'BE5' }),
       netRegexJa: NetRegexes.ability({ source: 'シヴァ', id: 'BE5' }),
-      netRegexKo: NetRegexes.ability({ source: '시바', id: 'BE5' }),
       netRegexCn: NetRegexes.ability({ source: '希瓦', id: 'BE5' }),
+      netRegexKo: NetRegexes.ability({ source: '시바', id: 'BE5' }),
       run: (data, matches) => data.currentTank = matches.target,
     },
     {
@@ -186,7 +188,7 @@ export default {
     {
       id: 'ShivaEx Whiteout',
       netRegex: NetRegexes.startsUsing({ id: 'BEC', capture: false }),
-      response: Responses.getIn('alert'),
+      response: Responses.getIn(),
     },
     {
       id: 'ShivaEx Diamond Dust',
@@ -194,8 +196,8 @@ export default {
       netRegexDe: NetRegexes.ability({ source: 'Shiva', id: '98A', capture: false }),
       netRegexFr: NetRegexes.ability({ source: 'Shiva', id: '98A', capture: false }),
       netRegexJa: NetRegexes.ability({ source: 'シヴァ', id: '98A', capture: false }),
-      netRegexKo: NetRegexes.ability({ source: '시바', id: '98A', capture: false }),
       netRegexCn: NetRegexes.ability({ source: '希瓦', id: '98A', capture: false }),
+      netRegexKo: NetRegexes.ability({ source: '시바', id: '98A', capture: false }),
       run: (data) => data.seenDiamondDust = true,
     },
     {
@@ -204,8 +206,8 @@ export default {
       netRegexDe: NetRegexes.ability({ source: 'Shiva', id: 'BDD', capture: false }),
       netRegexFr: NetRegexes.ability({ source: 'Shiva', id: 'BDD', capture: false }),
       netRegexJa: NetRegexes.ability({ source: 'シヴァ', id: 'BDD', capture: false }),
-      netRegexKo: NetRegexes.ability({ source: '시바', id: 'BDD', capture: false }),
       netRegexCn: NetRegexes.ability({ source: '希瓦', id: 'BDD', capture: false }),
+      netRegexKo: NetRegexes.ability({ source: '시바', id: 'BDD', capture: false }),
       response: Responses.getBehind('alarm'),
       run: (data) => {
         // Just in case ACT has crashed or something, make sure this state is correct.
@@ -217,7 +219,7 @@ export default {
       netRegex: NetRegexes.headMarker({ id: '001A' }),
       condition: Conditions.targetIsYou(),
       // Responses.knockback does not quite give the 'laser cleave' aspect here.
-      alarmText: (data, _, output) => output.text(),
+      alarmText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Knockback Laser on YOU',
@@ -233,7 +235,7 @@ export default {
       id: 'ShivaEx Avalanche Marker Other',
       netRegex: NetRegexes.headMarker({ id: '001A' }),
       condition: Conditions.targetIsNotYou(),
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Avoid Laser',
@@ -251,8 +253,8 @@ export default {
       netRegexDe: NetRegexes.abilityFull({ source: 'Shiva', id: 'BEB' }),
       netRegexFr: NetRegexes.abilityFull({ source: 'Shiva', id: 'BEB' }),
       netRegexJa: NetRegexes.abilityFull({ source: 'シヴァ', id: 'BEB' }),
-      netRegexKo: NetRegexes.abilityFull({ source: '시바', id: 'BEB' }),
       netRegexCn: NetRegexes.abilityFull({ source: '希瓦', id: 'BEB' }),
+      netRegexKo: NetRegexes.abilityFull({ source: '시바', id: 'BEB' }),
       condition: (data, matches) => {
         // Ignore other middle circles and try to only target the Icicle Impact x9.
         if (!data.seenDiamondDust || data.soonAfterWeaponChange)
@@ -298,7 +300,6 @@ export default {
       'replaceText': {
         '\\(circle\\)': '(Kreis)',
         '\\(cross\\)': '(Kreuz)',
-        '--frozen--': '--eingefroren--',
         'Absolute Zero': 'Absoluter Nullpunkt',
         'Avalanche': 'Lawine',
         'Diamond Dust': 'Diamantenstaub',
@@ -327,7 +328,6 @@ export default {
         '\\?': ' ?',
         '\\(circle\\)': '(cercle)',
         '\\(cross\\)': '(croix)',
-        '--frozen--': '--gelé--',
         'Absolute Zero': 'Zéro absolu',
         'Avalanche': 'Avalanche',
         'Diamond Dust': 'Poussière de diamant',
@@ -356,7 +356,6 @@ export default {
         '\\?': ' ?',
         '\\(circle\\)': '(輪)',
         '\\(cross\\)': '(十字)',
-        '--frozen--': '--凍結--',
         'Absolute Zero': '絶対零度',
         'Avalanche': 'アバランチ',
         'Diamond Dust': 'ダイアモンドダスト',
@@ -384,7 +383,6 @@ export default {
       'replaceText': {
         '\\(circle\\)': '(圆)',
         '\\(cross\\)': '(十字)',
-        '--frozen--': '--冻结--',
         'Absolute Zero': '绝对零度',
         'Avalanche': '雪崩',
         'Diamond Dust': '钻石星尘',
@@ -412,7 +410,6 @@ export default {
       'replaceText': {
         '\\(circle\\)': '(원형)',
         '\\(cross\\)': '(십자)',
-        '--frozen--': '--동결--',
         'Absolute Zero': '절대영도',
         'Avalanche': '눈사태',
         'Diamond Dust': '다이아몬드 더스트',

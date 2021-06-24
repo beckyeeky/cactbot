@@ -32,7 +32,7 @@ export default {
       id: 'TitanUn Gaoler Adds',
       regex: /Gaoler Adds/,
       beforeSeconds: 1,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Gaoler Adds',
@@ -48,7 +48,7 @@ export default {
       id: 'TitanUn Double Weight',
       regex: /Weight Of The Land 1/,
       beforeSeconds: 4,
-      infoText: (data, _, output) => output.text(),
+      infoText: (_data, _matches, output) => output.text(),
       outputStrings: {
         text: {
           en: 'Double Weight',
@@ -229,7 +229,6 @@ export default {
     },
     {
       'locale': 'ko',
-      'missingTranslations': true,
       'replaceSync': {
         'Bomb Boulder': '바위폭탄',
         'Granite Gaoler': '화강암 감옥',
@@ -245,12 +244,14 @@ export default {
         'Burst': '대폭발',
         'Bury': '충격',
         'Earthen Fury': '대지의 분노',
+        'Gaoler': '화강암 감옥',
+        'Adds': '쫄 추가',
         'Geocrush': '대지 붕괴',
-        '(?<! )Landslide': '산사태',
+        'Landslide': '산사태',
         'Mountain Buster': '산 쪼개기',
         'Rock Buster': '바위 쪼개기',
         'Rock Throw': '화강암 감옥',
-        '(?<! )Tumult': '격진',
+        'Tumult': '격진',
         'Upheaval': '대격진',
         'Weight Of The Land': '대지의 무게',
       },
